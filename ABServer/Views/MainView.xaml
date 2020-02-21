@@ -1,0 +1,121 @@
+﻿<Window x:Class="ABServer.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv ="clr-namespace:ABServer.Views.Converters"
+        xmlns:vModel="clr-namespace:ABServer.ViewModel"
+        xmlns:model="clr-namespace:ABServer.Model"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vModel:MainViewModel}"
+        Title="Сервер"
+        Height="454.511"
+        Width="1028.572"
+        Icon="/ABServer;component/Assets/roulette_1_.ico"
+        >
+    <Window.Resources>
+        <conv:WorkConverter x:Key="WorkConverter"></conv:WorkConverter>
+    </Window.Resources>
+    <Grid>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="170"/>
+            <ColumnDefinition Width="542*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40*" MinHeight="100"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="13*" MinHeight="100"/>
+        </Grid.RowDefinitions>
+        <!--Приборпанель-->
+        <StackPanel>
+            <Button Command="{Binding StarListenerCommand}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Listen}" Value="True">
+                                <Setter Property="Content" Value="Выключить"></Setter> 
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Listen}" Value="False">
+                                <Setter Property="Content" Value="Включить"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Command="{Binding StartParsingCommand}">Старт Парсинга</Button>
+            <Button Command="{Binding StopParsingCommand}">Стоп Парсинга</Button>
+            <Button  Click="btnCostumer_Click">Управление клиентами</Button>
+            <Button Command="{Binding UpdateBaseCommand}">Обновить Базу</Button>
+        </StackPanel>
+
+        <ListView 
+            Grid.Row="0" 
+            Grid.Column="1" 
+            ItemsSource="{Binding Bookmakers}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn >
+                        <GridViewColumnHeader Content="Название" MinWidth="200"></GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Bookmaker}">
+                                <Grid>
+                                    <TextBlock Text="{Binding Name}"></TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Адрес сайта" MinWidth="200"></GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Bookmaker}">
+                                <Grid>
+                                    <TextBlock Text="{Binding Site}"></TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Статус" MinWidth="200"></GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Bookmaker}">
+                                <Grid>
+                                    <TextBlock Text="{Binding Status,Converter={StaticResource WorkConverter}}"></TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <!--Сплитер-->
+        <GridSplitter 
+            Grid.Row="1" 
+            Height="5" 
+            HorizontalAlignment="Stretch" 
+            Grid.ColumnSpan="2" 
+            Grid.Column="0"
+            Background="#FFBBBBBB"></GridSplitter>
+        <!-- Логи -->
+        <TextBlock 
+            Grid.Row="2" 
+            Text="Лог событий:" 
+            Margin="15,5,0,0" 
+            FontStyle="Italic" 
+            FontFamily="Segoe UI Semilight" 
+            Grid.ColumnSpan="2"
+            Grid.Column="0"></TextBlock>
+        <ListBox 
+            x:Name="LbLog" 
+            Margin="0,25,0,0" 
+            Grid.Row="2" 
+            Grid.ColumnSpan="2" 
+            Grid.Column="0">
+
+        </ListBox>
+    </Grid>
+</Window>

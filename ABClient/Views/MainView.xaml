@@ -1,0 +1,975 @@
+﻿<Window x:Class="ABClient.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:browser="clr-namespace:ABClient.Components"
+        xmlns:convert ="clr-namespace:ABClient.Controllers"
+        xmlns:abClient="clr-namespace:ABClient"
+        xmlns:vModel ="clr-namespace:ABClient.ViewModel"
+        xmlns:abShared="clr-namespace:ABShared;assembly=ABShared"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vModel:MainViewModel}"
+        Title="MainView"
+        Height="565.364" Width="1007.738" 
+        Icon="/ABClient;component/Asset/ico_512.ico" 
+        FontFamily="/ABClient;component/Asset/#Archangelsk" 
+        FontStretch="Condensed" 
+        WindowState="Maximized"
+        SnapsToDevicePixels="True" 
+        TextOptions.TextRenderingMode="ClearType"
+        KeyDown="Window_KeyDown"
+        >
+    <Window.Resources>
+        <convert:CalculatorConverterForkProfit x:Key="CostConverter"></convert:CalculatorConverterForkProfit>
+        <convert:CalculatorConverterForkCheck x:Key="ForkCheck"></convert:CalculatorConverterForkCheck>
+        <convert:CalculatorConverter x:Key="MainConverter"></convert:CalculatorConverter>
+        <convert:CalculatorConverterFloat x:Key="MainConverterFloat"></convert:CalculatorConverterFloat>
+        <convert:BookkeepConverter x:Key="BookConverter"></convert:BookkeepConverter>
+        <convert:SportsToIconConverter x:Key="SportsToIconConverter"></convert:SportsToIconConverter>
+        <!--Checkbox style-->
+        <Style x:Key="MainCheckBox" TargetType="{x:Type CheckBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator>
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="Border"  
+                                                          Width="15" 
+                                                          Height="15" 
+                                                          CornerRadius="8" 
+                                                          Background="Transparent"
+                                                          BorderBrush="#ee7849"
+                                                          BorderThickness="2"
+                                                        >
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left"
+                                                        RecognizesAccessKey="True"/>
+                        </BulletDecorator>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Border" Property="BorderThickness" Value="7.5"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#f9b9a2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <!--End Checkbox style-->
+
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="BorderBrush" Value="{x:Null}"></Setter>
+            <Setter Property="SelectionBrush" Value="#FF171B26"></Setter>
+            <Setter Property="Background" Value="#FF1E2026"></Setter>
+            <Setter Property="Template" >
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border
+                            x:Name="Bd"
+                            CornerRadius="5"
+                            Background="{TemplateBinding Background}"
+                            >
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--Стиль с бокса с логинами-->
+        <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="FontSize" Value="16"></Setter>
+            <Setter Property="Template">
+
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border Name="_Border"
+                                Padding="2"
+                                SnapsToDevicePixels="true">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="_Border" Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--Стиль для вью с событием для клика-->
+        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="FocusVisualStyle" Value="{DynamicResource ListViewItemFocusVisual}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}"/>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Margin" Value="0,0,0,1" />
+            <Setter Property="Padding" Value="5,2" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="HoverOn">
+                                <ColorAnimation Duration="0:0:0.2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="row_content"
+                                            To="#16181d"/>
+                            </Storyboard>
+                            <Storyboard x:Key="HoverOff">
+                                <ColorAnimation Duration="0:0:0.2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="row_content"
+                                            To="{StaticResource ColorForegroundWhite}"/>
+                            </Storyboard>
+                            <Storyboard x:Key="SelectedOn">
+                                <DoubleAnimation Duration="0:0:0.2" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HoverSelected" To="1"/>
+                            </Storyboard>
+                            <Storyboard x:Key="SelectedOff">
+                                <DoubleAnimation Duration="0:0:0.2" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HoverSelected" To="0"/>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Border SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" x:Name="border">
+                            <Grid Margin="2,0">
+                                <Rectangle x:Name="Background" IsHitTestVisible="False" Fill="{TemplateBinding Background}" RadiusX="0"
+                                       Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{TemplateBinding BorderThickness}"/>
+                                <Rectangle x:Name="HoverSelected" IsHitTestVisible="False" Opacity="0" RadiusX="0" Fill="#16181d">
+
+                                </Rectangle>
+                                <Border Background="Transparent">
+                                    <GridViewRowPresenter x:Name="row_content" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Stretch" Margin="0,2" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                               <!--- <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource SelectedOn}"/>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource SelectedOff}"/>
+                                </Trigger.ExitActions>-->
+                                <Setter Property="Background" Value="Transparent"></Setter>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{StaticResource DisabledForeground3}"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+
+            </Setter>
+            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="Forks_MouseLeftButtonUp" />
+
+        </Style>
+    </Window.Resources>
+
+    
+    <Grid x:Name="GrdMain" Background="#363c41">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="45*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition x:Name="SpliterTwo" Width="*" MinWidth="270" MaxWidth="390" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="*" MinHeight="100"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
+
+        </Grid.RowDefinitions>
+
+        <!--Start block Browser -->
+        <Grid Grid.ColumnSpan="2" Grid.RowSpan="5">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="SpliterOne" Height="*" MinHeight="100"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="*" MinHeight="100"/>
+            </Grid.RowDefinitions>
+            <DockPanel x:Name="Tst" Background="White" >
+                <browser:BrowserTab  x:Name="BrowserTab1" />
+            </DockPanel>
+
+            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5" Background="#363c41"/>
+
+            <DockPanel Grid.Row="2" Background="White" >
+                <browser:BrowserTab x:Name="BrowserTab2"/>
+            </DockPanel>
+        </Grid>
+        <!--END block Browser -->
+
+        <GridSplitter Grid.Column="2" Width="5" HorizontalAlignment="Stretch"  Grid.RowSpan="5" Background="#363c41"/>
+
+        <!-- вехний левый блок с кнопками и статусом готовности-->
+        <DockPanel Grid.Column="3" Grid.Row="0" Background="#2d2f34" >
+            <Button 
+                Margin="5,5,1,5" 
+                Width="44" 
+                Style="{Binding BookkeeperViewModel.ShowLoginStyle}" 
+                Height="26" 
+                FontSize="21" 
+                Content="" 
+                FontFamily="/ABClient;component/Asset/#icomoon" 
+                Command="{Binding BookkeeperViewModel.ShowPanelCommand}">
+            </Button>
+
+            <Button
+                Margin="1,5,1,5"
+                x:Name="BtnSetting"
+                Width="34"
+                Click="btnSetting_Click" 
+                Style="{StaticResource RoundCornerBlack}" 
+                FontSize="21"
+                Content="" 
+                FontFamily="/ABClient;component/Asset/#icomoon"  >
+            </Button>
+
+            <Button 
+                Margin="1,5,1,5" 
+                Width="37" 
+                Command="{Binding BookkeeperViewModel.ShowPanelCommand}" 
+                Style="{Binding BookkeeperViewModel.ShowBookStyle}" 
+                FontSize="21"  
+                Content="" 
+                FontFamily="/ABClient;component/Asset/#icomoon" >
+            </Button>
+            <Button 
+                Margin="1,5,1,5" 
+                x:Name="BtnShow" 
+                Width="33" 
+                Click="btnShow_Click" 
+                Style="{StaticResource RoundCornerBlack}" 
+                Content="" 
+                FontFamily="/ABClient;component/Asset/#icomoon">
+            </Button>
+            <Label   FontSize="16"  Margin="0,5,5,5" x:Name="LblStatus" Content="Готов" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Right" Foreground="#0ca769" />
+
+        </DockPanel>
+
+        <!--Листбокс с логинами и паролями-->
+        <ListBox 
+            Grid.Column="3" 
+            Grid.Row="1" 
+            x:Name="Test" 
+            Background="#FF363C41" 
+            BorderBrush="{x:Null}"  
+            ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+            ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type abClient:Bookmaker}">
+                    <Grid Grid.IsSharedSizeScope="True" Margin="0,0,0,5" Background="#363c41" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="60"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="25"/>
+                            <ColumnDefinition Width="25"/>
+                            <ColumnDefinition Width="25"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Content="{Binding Name}"  Width="60">
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLogin,UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="Foreground" Value="Green"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsLogin,UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                            <Setter Property="Foreground" Value="Red" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+
+                        <TextBox  Width="30" MinHeight="22" Padding="0,3,0,0" Grid.Column="1" MinWidth="50" VerticalAlignment="Center" GotFocus="TextBox_GotFocus" MouseLeave="TextBox_LostFocus"  Text="{Binding Login,Mode=TwoWay}" Margin="0,0,5,0"></TextBox>
+                        <TextBox  Width="30" MinHeight="22" Padding="0,3,0,0" Grid.Column="2" MinWidth="50" VerticalAlignment="Center" GotFocus="TextBox_GotFocus" MouseLeave="TextBox_LostFocus" Text="{Binding Password,Mode=TwoWay}" Margin="0,0,5,0"></TextBox>
+                        <Button 
+                            Width="20" 
+                            Grid.Column="3" 
+                            HorizontalAlignment="Center" 
+                            Tag="{Binding Id}" 
+                            Click="BtnSet" 
+                            Margin="0,0,5,0" 
+                            Style="{StaticResource RoundCorner}" >
+                            <Image Source="/ABClient;component/Asset/Theme/setting.png" HorizontalAlignment="Center" Width="15"></Image>
+                        </Button>
+                        <CheckBox 
+                            Style="{StaticResource MainCheckBox}"
+                            Grid.Column="4" 
+                            HorizontalAlignment="Center" 
+                            IsChecked="{Binding IsFilter}" 
+                            Tag="{Binding BkType}" 
+                            Click="CheckBox_Click_1" 
+                            VerticalAlignment="Center"></CheckBox>
+                        <Button Width="20" Grid.Column="5" Click="btnLogin" Tag="{Binding Id}" Margin="0,0,0,0" Style="{StaticResource RoundCorner}">
+                            <Image Source="/ABClient;component/Asset/Theme/btnLogin.png" HorizontalAlignment="Center" Width="Auto" Height="10"></Image>
+                        </Button>
+
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel></StackPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+
+        </ListBox>
+
+        <!--Блок с бухгалтерией-->
+        <Grid DataContext="{Binding BookkeeperViewModel}" Grid.Column="3" Grid.Row="1" Background="#363c41" Visibility="{Binding MainVisibility}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+                <DockPanel VerticalAlignment="Top">
+                    <TextBlock 
+                        Visibility="{Binding SumVisibility}" 
+                        Text="{Binding Sum,Converter={StaticResource BookConverter}}" 
+                        Foreground="#e5340d" 
+                        FontFamily="/ABClient;component/Asset/#Digiface" 
+                        FontSize="34" 
+                        Margin="25,5,0,5" 
+                        TextAlignment="Center" HorizontalAlignment="Center"  />
+
+                    <Button 
+                        HorizontalAlignment="Right" 
+                        Height="15" 
+                        FontSize="15" 
+                        VerticalAlignment="Bottom" 
+                        DockPanel.Dock="Right" 
+                        Command="{Binding ShowSumCommand}" Width="15">
+                        
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}" >
+                                            <Grid x:Name="grid">
+                                                <Border x:Name="border" CornerRadius="3" BorderThickness="0" Background="#0ca769">
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextElement.FontWeight="Bold">
+                                                    </ContentPresenter>
+                                                </Border>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver"  Value="True">
+                                                    <Setter Property="Background" TargetName="border" Value="#1bcc80" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed"  Value="True">
+                                                    <Setter Property="Background" TargetName="border" Value="#0d8451" />
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSumShow}" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Image Source="/ABClient;component/Asset/Theme/directionRight.png" Width="15" Height="15"></Image>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="BorderBrush" Value="Red"></Setter>
+                                        <Setter Property="BorderThickness" Value="3"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsSumShow}" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Image Source="/ABClient;component/Asset/Theme/directionLeft.png" Width="15" Height="15"></Image>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        
+                    </Button>
+                </DockPanel>
+
+                <DockPanel>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentVisibility}">
+                        <Button Style="{StaticResource RoundCorner}" Content="+" Margin="2,5" FontSize="24"
+                                FontWeight="Bold" Command="{Binding SumCommand}" Width="40" />
+                        <Button Style="{StaticResource RoundCorner}" Content="-" Width="40" Margin="2,5" FontSize="24"
+                                FontWeight="Bold" Command="{Binding DivCommand}" />
+                        <TextBox Text="{Binding Current}" TextAlignment="Right" Width="100" Background="#1e2026"  Foreground="#e5340d" FontFamily="/ABClient;component/Asset/#Digiface" FontSize="26" Margin="5,10" BorderBrush="{x:Null}"/>
+                    </StackPanel>
+
+                    <Button  HorizontalAlignment="Right" Height="15" Width="15" FontSize="12" VerticalAlignment="Bottom" Command="{Binding ShowCurrentCommand}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}" >
+                                            <Grid x:Name="grid">
+                                                <Border x:Name="border" CornerRadius="3" BorderThickness="0" Background="#0ca769">
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextElement.FontWeight="Bold">
+                                                    </ContentPresenter>
+                                                </Border>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver"  Value="True">
+                                                    <Setter Property="Background" TargetName="border" Value="#1bcc80" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed"  Value="True">
+                                                    <Setter Property="Background" TargetName="border" Value="#0d8451" />
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentVisibility}" Value="Visible">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Image Source="/ABClient;component/Asset/Theme/directionRight.png" Width="15" Height="15"></Image>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CurrentVisibility}" Value="Hidden">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Image Source="/ABClient;component/Asset/Theme/directionLeft.png" Width="15" Height="15"></Image>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </DockPanel>
+                <Button FontSize="16" Style="{StaticResource RoundCornerOrange}" Content="Finish Job" Background="DarkGray" Margin="0,5,0,0" Command="{Binding SaveCommand}" Height="25"/>
+            </StackPanel>
+        </Grid>
+
+        
+        <!--Start Block ViewFork-->
+        <!--Блок по отображению вилок-->
+        <Border x:Name="BrdFork"  Grid.Row="2" Grid.ColumnSpan="{Binding ColumnSpan}" Grid.Column="{Binding GridColumn}">
+            <Grid Background="#2d2f34">
+                <TextBlock 
+                    Text="{Binding SelectedFork}"
+                    TextWrapping="Wrap" 
+                    Height="25" 
+                    TextAlignment="Center" 
+                    VerticalAlignment="Top" 
+                    Foreground="White" 
+                    FontSize="12">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsFork}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource GreenColor}"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsFork}" Value="False">
+                                    <Setter Property="Background" Value="Red"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    </TextBlock>
+                <ListView 
+                    ItemsSource="{Binding Forks}" 
+                    ItemContainerStyle="{StaticResource ListViewItemStyle}"  
+                    Foreground="White"   
+                    x:Name="Forks" 
+                    FontSize="15" 
+                    IsSynchronizedWithCurrentItem="True"
+                    Margin="0,25,0,0"
+                    >
+                    <ListView.Background>
+                        <ImageBrush ImageSource="/ABClient;component/Asset/Theme/vilka.png"  Opacity="0.3" Stretch="Uniform"/>
+                    </ListView.Background>
+                    <ListView.View>
+                        <GridView >
+                            <GridViewColumn>
+                                <GridViewColumnHeader/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <Grid>
+                                            <Label  Content="{Binding SportType, Converter={StaticResource SportsToIconConverter}}" FontFamily="/ABClient;component/Asset/#sports_font"  Foreground="White"></Label>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn>
+                                <GridViewColumnHeader/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <Grid>
+                                            <Label Foreground="White" Content="{Binding Time}"></Label>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Спорт"/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <Grid>
+                                            <Label Foreground="White" Content="{Binding SportType}"></Label>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <!--
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Время:"/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <Grid>
+                                            <Label Foreground="White" Content="{Binding LifeTime}"></Label>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            -->
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Контора"/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Foreground="White" Content="{Binding SiteOne}"></Label>
+                                            <Label Foreground="White" Content="{Binding SiteTwo}"></Label>
+
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="%"/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <Label Foreground="White" Content="{Binding Profit, Converter={StaticResource MainConverterFloat}}"></Label>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Ставка"/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Foreground="White" Content="{Binding To1}"></Label>
+                                            <Label Foreground="White" Content=" - "></Label>
+                                            <Label Foreground="White" Content="{Binding To2}"></Label>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Коэф"/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Foreground="White" Content="{Binding Cof1, Converter={StaticResource MainConverterFloat}}"></Label>
+                                            <Label Foreground="White" Content=" - "></Label>
+                                            <Label Foreground="White" Content="{Binding Cof2, Converter={StaticResource MainConverterFloat}}"></Label>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Событие"/>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type abShared:Fork}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Foreground="White" Content="{Binding Teams}"></Label>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+
+                        </GridView>
+
+                    </ListView.View>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!--Кнопка отвечающая за выезд вью с вилками-->
+        <Button Grid.Column="3" Grid.Row="3"                 
+            Width="50" Height="15"
+            Command="{Binding StretchCommand}" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Padding" Value="0,3"></Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}" >
+                                <Grid x:Name="grid">
+                                    <Border x:Name="border" CornerRadius="3" BorderThickness="0" Background="#0ca769">
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextElement.FontWeight="Bold" Margin="0,0,0,0">
+                                        </ContentPresenter>
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver"  Value="True">
+                                        <Setter Property="Background" TargetName="border" Value="#1bcc80" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed"  Value="True">
+                                        <Setter Property="Background" TargetName="border" Value="#0d8451" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="FontSize" Value="20"></Setter>
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding StateListView}" Value="True">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Image Height="10" Source="/ABClient;component/Asset/Theme/directionRight.png"></Image>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding StateListView}" Value="False">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Image Height="10" Source="/ABClient;component/Asset/Theme/directionLeft.png"></Image>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--Филтр доходности вилок-->
+        <StackPanel Grid.Column="3" Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
+            <Label Foreground="White" Content="Доходность от" FontSize="13" />
+            <TextBox   x:Name="TxtMinPercent" Width="30" Padding="5,0,0,0" FontSize="13" Text="0" VerticalAlignment="Center" KeyUp="txtMinPercent_TextChanged"/>
+            <Label  Foreground="White" Content="до"/>
+            <TextBox  Foreground="White" x:Name="TxtMaxPercent" Padding="5,0,0,0" FontSize="13" Width="30" VerticalAlignment="Center" Text="100" KeyUp="txtMaxPercent_TextChanged" BorderBrush="{x:Null}" Background="#FF1E2026"/>
+        </StackPanel>
+        <!--End Block ViewFork-->
+
+        <!--Start block Calculater and Filter-->
+        <DockPanel Grid.Column="3" Grid.Row="4">
+            <TabControl DockPanel.Dock="Top" SelectedIndex="1"  Background="#363c41" Foreground="White" BorderBrush="{x:Null}"  >
+                <TabControl.Resources>
+                    
+                    <Style x:Key="FocusVisual">
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+
+                    <Style x:Key="TabItemStyle1" TargetType="{x:Type TabItem}">
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                        <Setter Property="Foreground" Value="Black"/>                        
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="6,2,6,2"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        <!-- -->
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Border CornerRadius="4" x:Name="mainBorder"  BorderBrush="Transparent" BorderThickness="0"  Padding="5" Margin="2">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter Property="Background" Value="#1bcc80"></Setter>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="false">
+                                                        <Setter Property="Background" Value="#0ca769"></Setter>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <ContentPresenter x:Name="contentPresenter" ContentSource="Header" Focusable="False" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" HorizontalAlignment="Center"/>
+                                    </Border>                                                          
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>                       
+                    </Style>
+
+                    <Style  TargetType="{x:Type TabControl}">
+                        <Setter Property="OverridesDefaultStyle"
+          Value="True" />
+                        <Setter Property="SnapsToDevicePixels"
+          Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabControl}">
+                                    <Grid KeyboardNavigation.TabNavigation="Local">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Disabled">
+                                                    <Storyboard>
+                                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
+                                                Storyboard.TargetProperty="(Border.BorderBrush).
+                    (SolidColorBrush.Color)">
+                                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="#FFAAAAAA" />
+                                                        </ColorAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                        <TabPanel x:Name="HeaderPanel"
+                    Grid.Row="0"
+                    Panel.ZIndex="1"
+                    Margin="0,0,4,-1"
+                    IsItemsHost="True"
+                    KeyboardNavigation.TabIndex="1"
+                    Background="#2d2f34" 
+                                              />
+                                        <Border x:Name="Border"
+                  Grid.Row="1"
+                  BorderThickness="1"
+                  CornerRadius="2"
+                  KeyboardNavigation.TabNavigation="Local"
+                  KeyboardNavigation.DirectionalNavigation="Contained"
+                  KeyboardNavigation.TabIndex="2">
+                                            <Border.Background>
+                                                <LinearGradientBrush EndPoint="0.5,1"
+                                   StartPoint="0.5,0">
+                                                    <GradientStop Color="{DynamicResource ContentAreaColorLight}"
+                              Offset="0" />
+                                                    <GradientStop Color="{DynamicResource ContentAreaColorDark}"
+                              Offset="1" />
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <Border.BorderBrush>
+                                                <SolidColorBrush Color="{DynamicResource BorderMediumColor}"/>
+                                            </Border.BorderBrush>
+                                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                              Margin="4"
+                              ContentSource="SelectedContent" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                </TabControl.Resources>
+                <TabItem 
+                    Header="Фильтр" 
+                    FontSize="16" 
+                    Foreground="#1E2026" 
+                    Style="{DynamicResource TabItemStyle1}" 
+                    Width="84"  >
+                    <Grid 
+                        Height="230"
+                        Background="#363c41" >
+                        <ListBox  
+                            ItemContainerStyle="{DynamicResource ListBoxItemStyle}" 
+                            Background="#363c41" 
+                            BorderBrush="{x:Null}" 
+                            x:Name="LbFilters" 
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                            VerticalAlignment="Top" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type abShared:SportTypeData}">
+                                    <CheckBox 
+                                        Style="{StaticResource MainCheckBox}"
+                                        Foreground="White" 
+                                        IsChecked="{Binding IsFilter}" 
+                                        Click="CheckBox_Click" 
+                                        Content="{Binding SportType}" 
+                                        FontSize="15"></CheckBox>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Vertical" >
+
+                                    </WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </Grid>
+                </TabItem>
+
+                <TabItem FontSize="16" Header="Кальк." Foreground="#1E2026" Style="{DynamicResource TabItemStyle1}" Width="84">
+
+                    <StackPanel VerticalAlignment="Top" DataContext="{Binding MainViewCalculatorModel}" >
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="45*"/>
+                                <ColumnDefinition Width="45*"/>
+                                <ColumnDefinition Width="66*"/>
+                                <ColumnDefinition Width="47*"/>
+                                <ColumnDefinition Width="25"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="110"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Column="1" MouseDown="lbCoeff1_MouseDown">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsLockedCoeff}" Value="True">
+                                                <Setter Property="Background" Value="Red"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsLockedBetOne}" Value="True">
+                                                <Setter Property="Background" Value="Red"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            <Label Grid.Column="1" Grid.Row="1" MouseDown="lbCoeff1_MouseDown">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsLockedCoeff}" Value="true">
+                                                <Setter Property="Background" Value="Red"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IslockedBetTwo}" Value="true">
+                                                <Setter Property="Background" Value="Red"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+
+                            <Label Grid.Column="2"  MouseDown="lbBet1_MouseDown">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsLockedBetOne}" Value="True">
+                                                <Setter Property="Background" Value="Red"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            <Label Grid.Column="2" Grid.Row="1" MouseDown="lbBet2_MouseDown">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IslockedBetTwo}" Value="True">
+                                                <Setter Property="Background" Value="Red"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+
+                            <Label Foreground="White" x:Name="LblBook1" Grid.Row="0" Content="Букм1" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,9,0,5" Height="26" />
+                            <Label Foreground="White" x:Name="LblBook2" Grid.Row="1" FontSize="16" Content="Букм2" VerticalAlignment="Center" HorizontalAlignment="Left" Height="26" Margin="0,7" />
+
+                            <TextBox x:Name="TxtCoeff1" Text="{Binding Data.coeff1, Converter={StaticResource MainConverter}}" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Center" FontSize="16" Margin="7,8,2,2" MinHeight="30" Padding="0,5,0,0" Height="30"  />
+                            <TextBox x:Name="TxtCoeff2" Text="{Binding Data.coeff2, Converter={StaticResource MainConverter}}" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" FontSize="16" Margin="7,0,2,10" MinHeight="30" Padding="0,5,0,0" Height="30" />
+
+                            <TextBox x:Name="TxtBet1" Text="{Binding  Data.bet1}" Grid.Row="0" Grid.Column="2"  VerticalAlignment="Center" FontSize="16" Margin="2,8,7,2" MinHeight="30" Padding="0,5,0,0" Height="30"/>
+                            <TextBox x:Name="Txtbet2" Text="{Binding  Data.bet2}" Grid.Row="1" Grid.Column="2"  VerticalAlignment="Center" FontSize="16" Margin="2,0,7,10" MinHeight="30" Padding="0,5,0,0" Height="30"/>
+
+                            <Button  Style="{StaticResource RoundCornerOrange}" Grid.Row="0" Grid.Column="4" Background="#FFCBB527" FontSize="20" Click="Button_Click" Margin="3,8,0,8" >$</Button>
+                            <Button Style="{StaticResource RoundCornerOrange}" Grid.Row="1" Grid.Column="4" Background="#FFCBB527" FontSize="20" Click="Button_Click_1" Margin="3,8,0,8" >$</Button>
+
+ <Label Foreground="White" Content="{Binding  Data.profit1, Converter={StaticResource MainConverter}}" Grid.Row="0" Grid.Column="3"  VerticalAlignment="Center" FontSize="14" Margin="-3,0,0,0"   />
+                            <Label Foreground="White" Content="{Binding  Data.profit2, Converter={StaticResource MainConverter}}" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" FontSize="14" Margin="-3,0,0,0"   />
+
+                            <StackPanel x:Name="SpCalc" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="5" >
+                                <StackPanel.Style>
+                                    <Style TargetType="{x:Type StackPanel}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Data.IsFork}" Value="True">
+                                                <Setter Property="Background" Value="#0ca769"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Data.IsFork}" Value="False">
+                                                <Setter Property="Background" Value="Red" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
+                                <Label Content="{Binding  Path=Data.ForkProfit, Converter={StaticResource CostConverter} }" Foreground="White"  VerticalAlignment="Center" FontSize="16"/>
+                            </StackPanel>
+                            <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="TxtStaf"
+                                     Text="{Binding  Data.Staf}" TextAlignment="Center" VerticalAlignment="Center"
+                                     Padding="0,3,0,0" Height="24" FontSize="16" Margin="15,8,15,8" />
+                            <Label Content="{Binding Data.Mean,Converter={StaticResource MainConverter}}"
+                                   Foreground="White" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center"
+                                   Grid.ColumnSpan="2" />
+                            <Image Grid.Row="3" Grid.ColumnSpan="5" Width="235" Stretch="UniformToFill"
+                                   Source="../ProgramData/Baners/small_baner.jpg" Margin="0,10,0,-50" />
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+
+        </DockPanel>
+        <!--End block Calculater and Filter-->
+
+        <!--Кнопка двойной ствки-->
+        <Button Style="{StaticResource RoundCornerOrange}" Name="BtnDouble" Grid.Row="4" Grid.Column="3" FontSize="20"
+                Visibility="Visible"
+                Content="x2$" Height="30" VerticalAlignment="Top" Margin="170,2,6,0" Click="btnDouble_Click" />
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="Button_Click_2" Visibility="Collapsed">test</Button>
+    </Grid>
+</Window>

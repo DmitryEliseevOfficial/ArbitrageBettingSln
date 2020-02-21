@@ -1,0 +1,45 @@
+﻿<Window x:Class="ABServer.Views.UserView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ABServer.Views"
+        mc:Ignorable="d"
+        Title="Просмотр пользователя" ResizeMode="NoResize" Width="486.09" Icon="/ABServer;component/Assets/roulette_1_.ico" SizeToContent="Height">
+    <Grid >
+        <StackPanel x:Name="sp" Margin="15" VerticalAlignment="Center" >
+            <TextBlock Text="Имя Пользователя:" Margin="0,0,0,5"/>
+            <DockPanel Margin="0,0,0,5">
+                <Button DockPanel.Dock="Right" Command="{Binding NewLoginCommand}" Content="Сген">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsNewUser}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBox x:Name="txtLogin" Text="{Binding User.Login}" TextChanged="Txt_TextChanged"></TextBox>
+            </DockPanel>           
+            <TextBlock Text="Пароль:" Margin="0,0,0,5"/>
+            <DockPanel Margin="0,0,0,5">
+                <Button x:Name="btnRandomPassword" DockPanel.Dock="Right" Command="{Binding NewPasswordGenerate}" Content="Сген"></Button>
+                <TextBox x:Name="txtPassword" Text="{Binding User.Password}" TextChanged="Txt_TextChanged"></TextBox>               
+            </DockPanel>
+            <TextBlock Text="Имя:" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding User.FName}" Margin="0,0,0,5"></TextBox>
+            <TextBlock Text="Фамилия:" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding User.LName}" Margin="0,0,0,5" ></TextBox>
+            <TextBlock Text="Телефон:" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding User.Phone}" Margin="0,0,0,5"></TextBox>
+            <TextBlock Text="Email:" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding User.Email}" Margin="0,0,0,5"></TextBox>
+            <TextBlock Text="Дата окончания:" Margin="0,0,0,10" ></TextBlock>
+            <DatePicker SelectedDate="{Binding User.Left}" DisplayDate="{Binding  User.Left}"  Margin="0,0,0,5"></DatePicker>
+            <CheckBox Visibility="Collapsed" Content="Заблокирован?" IsChecked="{Binding User.IsBlocked}" Margin="0,0,0,5"></CheckBox>
+            <Button x:Name="btnSave" Content="Сохранить" Command="{Binding AddNewUserCommand}" Margin="0,10,0,0"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

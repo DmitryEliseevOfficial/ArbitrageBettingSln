@@ -1,0 +1,57 @@
+﻿<Window x:Class="ABServer.Views.StartView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vmodel="clr-namespace:ABServer.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vmodel:StartViewModel}"
+        Title="Настройка сервера" Height="567" Width="376.692" Icon="/ABServer;component/Assets/roulette_1_.ico">
+    <Grid Margin="20">
+        <StackPanel>
+            <Label HorizontalAlignment="Center">Конфигурация сервера:</Label>
+            <Label Margin="0,0,0,5">Адрес:</Label>
+            <TextBox Margin="0,0,0,5" Text="{Binding HostAdress}"></TextBox>
+            <Label Margin="0,0,0,5">Порт:</Label>
+            <TextBox Margin="0,0,0,10" Text="{Binding HostPort}"></TextBox>
+            <DockPanel Margin="0,0,0,5">
+                <CheckBox IsChecked="{Binding UsingProxy}" Command="{Binding CheckProxyFileCommand}" Content="Прокси?"></CheckBox>
+            </DockPanel>
+            <StackPanel Visibility="Collapsed">
+                <Label HorizontalAlignment="Center">Настройки зенита:</Label>
+                <Label Margin="0,0,0,5">Логин:</Label>
+                <TextBox Margin="0,0,0,5" Text="{Binding ZenitLogin}"></TextBox>
+                <Label Margin="0,0,0,5">Пароль:</Label>
+                <TextBox Margin="0,0,0,10" Text="{Binding ZenitPassword}"></TextBox>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,15">
+                <Label HorizontalAlignment="Center" Content="Зеркала"></Label>
+                <Label>Olimp:</Label>
+                <TextBox 
+                    Text="{Binding OlimpUrl}"
+                    ToolTip="Адресс должен быть вида: {https://olimp.com/} , включая все слэши"></TextBox>               
+                <Label>Fonbet:</Label>
+                <TextBox 
+                    Text="{Binding FonbetUrl}"
+                    ToolTip="Адресс должен быть вида: {https://www.fonbet5.com/ru/} , включая все слэши"></TextBox>
+                <Label>Marafon:</Label>
+                <TextBox 
+                    Text="{Binding MarafonUrl}"
+                    ToolTip="Адресс должен быть вида: {https://www.marathonbet.com/su/} , включая все слэши"></TextBox>
+
+                <Label>Zenit:</Label>
+                <TextBox 
+                    Text="{Binding ZenitUrl}"
+                    ToolTip="Адресс должен быть вида: {https://zenit88.win/} , включая все слэши"></TextBox>
+
+                <Label>PariMatchUrl:</Label>
+                <TextBox 
+                    Text="{Binding PariMatchUrl}"
+                    ToolTip="Адресс должен быть вида: {https://www.parimatchbets2.com/} , включая все слэши"></TextBox>
+                
+            </StackPanel>
+            <Button  Command="{Binding OpenSetTimeoutCommand}"  Margin="0,5,0,15">Настройки таймаутов</Button>
+            <Button Command="{Binding StartCommand}">Сохранить и запустить</Button>
+        </StackPanel>
+    </Grid>
+</Window>

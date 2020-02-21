@@ -1,0 +1,151 @@
+﻿<Window x:Class="ABServer.Views.SetTimeoutView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vModel="clr-namespace:ABServer.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vModel:SetTimeoutViewModel}"
+        Title="Настройка Timeout`ов" Height="307" Width="414" ResizeMode="NoResize">
+    <Grid>
+        <StackPanel 
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Width="350">
+            <Label HorizontalAlignment="Center">Основные</Label>
+            <DockPanel>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">Максимальное время ликвидности</Label>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right">мс</Label>
+                <TextBox 
+                    VerticalAlignment="Center"
+                    Text="{Binding Configurate.EventMaxTime}">
+                    <TextBox.ToolTip>
+                        <TextBlock>
+                            Это общее для всех парсеров время ликвидности информации. Чем оно меньше, чем точнее вилки и быстрее обновляться.<LineBreak/>
+                            Но при маленьких значениях, количество вилок будет постоянно прыгать(то нашлась то потерялось). При больших меняться более плавно.<LineBreak/>
+                            Рекомендуемые значения от 3000 до 10000 мсек
+                        </TextBlock>
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">Мак. врем. Fonbet</Label>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right">мс</Label>
+                <TextBox 
+                    VerticalAlignment="Center"
+                    Text="{Binding Configurate.FonbetMaxTime}">
+                    <TextBox.ToolTip>
+                        <TextBlock>
+                            Максимальное время ликвидности информации на этом БК. Должно быть меньше или равно Общему.<LineBreak/>
+                            Рекомендуемые значения от 3000 до 10000
+                        </TextBlock>
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">Мак. врем. Olimp</Label>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right">мс</Label>
+                <TextBox 
+                    VerticalAlignment="Center"
+                    Text="{Binding Configurate.OlimpMaxTime}">
+                    <TextBox.ToolTip>
+                        <TextBlock>
+                            Максимальное время ликвидности информации на этом БК. Должно быть меньше или равно Общему.<LineBreak/>
+                            Рекомендуемые значения от 3000 до 10000
+                        </TextBlock>
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">Мак. врем. Marafon</Label>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right">мс</Label>
+                <TextBox 
+                    VerticalAlignment="Center"
+                    Text="{Binding Configurate.MarafonMaxTime}">
+                    <TextBox.ToolTip>
+                        <TextBlock>
+                            Максимальное время ликвидности информации на этом БК.<LineBreak/>
+                            Должно быть меньше или равно Общему.<LineBreak/>
+                            Рекомендуемые значения от 3000 до 10000
+                        </TextBlock>
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">Мак. врем. Zenit</Label>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right">мс</Label>
+                <TextBox 
+                    VerticalAlignment="Center"
+                    Text="{Binding Configurate.ZenitMaxTime}">
+                    <TextBox.ToolTip>
+                        <TextBlock>
+                            Максимальное время ликвидности информации на этом БК.<LineBreak/>
+                            Должно быть меньше или равно Общему.<LineBreak/>
+                            Рекомендуемые значения от 3000 до 10000
+                        </TextBlock>
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DockPanel>
+            <Separator Height="2"></Separator>
+            <Label HorizontalAlignment="Center">Прочее</Label>
+
+            <DockPanel>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">Таймаут между поисками вилок</Label>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right">мс</Label>
+                <TextBox 
+                    VerticalAlignment="Center"
+                    Text="{Binding Configurate.ForkFinderTime}">
+                    <TextBox.ToolTip>
+                        <TextBlock>
+                            Время перерыва, между каждым поиском вилок.
+                            <LineBreak/>
+                            Рекомендуемые значения от 1000 до 3000
+                        </TextBlock>
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DockPanel>
+            <DockPanel>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">Таймаут отправлений</Label>
+                <Label 
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right">мс</Label>
+                <TextBox 
+                    VerticalAlignment="Center"
+                    Text="{Binding Configurate.ServerManagerSendTime}"
+                    ToolTip="Время перерыва, между каждой отправкой клиентам.Рекомендуемые значения  от 1000 до 4000."></TextBox>
+            </DockPanel>
+            <Button Command="{Binding SaveCommand}" HorizontalAlignment="Center">Сохранить</Button>
+        </StackPanel>
+        <Button 
+            Command="{Binding ResetCommand}" 
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Margin="5">Сбросить</Button>
+    </Grid>
+</Window>

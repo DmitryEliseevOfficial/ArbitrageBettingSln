@@ -1,0 +1,109 @@
+﻿<UserControl x:Class="ABClient.Components.BrowserTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ABClient.Components"
+             xmlns:Cef="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="700" FontFamily="/ABClient;component/Asset/#Archangelsk"
+             TextOptions.TextRenderingMode="ClearType"
+             SnapsToDevicePixels="True"
+             >
+    <UserControl.Resources>        
+        <Style x:Key="RoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/> 
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="4" BorderThickness="0" Background="#0ca769">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextElement.FontWeight="Bold"> 
+                                </ContentPresenter>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>  
+                            <Trigger Property="IsMouseOver"  Value="True">
+                                <Setter Property="Background" TargetName="border" Value="#1bcc80" />
+                            </Trigger>
+                            <Trigger Property="IsPressed"  Value="True">
+                                <Setter Property="Background" TargetName="border" Value="#0d8451" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>   
+            <Setter Property="FontSize" Value="20"></Setter>
+        </Style>        
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"  />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="#363c41">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Label Content="Адрес:" Margin="0,0,15,0" Foreground="White" VerticalAlignment="Center" FontSize="16" />
+                <TextBox  Panel.ZIndex="5" Width="300"  Text="{Binding ElementName=BrowserControl,Path=Address}" VerticalAlignment="Center" Margin="0" Background="#FF1E2026" Foreground="White" Height="20" Padding="5,3,0,0" FontSize="15">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border
+                            x:Name="Bd"
+                            CornerRadius="5,0,0,5"
+                            Background="{TemplateBinding Background}"
+                            >
+                                            <ScrollViewer x:Name="PART_ContentHost"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <Button Panel.ZIndex="4"  Width="40" Margin="-3,0,10,0" Height="20" Style="{DynamicResource RoundCorner}">
+                    <Image Source="/ABClient;component/Asset/Theme/lupa.png" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="DownOnly"/>
+                </Button>
+                <ProgressBar Width="200" Height="10"
+                             IsIndeterminate="{Binding ElementName=BrowserControl,Path=IsLoading}" Foreground="#FF0CA769" Background="#FF1E2026"> 
+                </ProgressBar>
+                
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{DynamicResource RoundCorner}" Height="25" Width="25" x:Name="btnPlus" Click="btnPlus_Click" Margin="0,0,5,0">+</Button>
+                <Button Style="{DynamicResource RoundCorner}" Height="25" Width="25" x:Name="btnSub" Click="btnSub_Click" Margin="0,0,5,0" >-</Button>
+                <Label x:Name="lbZoom" Width="60" Content="0" Background="{x:Null}" Foreground="White" VerticalAlignment="Center" FontSize="15"></Label>
+            </StackPanel>
+        </Grid>
+        
+        <Cef:ChromiumWebBrowser Grid.Row="1" x:Name="BrowserControl"  Background="White" OpacityMask="White" >            
+        </Cef:ChromiumWebBrowser>
+        <Label Visibility="Collapsed">
+            <FrameworkElement.ContextMenu>
+                <ContextMenu x:Name="menuTest">
+                    <MenuItem Header="ShowDevTools" Click="MenuItem_Click"></MenuItem>
+                    <MenuItem Header="Back" ></MenuItem>
+
+                </ContextMenu>
+            </FrameworkElement.ContextMenu>
+        </Label>
+    </Grid>
+</UserControl>

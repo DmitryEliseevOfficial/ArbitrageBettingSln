@@ -1,0 +1,86 @@
+﻿<Window x:Class="ABServer.Views.CostumerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ABServer.Views"
+        xmlns:convert ="clr-namespace:ABServer.Views.Converters"
+        mc:Ignorable="d"
+        Title="Управление клиентами" Height="252.632" Width="649.624" Icon="/ABServer;component/Assets/roulette_1_.ico">
+    <Window.Resources>
+        <convert:AccountStatusConverter x:Key="WorkConvert"></convert:AccountStatusConverter>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="92*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="241*"/>
+        </Grid.ColumnDefinitions>       
+        <Button x:Name="btnAdd" Click="btnAdd_Click" VerticalAlignment="Center" Margin="10,0">Добавить</Button>        
+        <!--Панель поиска-->
+        <DockPanel Grid.Column="1" Grid.Row="0">
+            <TextBlock Text="Имя пользователя:" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
+            <Button MinWidth="70" VerticalAlignment="Center" HorizontalAlignment="Center"  DockPanel.Dock="Right" Command="{Binding FilterCommand}">Найти</Button>
+            <TextBox  VerticalAlignment="Center" Margin="0,0,15,0" Text="{Binding FindValue}"></TextBox>
+        </DockPanel>
+        
+        <!--Вывод пользователей-->
+
+        <ListView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" x:Name="lbUsers" ItemsSource="{Binding CurrentItems}" SelectedValue="{Binding SelectedUser}">
+            <ListView.View>
+                <GridView>                    
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Имя пользователя" MinWidth="150"></GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Login}"></TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Статус" MinWidth="150"></GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Left,Converter={StaticResource WorkConvert}}"></TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Истекает" MinWidth="150"></GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Left, StringFormat={}{0:dd-MM-yyyy HH:mm}}"></TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                </GridView>
+            </ListView.View>
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Копировать инфу" Command="{Binding InfoCopyCommand}"></MenuItem>
+                    <MenuItem Header="Редактировать" Command="{Binding EditUserCommand}"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Тариф">
+                        <MenuItem Header="Добавить FREE" Command="{Binding SetTarifCommand}" CommandParameter="0"></MenuItem>
+                        <MenuItem Header="Добавить 1 день" Command="{Binding SetTarifCommand}" CommandParameter="1"></MenuItem>
+                        <MenuItem Header="Добавить 7 день" Command="{Binding SetTarifCommand}" CommandParameter="7"></MenuItem>
+                        <MenuItem Header="Добавить 30 день" Command="{Binding SetTarifCommand}" CommandParameter="30"></MenuItem>
+                        <MenuItem Header="Добавить 2 месяца" Command="{Binding SetTarifCommand}" CommandParameter="60"></MenuItem>
+                        <MenuItem Header="Добавить 6 месяцев" Command="{Binding SetTarifCommand}" CommandParameter="180"></MenuItem>
+                    </MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Удалить" Command="{Binding RemoveCommand}" CommandParameter="{Binding ElementName=lbUsers}" ></MenuItem>
+                    
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+        
+        
+    </Grid>
+</Window>
