@@ -3,14 +3,14 @@ using System.Windows.Input;
 
 namespace ABClient.ViewModel
 {
-    public class ReallyCommand:ICommand
+    public class ReallyCommand : ICommand
     {
         private readonly Action<object> _action;
-        private readonly Func<object,bool> _func;
+        private readonly Func<object, bool> _func;
 
         public ReallyCommand(Action action)
         {
-            _action= v => { action(); };
+            _action = v => { action(); };
         }
 
         public ReallyCommand(Action<object> action)

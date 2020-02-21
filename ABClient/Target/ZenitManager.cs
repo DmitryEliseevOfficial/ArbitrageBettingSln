@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace ABClient.Target
 {
-    class ZenitManager:ITargerSite
+    class ZenitManager : ITargerSite
     {
-        string url="";
+        string url = "";
         ChromiumWebBrowser wbControl;
-        
+
         public bool Logined { get; set; }
 
         Dictionary<string, string> TaskList = new Dictionary<string, string>() { { "/account/login", "setTimeout(function(){ jsobject.loginstatus=false; jsobject.logined=\"zenit\";jsobject.stoped(); },2000);" } };
 
         public ZenitManager(ChromiumWebBrowser wbControl)
         {
-            this.wbControl = wbControl;         
+            this.wbControl = wbControl;
         }
 
         public async Task<int> GetBalance()
@@ -48,7 +48,7 @@ namespace ABClient.Target
             return rez;
         }
 
-        public bool SignIn(string login,string password)
+        public bool SignIn(string login, string password)
         {
             string query = "$('input[name=\"login\"]').val('" + login + "');" + "$('input[name=\"password\"]').val('" + password + "');" + "document.getElementById(\"header-login-button\").click(); ";
             TaskList["/"] = query;
@@ -61,7 +61,7 @@ namespace ABClient.Target
             wbControl.Address = url;
 
 
-         
+
 
             return false;
         }
@@ -74,20 +74,20 @@ namespace ABClient.Target
 
         public void SetUrl(string url)
         {
-            if(String.IsNullOrWhiteSpace(url))
+            if (String.IsNullOrWhiteSpace(url))
                 return;
             if (url.Last() != '/')
                 url += "/";
             this.url = url;
         }
 
-        public void ShowBet(ChromiumWebBrowser wb, string url,object data, int betSize)
-        {           
+        public void ShowBet(ChromiumWebBrowser wb, string url, object data, int betSize)
+        {
             wbControl = wb;
             wbControl.FrameLoadStart += Wb_FrameLoadStart;
             wbControl.FrameLoadEnd += WbControl_FrameLoadEnd;
-           
-            
+
+
             //открываем страницу с линией
             string query = "setTimeout(function() { try{ $('a[data-gid=\"" + url + "\"]').click(); } catch(ex) {} },100); ";
             //Щелкаем по нужной ставке
@@ -146,14 +146,14 @@ function checkBalance() {
 
 ";
 
-            TaskList["/live"] = query+query1;
+            TaskList["/live"] = query + query1;
 
             TaskList["/live/view"] = query1;
 
             wbControl.Address = "about:blank";
             wbControl.Address = this.url + "live";
         }
-        
+
         //Если в таск листе что-то есть, то ставим хэндл на windows.onload
         private void Wb_FrameLoadStart(object sender, FrameLoadStartEventArgs e)
         {
@@ -168,7 +168,7 @@ function checkBalance() {
                 TaskList.Remove(path);
             }
         }
-        
+
         public void Clear()
         {
             if (wbControl != null)
@@ -187,15 +187,15 @@ function checkBalance() {
 
         private void checkLogin()
         {
-            if(wbControl!=null)
+            if (wbControl != null)
             {
-                
+
                 try
                 {
                     string query = "";
                     if (!Logined)
                     {
-                        query="setTimeout(function(){ var x= document.getElementById(\"loginform\"); var log = document.getElementById(\"logout\"); if(x==null && log!=null){ jsobject.loginstatus=true;} else {jsobject.loginstatus=false;} jsobject.logined=\"zenit\"; },1000);";
+                        query = "setTimeout(function(){ var x= document.getElementById(\"loginform\"); var log = document.getElementById(\"logout\"); if(x==null && log!=null){ jsobject.loginstatus=true;} else {jsobject.loginstatus=false;} jsobject.logined=\"zenit\"; },1000);";
                     }
                     else
                     {
@@ -207,8 +207,8 @@ function checkBalance() {
                 {
 
                 }
-               
-            }           
+
+            }
         }
 
         public void Run()
@@ -267,5 +267,5 @@ function checkBalance() {
             }
         }
 
-    }    
+    }
 }

@@ -32,7 +32,7 @@ namespace xNet
         /// <returns>Строка, состоящая из имён и значений куки.</returns>
         override public string ToString()
         {
-            var strBuilder = new StringBuilder();        
+            var strBuilder = new StringBuilder();
 
             foreach (var cookie in this)
             {

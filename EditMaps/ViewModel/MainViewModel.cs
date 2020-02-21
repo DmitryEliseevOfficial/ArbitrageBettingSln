@@ -16,7 +16,7 @@ using System.Windows;
 
 namespace EditMaps.ViewModel
 {
-    internal class MainViewModel:BaseViewModel
+    internal class MainViewModel : BaseViewModel
     {
         private readonly string[] _urls;
 
@@ -24,7 +24,7 @@ namespace EditMaps.ViewModel
         {
             LoadCommand = new ReallyCommand(Load);
             JoiningCommand = new ReallyCommand(Joining);
-            ImportDataCommand=new ReallyCommand(ImportData);
+            ImportDataCommand = new ReallyCommand(ImportData);
             _urls = File.ReadAllLines("mirrors.txt");
         }
 
@@ -42,7 +42,7 @@ namespace EditMaps.ViewModel
 
         public ReallyCommand LoadCommand { get; set; }
         public ReallyCommand JoiningCommand { get; set; }
-        public  ReallyCommand ImportDataCommand { get; set; }
+        public ReallyCommand ImportDataCommand { get; set; }
 
         public ObservableCollection<string> Loger { get; } = new ObservableCollection<string>();
 
@@ -62,19 +62,19 @@ namespace EditMaps.ViewModel
 #endif
 
                 Marafon betm = new Marafon(_urls[0]);
-                   
+
                 List<SiteRow> sm = betm.ParseAnonsLive();
                 DateTime ser = DateTime.UtcNow;
-                if(ser.AddHours(3).Day!=ser.Day)
+                if (ser.AddHours(3).Day != ser.Day)
                 {
                     List<SiteRow> s1 = betm.ParseAnonsLive(DateTime.Now.AddDays(-1));
-                sm.AddRange(s1);
+                    sm.AddRange(s1);
                 }
-                    
+
                 SiteRow.Save("Marafon.data", sm);
                 Loger.Add($"Marafon загружен. количество: {sm.Count}");
 #if !DEBUG
-                        }
+            }
             catch (Exception ex)
             {
                 Loger.Add($"При загрузке данных произошла ошибка: {ex.Message}");
@@ -85,10 +85,10 @@ namespace EditMaps.ViewModel
             try
             {
 #endif
-            Fonbet betf = new Fonbet(_urls[1]);                   
-                List<SiteRow> sf = betf.ParseAnonsLive();                   
+                Fonbet betf = new Fonbet(_urls[1]);
+                List<SiteRow> sf = betf.ParseAnonsLive();
                 SiteRow.Save("Fonbet.data", sf);
-            Loger.Add($"Fonbet загружен. количество: {sf.Count}");
+                Loger.Add($"Fonbet загружен. количество: {sf.Count}");
 #if !DEBUG
 
             }
@@ -101,11 +101,11 @@ namespace EditMaps.ViewModel
             try
             {
 #endif
-            Olimp beto = new Olimp(_urls[2]);
+                Olimp beto = new Olimp(_urls[2]);
                 List<SiteRow> so = beto.ParseAnonsLive();
                 SiteRow.Save("Olimp.data", so);
                 Loger.Add($"Olimp загружен. количество: {so.Count}");
-            #if !DEBUG
+#if !DEBUG
             }
             catch (Exception ex)
             {
@@ -143,8 +143,8 @@ namespace EditMaps.ViewModel
 
 
             IsLoad = false;
-        
-                        
+
+
         }
 
         private static void Joining()
@@ -168,7 +168,7 @@ namespace EditMaps.ViewModel
             List<UnicData> x2 = newBdTwo.Except(bd, new Comp()).ToList();
 
 
-            int last = bd.Count;         
+            int last = bd.Count;
             foreach (UnicData key in x1)
             {
                 List<UnicData> dt = newBdOne.Where(x => x.Id == key.Id).ToList();
@@ -183,7 +183,7 @@ namespace EditMaps.ViewModel
                 }
             }
 
-            
+
             foreach (UnicData key in x2)
             {
                 List<UnicData> dt = newBdTwo.Where(x => x.Id == key.Id).ToList();
@@ -197,7 +197,7 @@ namespace EditMaps.ViewModel
                 }
             }
 
-            MessageBox.Show($"Успешно добавленно {bd.Count-last} команд");
+            MessageBox.Show($"Успешно добавленно {bd.Count - last} команд");
 
             UnicData.Save("bd_new.data", bd);
             UnicData.Save("bd.data", bd);
@@ -211,7 +211,7 @@ namespace EditMaps.ViewModel
 
             List<UnicData> db = UnicData.Load("bd.data");
             List<UnicData> rezultList = new List<UnicData>();
-            List<string> filesData= new List<string>()
+            List<string> filesData = new List<string>()
             {
                 "Fonbet.data",
                 "Marafon.data",
@@ -223,23 +223,23 @@ namespace EditMaps.ViewModel
             {
                 List<SiteRow> data = SiteRow.Load(fileName);
                 foreach (SiteRow siteRow in data)
-                {                    
+                {
                     UnicData rez = FindData(siteRow.TeamName, db);
-                    if(rez!=null)
+                    if (rez != null)
                     {
                         var team2 = siteRow.Match.Replace(siteRow.TeamName, "").Replace(" - ", "").Trim();
                         UnicData rez2 = FindData(siteRow.TeamName, db);
                         if (rez2 != null)
                             rezultList.Add(rez);
                     }
-                        
+
                 }
             }
 
             rezultList = rezultList.OrderBy(x => x.Id).ToList();
             rezultList = ToUnic(rezultList);
 
-            UnicData.Save("bd_Import.data",rezultList);
+            UnicData.Save("bd_Import.data", rezultList);
             Loger.Add($"База для импорта готова. В ней {rezultList.Count} записей");
         }
 
@@ -253,7 +253,7 @@ namespace EditMaps.ViewModel
             return null;
         }
 
-        
+
 
         private static List<UnicData> ToUnic(List<UnicData> db)
         {

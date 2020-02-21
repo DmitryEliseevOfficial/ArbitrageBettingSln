@@ -11,19 +11,19 @@ using System.Windows.Input;
 
 namespace ABClient.ViewModel
 {
-    public class MainViewCalculatorModel:DependencyObject
+    public class MainViewCalculatorModel : DependencyObject
     {
 
         #region DependencyProperty
         public static readonly DependencyProperty IsLockedCoeffProperty =
             DependencyProperty.Register("IsLockedCoeff", typeof(bool), typeof(MainViewCalculatorModel), new PropertyMetadata(false));
-        
+
         public static readonly DependencyProperty IsLockedBetOneProperty =
             DependencyProperty.Register("IsLockedBetOne", typeof(bool), typeof(MainViewCalculatorModel), new PropertyMetadata(false));
-                
+
         public static readonly DependencyProperty IslockedBetTwoProperty =
             DependencyProperty.Register("IslockedBetTwo", typeof(bool), typeof(MainViewCalculatorModel), new PropertyMetadata(false));
-        
+
         public static readonly DependencyProperty DataProperty =
             DependencyProperty.Register("Data", typeof(CalculatorData), typeof(MainViewCalculatorModel), new PropertyMetadata(new CalculatorData() { Staf = 10000, coeff1 = 1, coeff2 = 2 }, DataChanged));
 
@@ -36,8 +36,8 @@ namespace ABClient.ViewModel
             if (newD == null)
                 return;
 
-           vm.ChangedBetOne?.Invoke(newD.bet1);
-           vm.ChangedBetTwo?.Invoke(newD.bet2);
+            vm.ChangedBetOne?.Invoke(newD.bet1);
+            vm.ChangedBetTwo?.Invoke(newD.bet2);
 
         }
         #endregion
@@ -57,7 +57,7 @@ namespace ABClient.ViewModel
         {
             get { return (bool)GetValue(IsLockedCoeffProperty); }
             set { SetValue(IsLockedCoeffProperty, value); }
-        }      
+        }
         //Залочен первый?
         public bool IsLockedBetOne
         {
@@ -73,21 +73,21 @@ namespace ABClient.ViewModel
 
         public MainViewCalculatorModel()
         {
-            
+
         }
-        
+
         public CalculatorData Data
         {
             get { return (CalculatorData)GetValue(DataProperty); }
             set { SetValue(DataProperty, value); }
         }
 
-        public void SetFork(Fork fork,int maxBett)
+        public void SetFork(Fork fork, int maxBett)
         {
             var coeff1 = Convert.ToDouble(fork.Cof1);
             var coeff2 = Convert.ToDouble(fork.Cof2);
-            var bet = maxBett;           
-            Data = Calculator.CalculatorBet(coeff1,coeff2 ,bet);
+            var bet = maxBett;
+            Data = Calculator.CalculatorBet(coeff1, coeff2, bet);
         }
 
         public bool UpdateBetOneFlag { get; set; } = false;
@@ -95,7 +95,7 @@ namespace ABClient.ViewModel
         public int LastMaxBetOne { get; set; } = Int32.MaxValue;
         public int LastMaxBetTwo { get; set; } = Int32.MaxValue;
 
-#region Ставки
+        #region Ставки
 
         //Если редактируем общую Ставку
         public void EditStaf(object sender, KeyEventArgs ev)
@@ -139,14 +139,14 @@ namespace ABClient.ViewModel
                     rez.CaretIndex = rez.Text.Length;
                 }
                 //залочены оба
-                else if(IsLockedBetOne && IslockedBetTwo)
+                else if (IsLockedBetOne && IslockedBetTwo)
                 {
                     rez.Text = Data.Staf.ToString();
                 }
                 //Все разлочены считаем по стандартной схеме
                 else
-                {                    
-                    Data = Calculator.CalculatorBet(Data.coeff1, Data.coeff2, bet);                    
+                {
+                    Data = Calculator.CalculatorBet(Data.coeff1, Data.coeff2, bet);
                 }
                 rez.CaretIndex = rez.Text.Length;
             }
@@ -166,30 +166,30 @@ namespace ABClient.ViewModel
             if (!IsDigit(ev.Key))
                 return;
 
-           /* if (IsLockedBetOne)
-            {
-                rez.Text = Data.bet1.ToString();
-                return;
-            }*/
+            /* if (IsLockedBetOne)
+             {
+                 rez.Text = Data.bet1.ToString();
+                 return;
+             }*/
 
             try
-            {               
+            {
                 var bet = Convert.ToInt32(rez.Text);
                 var dt = Data.Clone();
-                if(!IslockedBetTwo)
+                if (!IslockedBetTwo)
                 {
 
-                    if(UpdateBetOneFlag && UpdateBetTwoFlag)
+                    if (UpdateBetOneFlag && UpdateBetTwoFlag)
                     {
                         dt.bet1 = bet;
                         var temp = (dt.bet1 * dt.coeff1) / dt.coeff2; //считаем какая должна быть ставка
-                        if(temp>dt.bet2)
+                        if (temp > dt.bet2)
                         {
                             dt.Staf = dt.bet1 + dt.bet2;//ничего не поделаем, елси она больше максимальной
                         }
                         else
                         {
-                            dt.bet2 =(int) temp;
+                            dt.bet2 = (int)temp;
                             dt.Staf = dt.bet1 + dt.bet2;
                         }
 
@@ -197,10 +197,10 @@ namespace ABClient.ViewModel
                     else
                     {
                         dt.bet1 = bet;
-                        dt.bet2 =(int)( (dt.coeff1 * dt.bet1) / (dt.coeff2));
+                        dt.bet2 = (int)((dt.coeff1 * dt.bet1) / (dt.coeff2));
                         dt.Staf = dt.bet1 + dt.bet2;
                     }
-                    
+
                 }
                 else
                 {
@@ -209,7 +209,7 @@ namespace ABClient.ViewModel
                 }
                 dt = Calculator.ComputeProfit(dt);
                 Data = dt;
-                rez.CaretIndex = rez.Text.Length;                
+                rez.CaretIndex = rez.Text.Length;
             }
             catch
             {
@@ -218,9 +218,9 @@ namespace ABClient.ViewModel
             }
         }
 
-      
+
         //редактируем ставку на второй лот
-        public void EditBet2(object sender,KeyEventArgs ev)
+        public void EditBet2(object sender, KeyEventArgs ev)
         {
             var rez = sender as TextBox;
             if (rez == null)
@@ -233,8 +233,8 @@ namespace ABClient.ViewModel
                 var bet = Convert.ToInt32(rez.Text);
                 var dt = Data.Clone();
                 if (!IsLockedBetOne)
-                {   
-                    if(UpdateBetOneFlag && UpdateBetTwoFlag)
+                {
+                    if (UpdateBetOneFlag && UpdateBetTwoFlag)
                     {
                         dt.bet2 = bet;
                         var temp = (dt.bet2 * dt.coeff2) / dt.coeff1;
@@ -253,8 +253,8 @@ namespace ABClient.ViewModel
                         dt.bet2 = bet;
                         dt.bet1 = (int)((dt.bet2 * dt.coeff2) / dt.coeff1);
                         dt.Staf = dt.bet1 + dt.bet2;
-                    }            
-                                                   
+                    }
+
                 }
                 else
                 {
@@ -276,15 +276,15 @@ namespace ABClient.ViewModel
 
         #endregion
 
-#region Коэф
+        #region Коэф
         //редактируем первый коэф
-        public void EditCoeff1(object sender,KeyEventArgs ev)
+        public void EditCoeff1(object sender, KeyEventArgs ev)
         {
             var rez = sender as TextBox;
             if (rez == null)
                 return;
-            if (!IsDigit(ev.Key) || rez.Text=="" || rez.Text.Last() == '.' || rez.Text.Last() == ',')
-                return;            
+            if (!IsDigit(ev.Key) || rez.Text == "" || rez.Text.Last() == '.' || rez.Text.Last() == ',')
+                return;
             rez.Text = rez.Text.Replace('.', ',');
 
             // проверям. врдуг пользователь вводи дробное число
@@ -295,11 +295,11 @@ namespace ABClient.ViewModel
                 {
                     rez.CaretIndex = rez.Text.Length;
                     return;
-                }                    
+                }
             }
             try
             {
-               
+
                 if (rez.Text.Last() == ',')
                     rez.Text += "0";
                 var coeff = Convert.ToDouble(rez.Text);
@@ -315,16 +315,16 @@ namespace ABClient.ViewModel
                     dt.Staf = dt.bet1 + dt.bet2;
                     dt = Calculator.ComputeProfit(dt);
                     Data = dt;
-               
+
                 }
-                else if(IsLockedBetOne && IslockedBetTwo) // если все залоченно, то только пересчитываем потери
+                else if (IsLockedBetOne && IslockedBetTwo) // если все залоченно, то только пересчитываем потери
                 {
                     var dt = Data.Clone();
                     dt.coeff1 = coeff;
                     dt = Calculator.ComputeProfit(dt);
                     Data = dt;
                 }
-                else if(IsLockedCoeff && !IslockedBetTwo || IsLockedBetOne && !IslockedBetTwo)
+                else if (IsLockedCoeff && !IslockedBetTwo || IsLockedBetOne && !IslockedBetTwo)
                 {
                     var dt = Data.Clone();
                     dt.coeff1 = coeff;
@@ -339,7 +339,7 @@ namespace ABClient.ViewModel
                 {
                     var dt = Data.Clone();
                     dt.coeff1 = coeff;
-                    Data = Calculator.CalculatorBet(coeff,dt.coeff2,dt.Staf);
+                    Data = Calculator.CalculatorBet(coeff, dt.coeff2, dt.Staf);
                 }
 
                 rez.CaretIndex = rez.Text.Length;
@@ -358,7 +358,7 @@ namespace ABClient.ViewModel
             if (rez == null)
                 return;
             if (!IsDigit(ev.Key) || rez.Text == "" || rez.Text.Last() == '.' || rez.Text.Last() == ',')
-                return;           
+                return;
 
             rez.Text = rez.Text.Replace('.', ',');
 
@@ -397,7 +397,7 @@ namespace ABClient.ViewModel
                 dt = Calculator.ComputeProfit(dt);
                 Data = dt;
             }
-            if(IslockedBetTwo && IsLockedBetOne) // если все залоченно, то только пересчитываем потери
+            if (IslockedBetTwo && IsLockedBetOne) // если все залоченно, то только пересчитываем потери
             {
                 var dt = Data.Clone();
                 dt.coeff2 = coeff;
@@ -426,7 +426,7 @@ namespace ABClient.ViewModel
             rez.CaretIndex = rez.Text.Length;
         }
 
-#endregion
+        #endregion
 
         //Сбрасывает флаги
         public void ResetFlags()
@@ -438,7 +438,7 @@ namespace ABClient.ViewModel
             UpdateBetTwoFlag = false;
             LastMaxBetOne = Int32.MaxValue;
             LastMaxBetTwo = Int32.MaxValue;
-          
+
         }
 
         static List<Key> keylist = new List<Key>()
@@ -467,9 +467,9 @@ namespace ABClient.ViewModel
             Key.Back
         };
 
-        private static  bool IsDigit(Key key)
+        private static bool IsDigit(Key key)
         {
-           return keylist.Contains(key);            
+            return keylist.Contains(key);
         }
 
         public void UpdateCoeff1(double coeff1, TextBox text)
@@ -482,7 +482,7 @@ namespace ABClient.ViewModel
             EditCoeff1(text, new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromDependencyObject(text), 0, Key.NumPad0));
         }
 
-        public void UpdateCoeff2(double coeff2,TextBox text)
+        public void UpdateCoeff2(double coeff2, TextBox text)
         {
             if (IslockedBetTwo || IsLockedCoeff)
                 return;

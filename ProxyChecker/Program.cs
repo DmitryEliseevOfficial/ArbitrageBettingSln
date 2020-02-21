@@ -50,7 +50,7 @@ namespace ProxyChecker
                             {
                                 res = req.Get(site);
                                 var t = res.ToString();
-                                if(t.Contains("has been blacklisted due to a high volume of requests"))
+                                if (t.Contains("has been blacklisted due to a high volume of requests"))
                                     throw new ArgumentException("marafon забанен");
                             }
 
@@ -83,7 +83,7 @@ namespace ProxyChecker
 
                     catch (HttpException ex)
                     {
-                       
+
                     }
                     catch (Exception ex)
                     {

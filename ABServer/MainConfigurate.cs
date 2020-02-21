@@ -19,7 +19,7 @@ namespace ABServer
             }
             set
             {
-                if(_configurate==value) return;
+                if (_configurate == value) return;
                 _configurate = value;
             }
         }
@@ -31,7 +31,7 @@ namespace ABServer
                 var data = File.ReadAllBytes("timeout.dat");
                 var mr = new MemoryStream(data);
                 var fr = new BinaryFormatter();
-                _configurate = (MainConfigurate) fr.Deserialize(mr);
+                _configurate = (MainConfigurate)fr.Deserialize(mr);
             }
             catch (Exception e)
             {
@@ -43,7 +43,7 @@ namespace ABServer
         {
             var mr = new MemoryStream();
             var fr = new BinaryFormatter();
-            fr.Serialize(mr,newData);
+            fr.Serialize(mr, newData);
             File.WriteAllBytes("timeout.dat", mr.ToArray());
             _configurate = newData;
         }
@@ -85,7 +85,7 @@ namespace ABServer
 
         public MainConfigurate Clone()
         {
-            var rez= new MainConfigurate();
+            var rez = new MainConfigurate();
             rez.EventMaxTime = EventMaxTime;
             rez.FonbetMaxTime = FonbetMaxTime;
             rez.ForkFinderTime = ForkFinderTime;
@@ -95,7 +95,7 @@ namespace ABServer
             rez.ZenitMaxTime = ZenitMaxTime;
 
             return rez;
-            
+
         }
 
     }

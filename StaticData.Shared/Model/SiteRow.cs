@@ -18,7 +18,7 @@ namespace StaticData.Shared.Model
         public string Groupe { get; set; }
         public string TeamName { get; set; }
         public DateTime TimeStart { get; set; }
-        public string Sport { get; set; } 
+        public string Sport { get; set; }
         public bool IsUsed { get; set; }
 
         public string Match { get; set; }

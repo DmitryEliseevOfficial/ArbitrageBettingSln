@@ -14,7 +14,7 @@ namespace ABClient.Target
         private ChromiumWebBrowser _wbControl;
 
         private readonly Dictionary<string, string> _taskList = new Dictionary<string, string>();
-        
+
         public bool Logined { get; set; }
 
         public OlimpManager(ChromiumWebBrowser wbControl)
@@ -37,7 +37,7 @@ namespace ABClient.Target
                 {
                     int ret = 0;
                     Int32.TryParse(response.Result.ToString(), out ret);
-                    
+
                     return ret;
                 }
 
@@ -51,7 +51,7 @@ namespace ABClient.Target
         public bool SignIn(string Login, string Password)
         {
             string query = @"
-var login = '"+ Login + @"';
+var login = '" + Login + @"';
 var password = '" + Password + @"';
 var enterError = 0;
 
@@ -79,9 +79,9 @@ myEnter();
 
             if (_wbControl.Address == _url)
                 _wbControl.Address = "about:blank";
-            _wbControl.Address = _url+ "betting";
+            _wbControl.Address = _url + "betting";
 
-           
+
             return false;
         }
 
@@ -140,8 +140,8 @@ myEnter();
             _wbControl.FrameLoadEnd += WbControl_FrameLoadEnd;
 
             string query = @" 
-var elementId = '"+ data + @"';
-var betSize = '"+ betSize + @"';
+var elementId = '" + data + @"';
+var betSize = '" + betSize + @"';
 
 //Количество максимальных попыток
 var maxError = 0;
@@ -268,22 +268,22 @@ function checkBalance() {
 ";
 
 
-            var u = new Uri(_url+url);
+            var u = new Uri(_url + url);
             _taskList[u.PathAndQuery] = query;
 
 
             //wbControl.Address = "about:blank";
             _wbControl.Reload(true);
-            _wbControl.Address =new Uri(_url) + url;  
+            _wbControl.Address = new Uri(_url) + url;
         }
-        
+
         public void SetBet(int Betsize, object data)
         {
-            if(_wbControl!=null)
+            if (_wbControl != null)
             {
                 try
                 {
-                    string query= "try { document.getElementsByName(\"singlebet_sum0\")[0].value=" + Betsize + "; CalcMaxWin(); } catch(ex){ console.log(ex);}";
+                    string query = "try { document.getElementsByName(\"singlebet_sum0\")[0].value=" + Betsize + "; CalcMaxWin(); } catch(ex){ console.log(ex);}";
                     _wbControl.ExecuteScriptAsync(query);
                 }
                 catch
@@ -306,13 +306,13 @@ function checkBalance() {
         {
             if (_wbControl != null)
             {
-                
-                    try
+
+                try
+                {
+                    string query;
+                    if (!Logined)
                     {
-                        string query;
-                        if (!Logined)
-                        {
-                            query = @"
+                        query = @"
 function mylogin() {
     console.log('checkLogin');
     try {
@@ -324,19 +324,19 @@ function mylogin() {
     jsobject.logined = 'olimp';
 };
 setTimeout(mylogin(), 1500);";
-                        }
-                        else
-                        {
-                            query = "jsobject.loginstatus=true;";
-                        }
-                        _wbControl.ExecuteScriptAsync(query);
-
-                        }
-                    finally 
-                    {
-
                     }
-              
+                    else
+                    {
+                        query = "jsobject.loginstatus=true;";
+                    }
+                    _wbControl.ExecuteScriptAsync(query);
+
+                }
+                finally
+                {
+
+                }
+
             }
 
         }
@@ -402,5 +402,5 @@ function checkBalance() {
         }
     }
 
- 
+
 }

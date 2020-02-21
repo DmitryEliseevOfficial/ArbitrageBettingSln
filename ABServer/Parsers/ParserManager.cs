@@ -10,7 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ABServer.Parsers
 {
-    internal class ParserManager:IDisposable
+    internal class ParserManager : IDisposable
     {
         private Thread _thParsing;
 
@@ -20,7 +20,7 @@ namespace ABServer.Parsers
         private readonly List<string> _mirorsList = new List<string>();
         readonly ConcurrentDictionary<BookmakerType, List<Bet>> _currentBets = new ConcurrentDictionary<BookmakerType, List<Bet>>();
 
-        public ParserManager(string olimpUrl,string fonbetUrl,string marafonUrl,string zenitUrl,string pariMacthUrl,bool usingProxy=false)
+        public ParserManager(string olimpUrl, string fonbetUrl, string marafonUrl, string zenitUrl, string pariMacthUrl, bool usingProxy = false)
         {
             _usingProxy = usingProxy;
 
@@ -34,7 +34,7 @@ namespace ABServer.Parsers
             _mirorsList.Add(fonbetUrl);
             _mirorsList.Add(marafonUrl);
 
-            if(_parsersList.Count!=_mirorsList.Count)
+            if (_parsersList.Count != _mirorsList.Count)
                 throw new ArgumentException($"Количество парсеров, не равно количеству зеркал!");
         }
 
@@ -52,7 +52,7 @@ namespace ABServer.Parsers
                 if (_usingProxy)
                     _parsersList[i].ProxyList = proxyList;
                 _parsersList[i].SetUrl(_mirorsList[i]);
-                _currentBets[_parsersList[i].Bookmaker]=new List<Bet>();
+                _currentBets[_parsersList[i].Bookmaker] = new List<Bet>();
             }
 
             _thParsing = new Thread(Update);
@@ -89,7 +89,7 @@ namespace ABServer.Parsers
                 catch (Exception e)
                 {
                     Logger.AddLog($"Произошло что-то страшное при запуске парсеров {e.Message}", Logger.LogTarget.ParserManager, Logger.LogLevel.Fatal);
-                    
+
                 }
 
                 return;
@@ -100,18 +100,18 @@ namespace ABServer.Parsers
         private void Parsing(object paring)
         {
             IParse parser = paring as IParse;
-            if(parser==null)
+            if (parser == null)
                 return;
             //Stopwatch sw = new Stopwatch();
-           
+
             while (true)
             {
                 try
                 {
-                   // sw.Start();
+                    // sw.Start();
                     var rezult = parser.Parse();
                     _currentBets[parser.Bookmaker] = rezult;
-              
+
                 }
                 catch (ThreadAbortException)
                 {
@@ -135,7 +135,7 @@ namespace ABServer.Parsers
             }
         }
 
-     
+
         public List<Bet> GetAllBet()
         {
 
@@ -191,7 +191,7 @@ namespace ABServer.Parsers
 
             return rezult;
         }
-        
+
         /// <summary>
         /// For Test
         /// </summary>

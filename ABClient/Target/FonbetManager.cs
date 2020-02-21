@@ -21,7 +21,7 @@ namespace ABClient.Target
 
         public FonbetManager(ChromiumWebBrowser wbControl)
         {
-            this.wbControl = wbControl;           
+            this.wbControl = wbControl;
         }
 
         private void WbControl_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
@@ -32,32 +32,32 @@ namespace ABClient.Target
 
         private void Wb_FrameLoadStart(object sender, FrameLoadStartEventArgs e)
         {
-            var path = new Uri(e.Url).AbsolutePath;       
+            var path = new Uri(e.Url).AbsolutePath;
             if (TaskList.ContainsKey(path))
             {
                 string query = TaskList[path];
-              
+
 
                 e.Frame.EvaluateScriptAsync(query);
                 TaskList.Remove(path);
             }
         }
 
-        public bool SignIn(string user,string password)
+        public bool SignIn(string user, string password)
         {
             wbControl.FrameLoadStart += Wb_FrameLoadStart;
             wbControl.FrameLoadEnd += WbControl_FrameLoadEnd;
             string loginFunction = "function login(){document.getElementById(\"editLogin\").value=" + user + "; document.getElementById(\"editPassword\").value='" + password + "'; document.getElementById(\"loginButtonLogin\").click();  };";
-            string query = loginFunction+ " setTimeout(function(){ try { login() ;} catch (ex) { setTimeout(function(){ try { login() ;} catch (ex) { setTimeout(function(){ try  { login() ;} catch (ex) {  } },1000);  } },1000); } },1000);";
+            string query = loginFunction + " setTimeout(function(){ try { login() ;} catch (ex) { setTimeout(function(){ try { login() ;} catch (ex) { setTimeout(function(){ try  { login() ;} catch (ex) {  } },1000);  } },1000); } },1000);";
             TaskList["/live/"] = query;
 
-            if (wbControl.Address== url + "live/")
+            if (wbControl.Address == url + "live/")
                 wbControl.Address = "about:blank";
             wbControl.Address = url + "live/";
-            
+
             return false;
         }
-       
+
         public void SetUrl(string url)
         {
             if (String.IsNullOrWhiteSpace(url))
@@ -85,7 +85,7 @@ namespace ABClient.Target
             this.url = url;
         }
 
-        public void ShowBet(ChromiumWebBrowser wb ,string url, object data,int betSize)
+        public void ShowBet(ChromiumWebBrowser wb, string url, object data, int betSize)
         {
             wbControl = wb;
             wbControl.FrameLoadStart += Wb_FrameLoadStart;
@@ -93,7 +93,7 @@ namespace ABClient.Target
             Regex reg = new Regex("([0-9]{7})");
             var match = reg.Match(data.ToString());
             string id = match.Value;
-            
+
 
             var t = data.ToString().Split(',');
 
@@ -103,7 +103,7 @@ namespace ABClient.Target
                 return;
             }
 
-            var x= @"var fullId = '" + t[0] + @"';
+            var x = @"var fullId = '" + t[0] + @"';
 var elId = '" + t[2] + @"'; //id эелемента, в которм ставка
 var elData = '" + t[1] + @"'; //номер события
 var sumBet = '" + betSize + @"'; //сумма
@@ -223,13 +223,13 @@ function checkBalance() {
 }
 
 ";
-            TaskList["/live/"]=x;
+            TaskList["/live/"] = x;
 
 
             wb.Address = "about:blank";
             wb.Address = this.url + url;
         }
-        
+
         public void Clear()
         {
             if (wbControl != null)
@@ -250,7 +250,7 @@ function checkBalance() {
         {
             if (wbControl != null)
             {
-                
+
                 try
                 {
                     string query = "";
@@ -264,13 +264,13 @@ function checkBalance() {
                         query = "jsobject.loginstatus=true;";
 
                     }
-                wbControl.ExecuteScriptAsync(query);
+                    wbControl.ExecuteScriptAsync(query);
                 }
                 catch
                 {
 
                 }
-                
+
             }
 
         }
@@ -339,7 +339,7 @@ function checkBalance() {
 
         public void GetMaxBet()
         {
-            if(wbControl!=null)
+            if (wbControl != null)
             {
                 string query = "jsobject.setmaxbet(client.data.newCoupon.max);";
                 try
@@ -392,7 +392,7 @@ function checkBalance() {
         //$('span[data-id="577759438:26732276:2:4:-4.5:2:0"]').click();  - ставка
         //$('#btmax-577759438-2').val() - максимальная сумма
         //$('#sum-577759438-2').val(5); - ставка
- 
+
 
 
     }

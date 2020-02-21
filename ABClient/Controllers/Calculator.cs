@@ -2,7 +2,7 @@
 
 namespace ABClient.Controllers
 {
-    public static class  Calculator
+    public static class Calculator
     {
         //считаем от общей суммы
         public static CalculatorData CalculatorBet(double coeff1, double coeff2, int maxBet)
@@ -24,14 +24,14 @@ namespace ABClient.Controllers
         public static CalculatorData CalculatorBetShoulderOne(double coeff1, double coeff2, int CurrentBet)
         {
             int c1 = (int)(CurrentBet);
-            int c2 = (int)((coeff1*c1)/coeff2);
+            int c2 = (int)((coeff1 * c1) / coeff2);
 
             CalculatorData cld = new CalculatorData();
             cld.bet1 = c1;
             cld.bet2 = c2;
             cld.coeff1 = coeff1;
             cld.coeff2 = coeff2;
-            cld.Staf = c1+c2;
+            cld.Staf = c1 + c2;
 
             cld = ComputeProfit(cld);
             return cld;
@@ -40,8 +40,8 @@ namespace ABClient.Controllers
         public static CalculatorData CalculatorBetShoulderTwo(double coeff1, double coeff2, int CurrentBet)
         {
             int c2 = (int)(CurrentBet);
-            int c1 =(int) ((coeff2 * CurrentBet) - CurrentBet);
-           
+            int c1 = (int)((coeff2 * CurrentBet) - CurrentBet);
+
 
             CalculatorData cld = new CalculatorData();
             cld.bet1 = c1;
@@ -60,7 +60,7 @@ namespace ABClient.Controllers
             cld.profit1 = cld.coeff1 * cld.bet1 - cld.Staf;
             cld.profit2 = cld.coeff2 * cld.bet2 - cld.Staf;
 
-            cld.ForkProfit= (1 / ((1 / cld.coeff1) + (1 / cld.coeff2)) - 1) * 100;
+            cld.ForkProfit = (1 / ((1 / cld.coeff1) + (1 / cld.coeff2)) - 1) * 100;
 
 
             cld.IsFork = CheckFork(cld.coeff1, cld.coeff2);
@@ -81,7 +81,7 @@ namespace ABClient.Controllers
                 var round = Round(small);
                 return (int)digit - small + round;
             }
-            return  ((int)(digit / 100) * 100);
+            return ((int)(digit / 100) * 100);
         }
 
 
@@ -99,9 +99,9 @@ namespace ABClient.Controllers
         {
             int x = (int)digit;
             if (x < 100)
-                return x;            
+                return x;
             var z = x.ToString().Remove(x.ToString().Length - 2) + "00";
-            return x - Convert.ToInt32(z);           
+            return x - Convert.ToInt32(z);
         }
 
 

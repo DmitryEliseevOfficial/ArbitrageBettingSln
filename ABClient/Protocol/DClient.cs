@@ -15,7 +15,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace ABClient.Protocol
 {
 
-    public class DClient: IDisposable
+    public class DClient : IDisposable
     {
         string _version = "1.0.0.0";
 
@@ -35,7 +35,7 @@ namespace ABClient.Protocol
 
 
 
-        public DClient(string host,int port)
+        public DClient(string host, int port)
         {
             _host = host;
             _port = port;
@@ -49,17 +49,17 @@ namespace ABClient.Protocol
                 _client = new TcpClient();
                 _client.ReceiveTimeout = 10000;
                 _client.SendTimeout = 10000;
-               
-                _client.Connect(_host, _port);                
+
+                _client.Connect(_host, _port);
                 CheckVersion();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return false;
             }
-        }       
+        }
 
 
         private void CheckVersion()
@@ -72,17 +72,17 @@ namespace ABClient.Protocol
             packet.Data = ProjectVersion.Version.ToString();
             SendData(packet);
 
-            packet = ReadData();           
+            packet = ReadData();
             if (packet.Code == StatusCode.NeedUpdate)
             {
                 NeedUpdate = true;
             }
-                  
-              
+
+
         }
 
-        public bool SignIn(string login,string password)
-        {            
+        public bool SignIn(string login, string password)
+        {
             if (_client == null)
                 throw new ArgumentNullException(typeof(DClient) + ": client==null");
 
@@ -96,7 +96,7 @@ namespace ABClient.Protocol
             pack = ReadData();
             if (pack.Code == StatusCode.SingInFail)
                 throw new ArgumentException("Неверный логин/пароль!");
-            if(pack.Code== StatusCode.HasEnd)
+            if (pack.Code == StatusCode.HasEnd)
                 throw new ArgumentException("Срок подписки истек!");
             else
             {
@@ -117,18 +117,18 @@ namespace ABClient.Protocol
 
             var packet = ReadData();
 
-            if(packet.Code==StatusCode.DataOK)
+            if (packet.Code == StatusCode.DataOK)
             {
                 GetData?.Invoke(packet.Data as List<Fork>);
             }
-            else if(packet.Code== StatusCode.SitesData)
+            else if (packet.Code == StatusCode.SitesData)
             {
                 GetSiteData?.Invoke(packet.Data as List<string>);
             }
-            else if(packet.Code==StatusCode.LeftDays)
+            else if (packet.Code == StatusCode.LeftDays)
             {
                 GetLeftDays?.Invoke(Convert.ToInt32(packet.Data));
-            }  
+            }
             else if (packet.Code == StatusCode.HasEnd)
             {
                 throw new ArgumentException("Срок подписки истек!");
@@ -137,7 +137,7 @@ namespace ABClient.Protocol
             {
                 throw new ArgumentException("Авторизация сброшена. Закройте все клиенты!");
             }
-            else if(packet.Code== StatusCode.CloseConnection)
+            else if (packet.Code == StatusCode.CloseConnection)
             {
                 MessageBox.Show("Сервер закрыл соединение. Попробуйте через пару минут снова");
                 try
@@ -158,7 +158,7 @@ namespace ABClient.Protocol
 
 
         public event Action<List<Fork>> GetData;
-  
+
         public event Action<int> GetLeftDays;
 
         public event Action<List<string>> GetSiteData;
@@ -186,7 +186,7 @@ namespace ABClient.Protocol
             SendData(packet);
         }
 
-        public void AddSiteData(BookmakerType bookmaker,string site)
+        public void AddSiteData(BookmakerType bookmaker, string site)
         {
             var packet = new Packet();
             packet.Comand = CommandCode.AddSiteData;
@@ -201,7 +201,7 @@ namespace ABClient.Protocol
             var stream = _client.GetStream();
             stream.ReadTimeout = 10000;
             BinaryFormatter fr = new BinaryFormatter();
-            
+
             fr.Serialize(stream, packet);
         }
 
@@ -213,14 +213,14 @@ namespace ABClient.Protocol
             var stream = _client.GetStream();
             stream.ReadTimeout = 10000;
             BinaryFormatter fr = new BinaryFormatter();
-            
+
             return fr.Deserialize(stream) as Packet;
         }
 
         public void Dispose()
         {
             _client?.Close();
-            
+
         }
 
         public void Reconect()

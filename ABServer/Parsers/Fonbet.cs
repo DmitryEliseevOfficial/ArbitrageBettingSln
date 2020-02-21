@@ -16,7 +16,7 @@ namespace ABServer.Parsers
 {
     internal class Fonbet : IParse
     {
-        private string _url="https://fonbet5.com/";
+        private string _url = "https://fonbet5.com/";
 
         private string _apiUrl = "";
 
@@ -24,7 +24,7 @@ namespace ABServer.Parsers
         public BookmakerType Bookmaker { get; } = BookmakerType.Fonbet;
 
         public ConcurrentStack<Bet> Bets { get; set; } = new ConcurrentStack<Bet>();
-        
+
         public bool UsingProxy { get; set; }
         public List<string> ProxyList { get; set; }
 
@@ -40,7 +40,7 @@ namespace ABServer.Parsers
                 url = "https://" + url;
             _url = url;
         }
-        
+
         public List<Bet> Parse()
         {
             Bets.Clear();
@@ -49,28 +49,28 @@ namespace ABServer.Parsers
 
             //_req.Proxy=ProxyClient.Parse(ProxyType.Http,"127.0.0.1:8888");
 
-          
+
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-           
+
             if (_fonbetClient == null)
             {
                 _fonbetClient = new FonbetClient(_url);
                 _fonbetClient.Start();
-                
+
             }
 
 
             var line = _fonbetClient.GetLine();
 
-           
+
 
             List<Bet> rez = new List<Bet>();
             var lastTime = (DateTime.Now - line.LastUpdate).TotalMilliseconds;
             if (lastTime > MainConfigurate.Configurate.FonbetMaxTime)
             {
-                Logger.AddLog($"Последний раз обновляли линию {lastTime} мс назад. Это долго",Logger.LogTarget.Fonbet,Logger.LogLevel.Warn);
+                Logger.AddLog($"Последний раз обновляли линию {lastTime} мс назад. Это долго", Logger.LogTarget.Fonbet, Logger.LogLevel.Warn);
             }
             else
             {
@@ -210,21 +210,21 @@ namespace ABServer.Parsers
 
                 }
             }
-            
-            
+
+
             sw.Stop();
-            if(sw.ElapsedMilliseconds<1000)
-                Thread.Sleep(1000-(int)sw.ElapsedMilliseconds);
-            Logger.AddLog($"Fonbet parse: {sw.Elapsed} мс. ставок: {rez.Count}; всего ставок: {line.Events.Count}",Logger.LogTarget.Fonbet);
+            if (sw.ElapsedMilliseconds < 1000)
+                Thread.Sleep(1000 - (int)sw.ElapsedMilliseconds);
+            Logger.AddLog($"Fonbet parse: {sw.Elapsed} мс. ставок: {rez.Count}; всего ставок: {line.Events.Count}", Logger.LogTarget.Fonbet);
             return rez;
         }
 
-        private Bet SetEvents(Bet bet,Event ev,bool setSportTime=true)
+        private Bet SetEvents(Bet bet, Event ev, bool setSportTime = true)
         {
             if (ev.IsBlock)
                 return bet;
             int eventId = ev.Id;
-            Dictionary<int,CustomFactor> s = ev.Factors;
+            Dictionary<int, CustomFactor> s = ev.Factors;
 
 
             Tuple<int, float> rez;
@@ -232,7 +232,7 @@ namespace ABServer.Parsers
             float _1;
             rez = SetEvent(out _1, s, 921, 3150, 3144);
             bet._1 = _1;
-            bet._1o = "event" + eventId + "win1," + rez.Item1+","+ eventId;
+            bet._1o = "event" + eventId + "win1," + rez.Item1 + "," + eventId;
             //bet._1o = "event" + event_id + "win1";
 
 
@@ -257,7 +257,7 @@ namespace ABServer.Parsers
             //bet._1Xo = "event" + event_id + "win1draw";
 
 
-            float _12 ;
+            float _12;
             rez = SetEvent(out _12, s, 1571);
             bet._12 = _12;
             bet._12o = "event" + eventId + "win1win2," + rez.Item1 + "," + eventId;
@@ -289,30 +289,30 @@ namespace ABServer.Parsers
             bet._Tmax = _B;
             bet._Tmaxo = "event" + eventId + "over," + rez.Item1 + "," + eventId;
             //bet._Tmaxo = "event" + event_id + "over";
-            bet._Total_Cof= rez.Item2;
-           
+            bet._Total_Cof = rez.Item2;
+
 
             float _T;
             rez = SetEvent(out _T, s, 931, 941, 1849);
             bet._Tmin = _T;
             bet._Tmino = "event" + eventId + "under," + rez.Item1 + "," + eventId;
             //bet._Tmino = "event" + event_id + "under";
-            if(bet._Total_Cof==0)
+            if (bet._Total_Cof == 0)
             {
                 bet._Total_Cof = rez.Item2;
             }
-            else if(bet._Total_Cof!=rez.Item2)
+            else if (bet._Total_Cof != rez.Item2)
             {
-                if(rez.Item2!=0)
+                if (rez.Item2 != 0)
                 {
-                    
+
                 }
             }
-            
 
-            if(setSportTime)
+
+            if (setSportTime)
             {
-              
+
 
                 string timeData = ev.EventMisc?.Comment;
                 if (string.IsNullOrWhiteSpace(timeData))
@@ -380,11 +380,11 @@ namespace ABServer.Parsers
                     {
                         string timerSeconds = xtr.TimerSeconds?.ToString();
 
-                        bet.Time = (Convert.ToInt32(timerSeconds) / 60)+ "'";
+                        bet.Time = (Convert.ToInt32(timerSeconds) / 60) + "'";
                     }
                     else
                     {
-                       
+
                     }
 
                 }
@@ -393,29 +393,29 @@ namespace ABServer.Parsers
                     bet.Time = "-1";
                 }
 
-      
+
             }
-            
+
             if (bet.SportType == SportType.Теннис)
             {
-                
-                var gameBet=ParseGameRezult(bet, eventId, s, 1609, 1610);   
-                if(gameBet != null)
+
+                var gameBet = ParseGameRezult(bet, eventId, s, 1609, 1610);
+                if (gameBet != null)
                 {
                     bet.Games.Add(gameBet);
                 }
-                gameBet=ParseGameRezult(bet, eventId, s, 1747, 1748);
+                gameBet = ParseGameRezult(bet, eventId, s, 1747, 1748);
                 if (gameBet != null)
                 {
                     bet.Games.Add(gameBet);
 
                 }
-                gameBet =ParseGameRezult(bet, eventId, s, 1750, 1751);
+                gameBet = ParseGameRezult(bet, eventId, s, 1750, 1751);
                 if (gameBet != null)
                 {
                     bet.Games.Add(gameBet);
                 }
-                gameBet =ParseGameRezult(bet, eventId, s, 1753, 1754);
+                gameBet = ParseGameRezult(bet, eventId, s, 1753, 1754);
                 if (gameBet != null)
                 {
                     bet.Games.Add(gameBet);
@@ -424,16 +424,16 @@ namespace ABServer.Parsers
 
             foreach (KeyValuePair<int, CustomFactor> factor in s)
             {
-                if(factor.Value.IsBlocked)
+                if (factor.Value.IsBlocked)
                     continue;
                 var stake = new Stake();
 
-                
-                if (factor.Key== 931
+
+                if (factor.Key == 931
                     || factor.Key == 941
                     || factor.Key == 1849)
                 {
-                    stake.StakeType= StakeType.Tmin;
+                    stake.StakeType = StakeType.Tmin;
                     stake.ParametrO = $"event{eventId}under,{factor.Key},{eventId}";
                 }
                 else if (factor.Key == 930
@@ -451,7 +451,7 @@ namespace ABServer.Parsers
                     || factor.Key == 1737)
                 {
                     stake.StakeType = StakeType.Tmin;
-                    stake.ParametrO =  $"{eventId}f{factor.Value.F},{factor.Key},{eventId}";
+                    stake.ParametrO = $"{eventId}f{factor.Value.F},{factor.Key},{eventId}";
                 }
 
                 else if (factor.Key == 1696
@@ -481,7 +481,7 @@ namespace ABServer.Parsers
                     stake.ParametrO = $"{eventId}f{factor.Value.F},{factor.Key},{eventId}";
                 }
 
-                
+
                 else if (factor.Key == 928
                     || factor.Key == 938
                     || factor.Key == 1846)
@@ -493,20 +493,20 @@ namespace ABServer.Parsers
                     || factor.Key == 2434
                     || factor.Key == 2437)
                 {
-                    if(factor.Key == 2428 && bet.SportType==SportType.Волейбол) 
+                    if (factor.Key == 2428 && bet.SportType == SportType.Волейбол)
                         continue;
                     stake.StakeType = StakeType.Fora2;
                     stake.ParametrO = $"{eventId}f{factor.Value.F},{factor.Key},{eventId}";
                 }
-               
+
 
                 else if (factor.Key == 974
                          || factor.Key == 1809
                          || factor.Key == 1812
                          || factor.Key == 1815)
                 {
-                    stake.StakeType=StakeType.ITmax;
-                    stake.Team=ETeam.Team1;
+                    stake.StakeType = StakeType.ITmax;
+                    stake.Team = ETeam.Team1;
                     stake.ParametrO = $"{eventId}f{factor.Value.F},{factor.Key},{eventId}";
                 }
                 else if (factor.Key == 976
@@ -543,24 +543,24 @@ namespace ABServer.Parsers
 
                 stake.Coef = factor.Value.V;
                 if (!String.IsNullOrWhiteSpace(factor.Value.Pt))
-                    stake.Parametr = Convert.ToSingle(factor.Value.Pt.Replace(".",","));
-                if(stake.StakeType==StakeType.Fora1
-                    ||stake.StakeType==StakeType.Fora2)
+                    stake.Parametr = Convert.ToSingle(factor.Value.Pt.Replace(".", ","));
+                if (stake.StakeType == StakeType.Fora1
+                    || stake.StakeType == StakeType.Fora2)
                     bet.Foras.Add(stake);
-                else if(stake.StakeType == StakeType.Tmax
+                else if (stake.StakeType == StakeType.Tmax
                     || stake.StakeType == StakeType.Tmin)
                     bet.Totals.Add(stake);
                 else if (stake.StakeType == StakeType.ITmax
                     || stake.StakeType == StakeType.ITmin)
-                        bet.ITotals.Add(stake);
+                    bet.ITotals.Add(stake);
             }
 
             return bet;
         }
 
-        private GameBet ParseGameRezult(Bet bet, int eventId, Dictionary<int,CustomFactor> s,int one,int two)
+        private GameBet ParseGameRezult(Bet bet, int eventId, Dictionary<int, CustomFactor> s, int one, int two)
         {
-            List<CustomFactor> gt = s.Where(x => (x.Key == one || x.Key == two) && !x.Value.IsBlocked).Select(x=>x.Value).OrderBy(x=>x.F).ToList();
+            List<CustomFactor> gt = s.Where(x => (x.Key == one || x.Key == two) && !x.Value.IsBlocked).Select(x => x.Value).OrderBy(x => x.F).ToList();
 
             if (gt.Count == 2)
             {
@@ -568,10 +568,10 @@ namespace ABServer.Parsers
                 {
                     Team1 = bet.Team1,
                     Team2 = bet.Team2,
-                    GameNumber = (TenisGamePart) Enum.Parse(typeof(TenisGamePart), gt[0].Pt),
+                    GameNumber = (TenisGamePart)Enum.Parse(typeof(TenisGamePart), gt[0].Pt),
                     Coef1 = gt[0].V,
-                    Coef1o = eventId + "f" + gt[0].F + "," + gt[0].F+ "," + eventId,
-                    Coef2 =gt[1].V,
+                    Coef1o = eventId + "f" + gt[0].F + "," + gt[0].F + "," + eventId,
+                    Coef2 = gt[1].V,
                     Coef2o = eventId + "f" + gt[1].F + "," + gt[1].F + "," + eventId
                 };
 
@@ -581,20 +581,20 @@ namespace ABServer.Parsers
             return null;
         }
 
-       
-        private static Tuple<int,float> SetEvent(out float param, Dictionary<int,CustomFactor> data,params int[] numbers)
+
+        private static Tuple<int, float> SetEvent(out float param, Dictionary<int, CustomFactor> data, params int[] numbers)
         {
             param = 0;
             foreach (int key in numbers)
             {
                 if (!data.ContainsKey(key))
                     continue;
-                if(data[key].IsBlocked)
+                if (data[key].IsBlocked)
                     continue;
                 param = data[key].V;
                 if (data[key].Pt != null)
                     return new Tuple<int, float>(key, SetValue(data[key].Pt));
-               return new Tuple<int, float>(key, 0);
+                return new Tuple<int, float>(key, 0);
             }
             return new Tuple<int, float>(0, 0);
         }
@@ -608,5 +608,5 @@ namespace ABServer.Parsers
         }
 
     }
-    
+
 }

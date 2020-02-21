@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace ABClient.Data
 {
     [Serializable]
-    public class Settings:INotifyPropertyChanged
+    public class Settings : INotifyPropertyChanged
     {
         public List<Bookmaker> bookmakers { get; set; } = new List<Bookmaker>();
         public List<SportTypeData> Sports { get; set; } = new List<SportTypeData>();
@@ -23,7 +23,7 @@ namespace ABClient.Data
         public bool LoadCourse { get; set; }
         public bool IsCheckBalance { get; set; }
 
-        double _CourseUSD=0;
+        double _CourseUSD = 0;
         public double CourseUSD
         {
             get
@@ -32,7 +32,7 @@ namespace ABClient.Data
             }
             set
             {
-                if(value!=_CourseUSD)
+                if (value != _CourseUSD)
                 {
                     _CourseUSD = value;
                     PropChanged();
@@ -49,7 +49,7 @@ namespace ABClient.Data
             }
             set
             {
-                if(value!= _CourseEUR)
+                if (value != _CourseEUR)
                 {
                     _CourseEUR = value;
                     PropChanged();
@@ -63,7 +63,7 @@ namespace ABClient.Data
 
         public int MaxBank { get; set; } = 10000;
 
-      
+
 
         public WindowsSettings WinSet { get; set; } = new WindowsSettings();
 

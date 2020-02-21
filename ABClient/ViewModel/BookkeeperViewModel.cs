@@ -11,18 +11,19 @@ namespace ABClient.ViewModel
     internal class BookkeeperViewModel : INotifyPropertyChanged
     {
 
-#region Поля
+        #region Поля
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void PropChanged([CallerMemberName] string name="")
+        private void PropChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
- 
+
         public int Sum
         {
-            get {
+            get
+            {
                 return _sum;
             }
             set
@@ -54,7 +55,7 @@ namespace ABClient.ViewModel
             }
             set
             {
-                if(_sumVisibility==value) return;
+                if (_sumVisibility == value) return;
                 _sumVisibility = value; PropChanged();
             }
         }
@@ -69,12 +70,12 @@ namespace ABClient.ViewModel
             }
             set
             {
-                if(_currentVisibility==value) return;
+                if (_currentVisibility == value) return;
                 _currentVisibility = value; PropChanged();
             }
         }
         private Visibility _currentVisibility = Visibility.Visible;
-        
+
 
         public Visibility MainVisibility
         {
@@ -84,7 +85,7 @@ namespace ABClient.ViewModel
             }
             set
             {
-                if(_mainVisibility==value) return;
+                if (_mainVisibility == value) return;
                 _mainVisibility = value; PropChanged();
             }
         }
@@ -98,8 +99,8 @@ namespace ABClient.ViewModel
             }
             set
             {
-                if(_isSumShow==value) return;
-                _isSumShow = value;PropChanged();
+                if (_isSumShow == value) return;
+                _isSumShow = value; PropChanged();
             }
         }
         private bool _isSumShow = true;
@@ -163,8 +164,8 @@ namespace ABClient.ViewModel
         }
         private Style _showBookStyle;
 
-#endregion
-      
+        #endregion
+
         public BookkeeperViewModel()
         {
             ShowCurrentCommand = new ReallyCommand(ShowCurrentExeute);
@@ -174,11 +175,11 @@ namespace ABClient.ViewModel
             SaveCommand = new ReallyCommand(SaveExecute);
             ShowPanelCommand = new ReallyCommand(ShowPanel);
 
-            ShowLoginStyle= (Style)Application.Current.Resources["RoundCornerBlackInverse"];
-            ShowBookStyle= (Style)Application.Current.Resources["RoundCornerBlack"];
+            ShowLoginStyle = (Style)Application.Current.Resources["RoundCornerBlackInverse"];
+            ShowBookStyle = (Style)Application.Current.Resources["RoundCornerBlack"];
         }
 
-   
+
 
         private void SaveExecute()
         {
@@ -192,13 +193,13 @@ namespace ABClient.ViewModel
 
 
             string path = Path.Combine(Environment.CurrentDirectory, "FinanceLog");
-            if(!Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
                 try
                 {
                     Directory.CreateDirectory(path);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return;
@@ -210,7 +211,7 @@ namespace ABClient.ViewModel
 
             Sum = 0;
             Current = 0;
-            MessageBox.Show("Данные успешно сохранены","Сообщение");
+            MessageBox.Show("Данные успешно сохранены", "Сообщение");
         }
 
 
@@ -230,7 +231,7 @@ namespace ABClient.ViewModel
         private void ShowPanel()
         {
             //HACK: Не самый шикарный вариант.             
-            if(MainVisibility==Visibility.Visible)
+            if (MainVisibility == Visibility.Visible)
             {
                 ShowLoginStyle = (Style)Application.Current.Resources["RoundCornerBlackInverse"];
                 ShowBookStyle = (Style)Application.Current.Resources["RoundCornerBlack"];
@@ -245,8 +246,8 @@ namespace ABClient.ViewModel
         }
 
         private void ShowSumExecute()
-        {            
-            if (SumVisibility==Visibility.Visible)
+        {
+            if (SumVisibility == Visibility.Visible)
             {
                 SumVisibility = Visibility.Hidden;
                 IsSumShow = false;

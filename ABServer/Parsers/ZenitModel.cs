@@ -86,13 +86,13 @@ namespace ABServer.Parsers
         public Dictionary<int, Game> games { get; set; }
 
         [JsonProperty("bets")]
-        public Dictionary<int,ZenitBet> bets { get; set; }
+        public Dictionary<int, ZenitBet> bets { get; set; }
 
         [JsonProperty("odds")]
-        public Dictionary<int,string> Odds { get; set; }
+        public Dictionary<int, string> Odds { get; set; }
 
         [JsonProperty("html")]
-        public Dictionary<int,string> Html { get; set; }
+        public Dictionary<int, string> Html { get; set; }
     }
 
     public class ZenitModel

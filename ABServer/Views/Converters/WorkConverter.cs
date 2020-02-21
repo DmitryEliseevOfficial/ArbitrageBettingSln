@@ -5,13 +5,13 @@ using ABServer.Model;
 
 namespace ABServer.Views.Converters
 {
-    [ValueConversion(typeof(WorkStatus),typeof(string))]
+    [ValueConversion(typeof(WorkStatus), typeof(string))]
     class WorkConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var status =(WorkStatus) Enum.Parse(typeof(WorkStatus),value.ToString());
-            switch(status)
+            var status = (WorkStatus)Enum.Parse(typeof(WorkStatus), value.ToString());
+            switch (status)
             {
                 case WorkStatus.Error:
                     return "Ошибка";

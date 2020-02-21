@@ -1,5 +1,5 @@
 ﻿namespace ABShared
-{    
+{
 
     public enum BookmakerType
     {

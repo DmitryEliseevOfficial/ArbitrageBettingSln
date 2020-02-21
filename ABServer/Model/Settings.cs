@@ -30,7 +30,7 @@ namespace ABServer.Model
                 fr.Serialize(file, setting);
                 file.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -42,11 +42,11 @@ namespace ABServer.Model
             {
                 var file = new FileStream("settings.dat", FileMode.Open);
                 BinaryFormatter fr = new BinaryFormatter();
-                var rez=(Settings)fr.Deserialize(file);
+                var rez = (Settings)fr.Deserialize(file);
                 file.Close();
                 return rez;
             }
-            catch 
+            catch
             {
                 return new Settings();
             }

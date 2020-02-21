@@ -35,7 +35,7 @@ namespace ABServer
                             DEFAULT_MAX_PASSWORD_LENGTH);
         }
 
-        public static void SetParams(bool numbers,bool lcase,bool ucase,bool special)
+        public static void SetParams(bool numbers, bool lcase, bool ucase, bool special)
         {
             if (numbers == false)
                 _passwordCharsNumeric = "";
@@ -53,7 +53,7 @@ namespace ABServer
             _passwordCharsUcase = "ABCDEFGHJKLMNPQRSTWXYZ";
             _passwordCharsNumeric = "23456789";
             _passwordCharsSpecial = "_";
-      }   
+        }
 
         /// <summary>
         /// Generates a random password of the exact length.

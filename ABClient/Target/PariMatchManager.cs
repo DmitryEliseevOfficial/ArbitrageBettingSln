@@ -6,14 +6,14 @@ using CefSharp.Wpf;
 
 namespace ABClient.Target
 {
-    internal class PariMatchManager: ITargerSite
+    internal class PariMatchManager : ITargerSite
     {
         private ChromiumWebBrowser _wbControl;
         private string _url;
         private int _betSize;
 
         private bool _OpenStake = false;
-        
+
         private Dictionary<string, string> _taskList = new Dictionary<string, string>();
 
 
@@ -34,18 +34,18 @@ namespace ABClient.Target
 
         public bool SignIn(string login, string password)
         {
-            string queryLogin = $" function LogIned() {{document.getElementsByName('username')[0].value=\"{login}\"; "+
-                           $"document.getElementsByName('passwd')[0].value=\"{password}\"; "+
+            string queryLogin = $" function LogIned() {{document.getElementsByName('username')[0].value=\"{login}\"; " +
+                           $"document.getElementsByName('passwd')[0].value=\"{password}\"; " +
                            "document.getElementsByClassName('btn_orange ok')[0].click();} ; setTimeout(LogIned,500);";
             _taskList["/?login=1"] = queryLogin;
 
             string query = $" document.navAuth.submit(); ";
             _taskList["/"] = query;
-            
+
             _wbControl.FrameLoadEnd += _wbControl_FrameLoadEnd;
             _wbControl.FrameLoadStart += _wbControl_FrameLoadStart;
 
-            
+
             _wbControl.Address = "about:blank";
             _wbControl.Address = $"{_url}";
 
@@ -53,7 +53,7 @@ namespace ABClient.Target
             return false;
         }
 
-        private  void _wbControl_FrameLoadStart(object sender, CefSharp.FrameLoadStartEventArgs e)
+        private void _wbControl_FrameLoadStart(object sender, CefSharp.FrameLoadStartEventArgs e)
         {
             string path = new Uri(e.Url).PathAndQuery;
 
@@ -68,7 +68,7 @@ namespace ABClient.Target
 
         private void _wbControl_FrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e)
         {
-           checkLogin();
+            checkLogin();
         }
 
         public Task<int> GetBalance()
@@ -88,7 +88,7 @@ namespace ABClient.Target
             string query = $"try {{  CC(); document.getElementById('{data}').click(); jsobject.stoped(); }} catch(ex){{}} ";
 
             string checkCoef = " function Check(){ try{ jsobject.currentcoeff=document.getElementById('betsCoeff').innerText;  } catch(ex) { } }; setInterval(Check,1000);";
-            _taskList[$"/{url}"] = query+checkCoef;
+            _taskList[$"/{url}"] = query + checkCoef;
 
             _wbControl.Address = "about:blank";
             _wbControl.Address = $"{_url}{url}";
@@ -109,12 +109,12 @@ namespace ABClient.Target
 
         public void Run()
         {
-            
+
             //string setBet = $"try{{ document.getElementsByName('sums')[0].value='{_betSize}'; document.getElementById('do_stake').click(); }}  catch(ex){{}} ";
 
             //_taskList["stake.html"] = setBet;
 
-            
+
             if (_wbControl != null)
             {
                 try
@@ -132,7 +132,7 @@ namespace ABClient.Target
                     }
                     else
                     {
-                         string setBet = $" try{{ document.getElementsByName('sums')[0].value='{_betSize}'; document.getElementById('do_stake').click(); }}  catch(ex){{}}  ";
+                        string setBet = $" try{{ document.getElementsByName('sums')[0].value='{_betSize}'; document.getElementById('do_stake').click(); }}  catch(ex){{}}  ";
                         _wbControl.ExecuteScriptAsync(setBet);
 
                     }
@@ -165,7 +165,7 @@ namespace ABClient.Target
     } 
 }; 
 setTimeout(mylogin(), 1500);");
-                    
+
                 }
                 catch
                 {

@@ -9,8 +9,8 @@ namespace ABClient.Components.handlers
     public class LifespanHandler : ILifeSpanHandler
     {
         bool ILifeSpanHandler.OnBeforePopup(IWebBrowser browserControl, IBrowser browser, IFrame frame, string targetUrl, string targetFrameName, WindowOpenDisposition targetDisposition, bool userGesture, IPopupFeatures popupFeatures, IWindowInfo windowInfo, IBrowserSettings browserSettings, ref bool noJavascriptAccess, out IWebBrowser newBrowser)
-        {            
-            
+        {
+
             browserControl.Load(targetUrl);
 
             newBrowser = null;

@@ -112,23 +112,23 @@ namespace ABServer.Parsers
             {
 #endif
 
-            string url = _url + "index.php?page=line&action=2&live[]=" + linkData.Id;
-            request.AddHeader("X-Requested-With", "XMLHttpRequest");
+                string url = _url + "index.php?page=line&action=2&live[]=" + linkData.Id;
+                request.AddHeader("X-Requested-With", "XMLHttpRequest");
 
-            //делаем запрос и парсим
-            string respone = request.Get(url).ToString();
+                //делаем запрос и парсим
+                string respone = request.Get(url).ToString();
 
-            var teams = linkData.Teams.Replace(" - ", "|").Split('|');
-            if (teams.Length < 2)
-                throw new ArgumentException($"{nameof(teams)}.Count!=2");
-            bet.Team1 = teams[0];
-            bet.Team2 = teams[1];
-            bet.Team1Id = linkData.Team1Id;
-            bet.Team2Id = linkData.Team2Id;
-            bet.Name = teams[0] + " - " + teams[1];
+                var teams = linkData.Teams.Replace(" - ", "|").Split('|');
+                if (teams.Length < 2)
+                    throw new ArgumentException($"{nameof(teams)}.Count!=2");
+                bet.Team1 = teams[0];
+                bet.Team2 = teams[1];
+                bet.Team1Id = linkData.Team1Id;
+                bet.Team2Id = linkData.Team2Id;
+                bet.Name = teams[0] + " - " + teams[1];
 
 
-            ConverthtmlToBet(respone, bet);
+                ConverthtmlToBet(respone, bet);
 
 
 
@@ -263,7 +263,7 @@ namespace ABServer.Parsers
                             bet._Tmaxo = field.ChildNodes[3].Id;
                         }
                         else if (field.InnerText.Contains("12"))
-                            // ставим после форы и тоталов. т.к. банально могут совпадать коэф
+                        // ставим после форы и тоталов. т.к. банально могут совпадать коэф
                         {
                             bet._12 = SetValue(field.ChildNodes[1].InnerText.Trim());
                             bet._12o = field.ChildNodes[1].Id;
@@ -284,7 +284,7 @@ namespace ABServer.Parsers
                             if (key.InnerText.Contains("Инд.тотал:"))
                             {
                                 iter = ParseIBT(bet, iter, dt);
-                            } 
+                            }
 
                             if (key.InnerText.Contains("Ставки по сетам")
                                 || key.InnerText.Contains("Ставки по партиям")
@@ -300,7 +300,7 @@ namespace ABServer.Parsers
                             {
                                 if (key.InnerText.Contains("й гейм:"))
                                 {
-                                    if (key.ChildNodes.Count == 1)                                    
+                                    if (key.ChildNodes.Count == 1)
                                     {
                                         iter = ParseGame(bet, iter, dt);
                                     }
@@ -327,7 +327,7 @@ namespace ABServer.Parsers
                             st.Parametr = inBet.Coef;
                             st.ParametrO = htmlNode.Id;
 
-                     
+
                             if (inBet.Id == 4)
                             {
                                 if (inBet.Team == 1)
@@ -360,7 +360,7 @@ namespace ABServer.Parsers
                                 bet.Totals.Add(st);
                             }
 
-          
+
                             else if (inBet.Id == 11)
                             {
                                 if (inBet.Team == 1)
@@ -468,7 +468,7 @@ namespace ABServer.Parsers
                                     bet.Parts[SportTimePart.Time3] = bet.ShortCopy();
                                 bet.Parts[SportTimePart.Time3].Totals.Add(st);
                             }
-                            
+
 
                             else if (inBet.Id == 20)
                             {
@@ -505,7 +505,7 @@ namespace ABServer.Parsers
                                     bet.Parts[SportTimePart.Time4] = bet.ShortCopy();
                                 bet.Parts[SportTimePart.Time4].Totals.Add(st);
                             }
-                            
+
                             else if (inBet.Id == 716)
                             {
                                 if (inBet.Team == 1)
@@ -778,20 +778,20 @@ namespace ABServer.Parsers
             for (int i = iter; i < data.Count; i++)
             {
                 iter = i;
-                
+
                 var key = data[i];
                 if (key.Name == "b")
                 {
                     if (gmBet != null)
                         break;
 
-       
+
                     gmBet = new GameBet();
                     var dt = key.InnerText.Replace("й", "").Split(' ');
-                    gmBet.GameNumber = (TenisGamePart) Enum.Parse(typeof(TenisGamePart), dt[2]);
+                    gmBet.GameNumber = (TenisGamePart)Enum.Parse(typeof(TenisGamePart), dt[2]);
                     gmBet.Set = SportTimePartHelper.Parse(dt[0]);
                 }
- 
+
                 if (key.Name == "nobr")
                 {
                     if (commanda == 1)
@@ -996,7 +996,7 @@ namespace ABServer.Parsers
             {
                 stavka = BetNumber._12;
             }
-           
+
             else if (data.Contains("Тотал"))
             {
                 if (data.Contains("мен"))
@@ -1027,7 +1027,7 @@ namespace ABServer.Parsers
             var dt = match.Value.Replace("-", "");
             if (data.Contains("пол"))
                 dt = "1" + dt.Trim();
-            var part = (SportTimePart) Enum.Parse(typeof(SportTimePart), dt);
+            var part = (SportTimePart)Enum.Parse(typeof(SportTimePart), dt);
             return part;
         }
 
@@ -1075,13 +1075,13 @@ namespace ABServer.Parsers
 
         static int ParseDop(Bet mainBet, int iter, HtmlNodeCollection data)
         {
-            string hockeyTimeData="";
+            string hockeyTimeData = "";
             if (mainBet.SportType == SportType.Хоккей)
             {
                 hockeyTimeData = data[iter].InnerText;
             }
             iter++;
-            
+
             SportTimePart lastTime = SportTimePart.Nan;
             Bet bet = null;
 
@@ -1094,7 +1094,7 @@ namespace ABServer.Parsers
                     if (key.InnerText.ToLower().Contains("форой"))
                         continue;
                     BetNumber betNumber = BetNumberParse(key.ChildNodes[0].InnerText);
-                   
+
                     if (betNumber == BetNumber.Nan)
                     {
                         continue;
@@ -1107,7 +1107,7 @@ namespace ABServer.Parsers
                     }
                     else
                     {
-                        timePart =(SportTimePart) Enum.Parse(typeof(SportTimePart), hockeyTimeData.Split(' ').First());
+                        timePart = (SportTimePart)Enum.Parse(typeof(SportTimePart), hockeyTimeData.Split(' ').First());
                     }
                     //Проверяем не сменился ли у нас тайм
                     if (timePart != lastTime)
@@ -1260,7 +1260,7 @@ namespace ABServer.Parsers
                 try
                 {
                     var bet = GetRezult(link, request);
-                    var time = (int) sw.ElapsedMilliseconds;
+                    var time = (int)sw.ElapsedMilliseconds;
                     sw.Stop();
                     _bets[link.Id] = bet;
                     if (time > MainConfigurate.Configurate.OlimpMaxTime)

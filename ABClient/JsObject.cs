@@ -25,7 +25,7 @@ namespace ABClient
             currentcoeff = "0";
             maxbet = Int32.MaxValue;
         }
-        
+
         public event Action<int> MaxBetChanged;
 
         public int maxbet { get; set; }
@@ -35,13 +35,13 @@ namespace ABClient
         {
             try
             {
-                var tmp= Int32.Parse(value.ToString().Split('.').First().Split(',').First());                
+                var tmp = Int32.Parse(value.ToString().Split('.').First().Split(',').First());
                 maxbet = tmp;
                 MaxBetChanged?.Invoke(maxbet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                 Debug.WriteLine($"JsObject.setmaxbet: Не смог преобразовать максимальную ставку. {ex.Message}");   
+                Debug.WriteLine($"JsObject.setmaxbet: Не смог преобразовать максимальную ставку. {ex.Message}");
             }
         }
 

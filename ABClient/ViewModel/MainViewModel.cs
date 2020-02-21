@@ -16,15 +16,15 @@ using ABShared;
 
 namespace ABClient.ViewModel
 {
-    internal sealed class MainViewModel:INotifyPropertyChanged
+    internal sealed class MainViewModel : INotifyPropertyChanged
     {
         private readonly Thread _thForksUpdate;
 
         private MediaPlayer _mediaPlayer;
 
-        private readonly  DClient _client;
+        private readonly DClient _client;
 
-        
+
         public int GridColumn
         {
             get { return _gridColumn; }
@@ -35,13 +35,13 @@ namespace ABClient.ViewModel
             }
         }
         private int _gridColumn = 3;
-        
+
         public int ColumnSpan
         {
             get { return _columnSpan; }
             set
             {
-                if(_columnSpan==value) return;
+                if (_columnSpan == value) return;
                 _columnSpan = value; PropChanged();
             }
         }
@@ -53,18 +53,18 @@ namespace ABClient.ViewModel
             get { return _stateListView; }
             set
             {
-                if(_stateListView==value) return;
+                if (_stateListView == value) return;
                 _stateListView = value; PropChanged();
             }
         }
         private bool _stateListView;
-        
+
         public List<Fork> Forks
         {
             get { return _forks; }
             set
             {
-                if(_forks==value) return;
+                if (_forks == value) return;
                 _forks = value; PropChanged();
             }
         }
@@ -79,30 +79,30 @@ namespace ABClient.ViewModel
 
         public MainViewCalculatorModel MainViewCalculatorModel { get; set; } = new MainViewCalculatorModel();
 
- 
+
         public Fork SelectedFork
         {
             get { return _selectedFork; }
             set
             {
-                if(_selectedFork!=null &&_selectedFork.Equals(value)) return;
+                if (_selectedFork != null && _selectedFork.Equals(value)) return;
                 _selectedFork = value; PropChanged();
             }
         }
         private Fork _selectedFork;
-        
+
 
         public SolidColorBrush TitleColor
         {
             get { return _titleColor; }
             set
             {
-                if(_titleColor==value) return;
+                if (_titleColor == value) return;
                 _titleColor = value; PropChanged();
             }
         }
         private SolidColorBrush _titleColor = new SolidColorBrush(Colors.Green);
-        
+
         public MainViewModel(DClient client)
         {
             _client = client;
@@ -120,7 +120,7 @@ namespace ABClient.ViewModel
             get { return _isFork; }
             set
             {
-                if(_isFork==value) return;
+                if (_isFork == value) return;
                 _isFork = value; PropChanged();
             }
         }
@@ -132,7 +132,7 @@ namespace ABClient.ViewModel
             //if(Forks==null)
             //    Forks=new List<Fork>();
             //var newForks = Forks.ToList();
-        
+
             //foreach (Fork fork in Forks)
             //{
             //    if (!data.Contains(fork))
@@ -146,7 +146,7 @@ namespace ABClient.ViewModel
             //    {
             //        fork.DeathTime = 0;
             //    }
-                
+
             //}
 
 
@@ -195,7 +195,7 @@ namespace ABClient.ViewModel
 
         public bool ForksUpdateStart { get; set; } = true;
 
-  
+
         private void ForksUpdate()
         {
             while (true)
@@ -238,7 +238,7 @@ namespace ABClient.ViewModel
                 //    this.Title = forks.Count().ToString();
                 //});
                 //Task.Factory.StartNew(ShowData);
-               SetForks(obj);
+                SetForks(obj);
             }
             catch
             {

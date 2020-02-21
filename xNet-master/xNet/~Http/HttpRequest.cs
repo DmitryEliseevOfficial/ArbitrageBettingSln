@@ -177,7 +177,7 @@ namespace xNet
         // Заголовки, которые можно задать только с помощью специального свойства/метода.
         private static readonly List<string> _closedHeaders = new List<string>()
         {
-            
+
             "Content-Length",
             "Content-Type",
             "Connection",
@@ -1599,9 +1599,9 @@ namespace xNet
             finally
             {
                 if (content != null)
-                   // content.Dispose();
+                    // content.Dispose();
 
-                ClearRequestData();
+                    ClearRequestData();
             }
         }
 
@@ -2789,7 +2789,7 @@ namespace xNet
                 if (!string.IsNullOrEmpty(httpProxy.Username) ||
                     !string.IsNullOrEmpty(httpProxy.Password))
                 {
-                   // headers["Proxy-Authorization"] = GetProxyAuthorizationHeader(httpProxy);
+                    // headers["Proxy-Authorization"] = GetProxyAuthorizationHeader(httpProxy);
                 }
             }
             else

@@ -22,16 +22,16 @@ namespace ABServer
 
         private void Load()
         {
-            FileStream str=null;
-            lock(obj)
-            {              
-               try
+            FileStream str = null;
+            lock (obj)
+            {
+                try
                 {
                     BinaryFormatter fr = new BinaryFormatter();
-                   str=File.OpenRead("sites.dat");
+                    str = File.OpenRead("sites.dat");
                     _sites = (Dictionary<BookmakerType, HashSet<String>>)fr.Deserialize(str);
                     str.Close();
-                   
+
                 }
                 catch
                 {
@@ -53,7 +53,7 @@ namespace ABServer
         {
             try
             {
-                lock(obj)
+                lock (obj)
                 {
                     using (var mr = new MemoryStream())
                     {
@@ -63,7 +63,7 @@ namespace ABServer
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Write("Не удалось сохранить базу сайтов: " + ex.Message);
             }
@@ -74,7 +74,7 @@ namespace ABServer
             return _sites[bookmaker].ToList();
         }
 
-        public void Add(BookmakerType bookmaker,string site)
+        public void Add(BookmakerType bookmaker, string site)
         {
             _sites[bookmaker].Add(site);
             Save();

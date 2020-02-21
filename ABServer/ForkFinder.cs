@@ -11,12 +11,12 @@ using StaticData.Shared.Model;
 
 namespace ABServer
 {
-    internal class ForkFinder:IDisposable
+    internal class ForkFinder : IDisposable
     {
         private readonly ParserManager _manager;
-   
+
         private HashSet<Fork> _rezult = new HashSet<Fork>();
-    
+
         private readonly object _lkRezult = new object();
 
         private Thread _th;
@@ -27,7 +27,7 @@ namespace ABServer
         {
             _manager = manager;
         }
-        
+
 
         public void Start()
         {
@@ -41,7 +41,7 @@ namespace ABServer
 
         private void Parse()
         {
-            while(true)
+            while (true)
             {
                 _betCheck = 0;
                 Stopwatch sw = new Stopwatch();
@@ -67,8 +67,8 @@ namespace ABServer
 
                 if (sw.ElapsedMilliseconds < MainConfigurate.Configurate.ForkFinderTime)
                     Thread.Sleep(MainConfigurate.Configurate.ForkFinderTime - (int)sw.ElapsedMilliseconds);
-                
-               
+
+
             }
 
         }
@@ -112,17 +112,17 @@ namespace ABServer
 
         private int _betCheck = 0;
 
-        private List<Fork> CheckMain(Bet one,Bet two)
+        private List<Fork> CheckMain(Bet one, Bet two)
         {
-            
+
             List<Fork> rezult = new List<Fork>();
             if (one.Bookmaker == two.Bookmaker)
                 return rezult;
-         
+
 
             if (_bd == null)
             {
-                _bd=new UnicDataDecorator(UnicData.Load("bd.data"));
+                _bd = new UnicDataDecorator(UnicData.Load("bd.data"));
                 UnicDataDecorator.UpdateBase += UnicDataDecorator_UpdateBase;
             }
 
@@ -153,9 +153,9 @@ namespace ABServer
 
             _betCheck++;
             rezult.AddRange(Check(one, two));
-            foreach(var key in one.Parts)
+            foreach (var key in one.Parts)
             {
-                if(two.Parts.ContainsKey(key.Key))
+                if (two.Parts.ContainsKey(key.Key))
                     rezult.AddRange(Check(one.Parts[key.Key], two.Parts[key.Key]));
             }
             return rezult;
@@ -169,7 +169,7 @@ namespace ABServer
         private List<Fork> Check(Bet one, Bet two)
         {
             List<Fork> rezult = new List<Fork>();
-            
+
 
             //Новый Ит
             if (one.ITotals.Count != 0 && two.ITotals.Count != 0)
@@ -209,19 +209,19 @@ namespace ABServer
             }
 
 
-            if (one.Games.Count!=0 && two.Games.Count!=0)
+            if (one.Games.Count != 0 && two.Games.Count != 0)
             {
-                foreach(var gameOne in one.Games)
+                foreach (var gameOne in one.Games)
                 {
-                    foreach(var gameTwo in two.Games)
+                    foreach (var gameTwo in two.Games)
                     {
-                        if(gameOne.GameNumber==gameTwo.GameNumber)
+                        if (gameOne.GameNumber == gameTwo.GameNumber)
                         {
-                            if(CompareTeamsName(gameOne.Team1,gameTwo.Team1) && CompareTeamsName(gameOne.Team2,gameTwo.Team2) )
+                            if (CompareTeamsName(gameOne.Team1, gameTwo.Team1) && CompareTeamsName(gameOne.Team2, gameTwo.Team2))
                             {
                                 if (CheckFork(gameOne.Coef1, gameTwo.Coef2))
                                 {
-                                    rezult.Add(CreateFork(one,two,gameOne.Coef1,gameTwo.Coef2,gameOne.GameNumber.ToString(),gameTwo.GameNumber.ToString(),gameOne.Coef1o,gameTwo.Coef2o));
+                                    rezult.Add(CreateFork(one, two, gameOne.Coef1, gameTwo.Coef2, gameOne.GameNumber.ToString(), gameTwo.GameNumber.ToString(), gameOne.Coef1o, gameTwo.Coef2o));
 
                                 }
 
@@ -233,15 +233,15 @@ namespace ABServer
                     }
                 }
             }
-  
 
 
-            if (one.SportType == SportType.Теннис 
-                || one.SportType==SportType.Снукер 
-                || one.SportType==SportType.Бейсбол 
-                || one.SportType==SportType.Волейбол                
-                || one.SportType==SportType.Бадминтон
-                || one.SportType==SportType.Настольный_теннис)
+
+            if (one.SportType == SportType.Теннис
+                || one.SportType == SportType.Снукер
+                || one.SportType == SportType.Бейсбол
+                || one.SportType == SportType.Волейбол
+                || one.SportType == SportType.Бадминтон
+                || one.SportType == SportType.Настольный_теннис)
             {
                 rezult.AddRange(GetFork(one, two, BetNumber._1, BetNumber._2));
 
@@ -284,9 +284,9 @@ namespace ABServer
                     }
 
                 }
-                
+
             }
-      
+
 
 
             else
@@ -361,17 +361,17 @@ namespace ABServer
                     }
 
                 }
-               
+
 
 
             }
- 
+
 
 
             //Если в игре только 2 исхода, то мы не получим тут вилок, т.к. Х или 12 будет равно 0;
             //Они общие потому что например в баскете победитель матча всегда один. но в половинах или четвертях
             //может быть ничья
-           
+
             rezult.AddRange(GetFork(one, two, BetNumber._12, BetNumber._X));
 
             rezult.AddRange(GetFork(one, two, BetNumber._1X, BetNumber._2));
@@ -380,7 +380,7 @@ namespace ABServer
 
             rezult.AddRange(GetFork(one, two, BetNumber._1X, BetNumber._X2));
 
-   
+
 
 
 
@@ -445,7 +445,7 @@ namespace ABServer
             return rezult;
 
         }
-  
+
         /// <summary>
         /// Получить список актуальных вилок на данный момент
         /// </summary>
@@ -454,8 +454,8 @@ namespace ABServer
             List<Fork> rez;
             lock (_lkRezult)
             {
-                rez = _rezult.Where(x => x.Profit<30 && ((DateTime.Now-x.Created).TotalSeconds<10)).ToList();
-                _rezult=new HashSet<Fork>(rez);
+                rez = _rezult.Where(x => x.Profit < 30 && ((DateTime.Now - x.Created).TotalSeconds < 10)).ToList();
+                _rezult = new HashSet<Fork>(rez);
             }
 #if DEBUG
             Console.WriteLine($"ForkFinder.GetAllFork: {rez.Count} шт.");
@@ -477,7 +477,7 @@ namespace ABServer
         /// <param name="data2">Данные для открытия второй ставки</param>
         /// <param name="forktype">Тип вилки</param>
         /// <returns></returns>
-        private static Fork CreateFork(Bet one, Bet two, float bt1, float bt2, string to1, string to2,object data1,object data2,ForkType forktype=ForkType.Main)
+        private static Fork CreateFork(Bet one, Bet two, float bt1, float bt2, string to1, string to2, object data1, object data2, ForkType forktype = ForkType.Main)
         {
             Fork fr = new Fork();
 
@@ -503,9 +503,9 @@ namespace ABServer
             //else
             //    fr.Time = one.Time + " " + two.Time;
 
-            if(one.Time!=null && one.Time!="-1")
+            if (one.Time != null && one.Time != "-1")
             {
-                if(one.Time.Contains(":"))
+                if (one.Time.Contains(":"))
                 {
                     fr.Time = one.Time.Split(':').First() + "'";
                 }
@@ -516,7 +516,7 @@ namespace ABServer
             }
             else
             {
-                if(two.Time!=null && two.Time != "-1")
+                if (two.Time != null && two.Time != "-1")
                 {
                     if (two.Time.Contains(":"))
                     {
@@ -566,18 +566,18 @@ namespace ABServer
         }
 
 
-        private List<Fork> GetFork(Bet one, Bet two,BetNumber bet1, BetNumber bet2,bool invers=true)
+        private List<Fork> GetFork(Bet one, Bet two, BetNumber bet1, BetNumber bet2, bool invers = true)
         {
             List<Fork> rezult = new List<Fork>();
             var coeff1 = one[bet1];
             var coeff2 = two[bet2];
-            if(CheckFork(coeff1,coeff2))
+            if (CheckFork(coeff1, coeff2))
             {
-                var fork = CreateFork(one,two,coeff1,coeff2,one.ToMyString(bet1),two.ToMyString(bet2),one.GetData(bet1),two.GetData(bet2));
-                
+                var fork = CreateFork(one, two, coeff1, coeff2, one.ToMyString(bet1), two.ToMyString(bet2), one.GetData(bet1), two.GetData(bet2));
+
                 rezult.Add(fork);
             }
-            if(invers)
+            if (invers)
             {
                 coeff1 = two[bet1];
                 coeff2 = one[bet2];
@@ -593,20 +593,20 @@ namespace ABServer
         }
 
 
-        private List<Fork> GetForkIbt(Bet one,Bet two,IBTBet ibtOne, IBTBet ibtTwo,bool inverse = true)
+        private List<Fork> GetForkIbt(Bet one, Bet two, IBTBet ibtOne, IBTBet ibtTwo, bool inverse = true)
         {
             var rezult = new List<Fork>();
 
             float coeff1 = ibtOne.Tmin;
             float coeff2 = ibtTwo.Tmax;
-            if(CheckFork(coeff1,coeff2))
+            if (CheckFork(coeff1, coeff2))
             {
-                var fork = CreateFork(one, two, coeff1, coeff2, ibtOne.ToMystring(BetNumber._Tmin), ibtTwo.ToMystring(BetNumber._Tmax),ibtOne.GetData(BetNumber._Tmin),ibtTwo.GetData(BetNumber._Tmax), ForkType.IT);
+                var fork = CreateFork(one, two, coeff1, coeff2, ibtOne.ToMystring(BetNumber._Tmin), ibtTwo.ToMystring(BetNumber._Tmax), ibtOne.GetData(BetNumber._Tmin), ibtTwo.GetData(BetNumber._Tmax), ForkType.IT);
                 fork.Teams = ibtOne.TeamName;
                 rezult.Add(fork);
             }
 
-            if(inverse)
+            if (inverse)
             {
                 coeff1 = ibtTwo.Tmin;
                 coeff2 = ibtOne.Tmax;
@@ -623,10 +623,10 @@ namespace ABServer
 
 
 
-        private  bool CompareTeamsName(string str1, string str2)
+        private bool CompareTeamsName(string str1, string str2)
         {
 #if !DEBUG
-            return _bd.StringCompare(str1,str2);
+            return _bd.StringCompare(str1, str2);
 #endif
             var dt1 = str1.Trim().Split(' ');
             var dt2 = str2.Trim().Split(' ');

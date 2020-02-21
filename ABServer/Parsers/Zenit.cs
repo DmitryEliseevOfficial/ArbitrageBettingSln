@@ -23,7 +23,7 @@ namespace ABServer.Parsers
         private string _url = "https://55zenit.win/";
         private readonly HttpRequest _req = new HttpRequest();
 
-        
+
         public BookmakerType Bookmaker { get; } = BookmakerType.Zenit;
         public ConcurrentStack<Bet> Bets { get; set; } = new ConcurrentStack<Bet>();
 
@@ -33,12 +33,12 @@ namespace ABServer.Parsers
         public Zenit()
         {
             _req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.59 Safari/537.36 OPR/41.0.2353.46";
-            _req.CharacterSet = Encoding.UTF8;        
+            _req.CharacterSet = Encoding.UTF8;
         }
 
         public void SetUrl(string url)
         {
-            if(url=="")
+            if (url == "")
                 return;
             if (!url.EndsWith("/"))
                 url = url + "/";
@@ -61,7 +61,7 @@ namespace ABServer.Parsers
 
             if (_thUpdate == null)
             {
-                _thUpdate=new Thread(Update);
+                _thUpdate = new Thread(Update);
                 _thUpdate.IsBackground = true;
                 _thUpdate.Start();
             }
@@ -79,20 +79,20 @@ namespace ABServer.Parsers
                 return Bets.ToList();
             }
             Stack<Bet> betsStore = new Stack<Bet>();
-            for (int i = 0; i < lives.Count+10; i++)
+            for (int i = 0; i < lives.Count + 10; i++)
             {
                 betsStore.Push(new Bet());
             }
 
-            var ids = String.Join("-",lives.Select(x => x.Id));
+            var ids = String.Join("-", lives.Select(x => x.Id));
 
             //Загружаем дополнительные росписи
             ZenitModel zenitModel = GetAdditionData();
 
-            if(zenitModel.Result==null)
-                zenitModel.Result= new Result();
-            if(zenitModel.Result.Html==null)
-                zenitModel.Result.Html= new Dictionary<int, string>();
+            if (zenitModel.Result == null)
+                zenitModel.Result = new Result();
+            if (zenitModel.Result.Html == null)
+                zenitModel.Result.Html = new Dictionary<int, string>();
 
             //Загружаем основную таблицу
             string respone = _req.Get($"{_url}ajax/live/get/0?ross=0&onlyview=0&all=0&&games={ids}").ToString();
@@ -104,8 +104,8 @@ namespace ABServer.Parsers
             doc.LoadHtml(respone);
             HtmlNodeCollection nodes = doc.DocumentNode.ChildNodes;
 
-            
-            for (int i=2;i< nodes.Count -2;i=i+2)
+
+            for (int i = 2; i < nodes.Count - 2; i = i + 2)
             {
                 if (nodes[i].Name == "a")
                     i++;
@@ -118,11 +118,11 @@ namespace ABServer.Parsers
                  *   tr[3] - пустота. отделитель 
                  * */
 
-                for(int j =1;j<nodes[i].ChildNodes.Count;j++)
+                for (int j = 1; j < nodes[i].ChildNodes.Count; j++)
                 {
                     //по факту в пределах одной таблицы данные могут чередоваться каждые 2 или 3 раза
                     //ЗАкономерность не понятна. Так обходим этот недочет
-                    if(nodes[i].ChildNodes[j].InnerText.Contains("Событие"))
+                    if (nodes[i].ChildNodes[j].InnerText.Contains("Событие"))
                     {
                         j++;
                     }
@@ -134,8 +134,8 @@ namespace ABServer.Parsers
                     //Получаем лигу,  и  команды
                     string gameGroup = nodes[i].ChildNodes[0].ChildNodes[1].ChildNodes[1].InnerText.Trim();
                     var teams = nodes[i].ChildNodes[j].ChildNodes[2].ChildNodes[1].InnerText.Trim().Replace(" - ", "|").Split('|');
-                    
-   
+
+
                     Bet bet = betsStore.Pop();
 
                     bet.URL = nodes[i].ChildNodes[j].Id.Trim().Split('-').Last();
@@ -144,7 +144,7 @@ namespace ABServer.Parsers
                     var linkData = lives.FirstOrDefault(x => x.Id == bet.URL);
                     if (linkData == null)
                     {
-                        Logger.AddLog($"Ахтунг! Этой игры тут не должно быть! {gameId}",Logger.LogTarget.Zenit,Logger.LogLevel.Warn);
+                        Logger.AddLog($"Ахтунг! Этой игры тут не должно быть! {gameId}", Logger.LogTarget.Zenit, Logger.LogLevel.Warn);
                         continue;
                     }
 
@@ -162,25 +162,25 @@ namespace ABServer.Parsers
                     if (bet.Name.ToUpper().Contains("ЖК") || bet.Name.ToUpper().Contains("УГЛ"))
                         continue;
 
-                   
-                    
+
+
                     bet.Time = nodes[i].ChildNodes[j].ChildNodes[1].InnerText.Trim();
 
-     
+
                     bet = NewParseTable(nodes[i].ChildNodes[j], bet);
-                    
+
 
                     string timeData = nodes[i].ChildNodes[j].ChildNodes[2].ChildNodes[2].InnerText;
                     ParseAndSetTime(bet, timeData);
 
-                    
-                                       
+
+
                     //Если есть доп.данные со ставками
                     if (zenitModel.Result.Html.ContainsKey(gameId))
-                    { 
-                        ParseAdditonData(bet, zenitModel,gameId, timeData);                       
+                    {
+                        ParseAdditonData(bet, zenitModel, gameId, timeData);
                     }
-                    int deltaTime = (int) (DateTime.Now - bet.Created).TotalMilliseconds;
+                    int deltaTime = (int)(DateTime.Now - bet.Created).TotalMilliseconds;
                     if (deltaTime < MainConfigurate.Configurate.ZenitMaxTime)
                         Bets.Push(bet);
                 }
@@ -193,14 +193,14 @@ namespace ABServer.Parsers
         }
 
         //Заполняет Ставку данными из таблицы
-        private Bet NewParseTable(HtmlNode node,Bet bet)
+        private Bet NewParseTable(HtmlNode node, Bet bet)
         {
             HtmlNode header = node.PreviousSibling;
 
             // делаем -2, т.к. послежний столбец роспись
-            for (int i = header.ChildNodes.Count-2; i > 0; i = i - 1)
+            for (int i = header.ChildNodes.Count - 2; i > 0; i = i - 1)
             {
-                if(header.ChildNodes[i].InnerText=="Бол")
+                if (header.ChildNodes[i].InnerText == "Бол")
                 {
                     bet._Tmax = CheckAndSet(node.ChildNodes[i]);
                     if (bet._Tmax != 0)
@@ -208,7 +208,7 @@ namespace ABServer.Parsers
                         bet._Tmaxo = node.ChildNodes[i].FirstChild.Attributes["href"].Value.Trim();
                     }
                 }
-                else if(header.ChildNodes[i].InnerText == "Тот")
+                else if (header.ChildNodes[i].InnerText == "Тот")
                 {
                     if (node.ChildNodes[i].ChildNodes.Count != 0)
                     {
@@ -255,12 +255,12 @@ namespace ABServer.Parsers
 
                 else if (header.ChildNodes[i].InnerText == "Ф2")
                 {
-                    if(node.ChildNodes[i].ChildNodes.Count != 0)
+                    if (node.ChildNodes[i].ChildNodes.Count != 0)
                     {
                         bet._F2_Cof = SetValue(node.ChildNodes[i].ChildNodes.First().InnerText);
                     }
-                }                
-                
+                }
+
                 //ставки на исход
                 else if (header.ChildNodes[i].InnerText == "Х2")
                 {
@@ -269,7 +269,7 @@ namespace ABServer.Parsers
                     {
                         bet._X2o = node.ChildNodes[i].FirstChild.Attributes["href"].Value.Trim();
                     }
-                }               
+                }
                 else if (header.ChildNodes[i].InnerText == "12")
                 {
                     bet._12 = CheckAndSet(node.ChildNodes[i]);
@@ -306,13 +306,13 @@ namespace ABServer.Parsers
                 else if (header.ChildNodes[i].InnerText == "П1")
                 {
                     bet._1 = CheckAndSet(node.ChildNodes[i]);
-                    if(bet._1!=0)
+                    if (bet._1 != 0)
                     {
                         bet._1o = node.ChildNodes[i].FirstChild.Attributes["href"].Value.Trim();
                     }
                 }
 
-                else if(header.ChildNodes[i].InnerText == "Событие")
+                else if (header.ChildNodes[i].InnerText == "Событие")
                 {
                     break;
                 }
@@ -328,10 +328,10 @@ namespace ABServer.Parsers
 
 
         //Парсим остальные ставки
-        private void ParseAdditonData(Bet bet,ZenitModel model,int gameId ,string timeData)
+        private void ParseAdditonData(Bet bet, ZenitModel model, int gameId, string timeData)
         {
             var htmlData = model.Result.Html[gameId];
-            if(String.IsNullOrWhiteSpace(htmlData))
+            if (String.IsNullOrWhiteSpace(htmlData))
                 return;
 
             HtmlDocument doc = new HtmlDocument();
@@ -341,22 +341,22 @@ namespace ABServer.Parsers
             //получаем список всех событий
             HtmlNodeCollection dt = node.ChildNodes[0].ChildNodes[0].ChildNodes.First().ChildNodes;
 
-            foreach(HtmlNode key in dt)
-            {                
+            foreach (HtmlNode key in dt)
+            {
                 if (key.Name == "table")
                 {
                     ParseAdditionBet(key, bet);
-                }  
+                }
                 else if (key.InnerText.Contains("-м гейме  выиграет:"))
                 {
                     ParseTennisGame(bet, timeData, key);
                 }
             }
 
-            if(model.Result?.bets==null)
+            if (model.Result?.bets == null)
                 return;
 
-            var bets = model.Result.bets.Where(x => x.Value.GameId == gameId).Select(x=>x.Value).ToList();
+            var bets = model.Result.bets.Where(x => x.Value.GameId == gameId).Select(x => x.Value).ToList();
 
 
 
@@ -364,11 +364,11 @@ namespace ABServer.Parsers
             {
                 Stake st = new Stake();
                 st.Coef = keyBet.cf;
-                if(String.IsNullOrWhiteSpace(keyBet.d1))
+                if (String.IsNullOrWhiteSpace(keyBet.d1))
                     continue;
-                if(keyBet.Status!=1)
+                if (keyBet.Status != 1)
                     continue;
-                st.Parametr = Convert.ToSingle(keyBet.d1.Replace(".",","));
+                st.Parametr = Convert.ToSingle(keyBet.d1.Replace(".", ","));
                 st.ParametrO = "#" + keyBet.Odd;
 
                 if (keyBet.Odd == 300
@@ -407,7 +407,7 @@ namespace ABServer.Parsers
                     || keyBet.Odd == 341
                     || keyBet.Odd == 342)
                 {
-                    st.StakeType= StakeType.Tmin;
+                    st.StakeType = StakeType.Tmin;
                     bet.Totals.Add(st);
                 }
                 else if (keyBet.Odd == 311
@@ -432,7 +432,7 @@ namespace ABServer.Parsers
                     || keyBet.Odd == 4115)
                 {
                     st.StakeType = StakeType.ITmin;
-                    st.Team=ETeam.Team1;
+                    st.Team = ETeam.Team1;
                     bet.ITotals.Add(st);
                 }
                 else if (keyBet.Odd == 88
@@ -469,14 +469,14 @@ namespace ABServer.Parsers
                     st.Team = ETeam.Team2;
                     bet.ITotals.Add(st);
                 }
-   
+
                 else if (keyBet.Odd == 2631
                     || keyBet.Odd == 2632
                     || keyBet.Odd == 2633)
                 {
                     st.StakeType = StakeType.ITmin;
                     st.Team = ETeam.Team1;
-                    MarafonParserHelper.AddStake(bet,st,SportTimePart.Time1);
+                    MarafonParserHelper.AddStake(bet, st, SportTimePart.Time1);
                 }
                 else if (keyBet.Odd == 2634
                     || keyBet.Odd == 2635
@@ -559,7 +559,7 @@ namespace ABServer.Parsers
                     st.Team = ETeam.Team2;
                     MarafonParserHelper.AddStake(bet, st, SportTimePart.Time3);
                 }
-                
+
 
                 else if (keyBet.Odd == 4562)
                 {
@@ -687,7 +687,7 @@ namespace ABServer.Parsers
                     st.StakeType = StakeType.Fora2;
                     MarafonParserHelper.AddStake(bet, st, SportTimePart.Time2);
                 }
-                
+
                 else if (keyBet.Odd == 4362
                     || keyBet.Odd == 4363
                     || keyBet.Odd == 4364)
@@ -702,7 +702,7 @@ namespace ABServer.Parsers
                     st.StakeType = StakeType.Fora2;
                     MarafonParserHelper.AddStake(bet, st, SportTimePart.Time3);
                 }
-                
+
                 else if (keyBet.Odd == 4368
                     || keyBet.Odd == 4369
                     || keyBet.Odd == 4370)
@@ -743,7 +743,7 @@ namespace ABServer.Parsers
                     st.StakeType = StakeType.Tmax;
                     MarafonParserHelper.AddStake(bet, st, SportTimePart.Time1);
                 }
-                
+
                 else if (keyBet.Odd == 940
                     || keyBet.Odd == 1942
                     || keyBet.Odd == 1943
@@ -800,7 +800,7 @@ namespace ABServer.Parsers
                 }
                 else
                 {
-                    
+
                 }
 
                 /* ИТ Хокей С мячом:
@@ -919,7 +919,7 @@ namespace ABServer.Parsers
             int set;
             int gameCurentNumber;
 
-            { 
+            {
                 //вытаскиваем гейм по данным зенита
                 Regex reg = new Regex(@"\d{1,2}");
                 Match match = reg.Match(key.InnerText);
@@ -946,12 +946,12 @@ namespace ABServer.Parsers
 
                 //это если гейм на следующий сет
                 if (gameCurentNumber == 14)
-                {                     
+                {
                     gameCurentNumber = 1;
                     set++;
                 }
 
-     
+
                 gameNumber = (TenisGamePart)Enum.Parse(typeof(TenisGamePart), gameCurentNumber.ToString());
             }
 
@@ -967,7 +967,7 @@ namespace ABServer.Parsers
                 if (key.ChildNodes[i].InnerText.Contains("будет ровно"))
                     break;
 
-                GameBet gameBet = new GameBet {Team1 = key.ChildNodes[i].InnerText};
+                GameBet gameBet = new GameBet { Team1 = key.ChildNodes[i].InnerText };
                 //парсим ставку на 1го игрока
                 if (key.ChildNodes[i + 2].Name == "a")
                 {
@@ -989,11 +989,11 @@ namespace ABServer.Parsers
             }
         }
 
-        
+
         private void ParseITot(Bet bet, HtmlNode key)
         {
             string teamName = new string(key.ChildNodes.Where(x => x.Name == "b").SelectMany(x => x.InnerText).ToArray()).Replace("Индивидуальные тоталы", "").Replace(":", "").Trim();
-            
+
             Queue<IBTBet> buffer = new Queue<IBTBet>();
 
             /*
@@ -1047,25 +1047,25 @@ namespace ABServer.Parsers
 
             }
         }
-        
-        //Парсит доп росписи по таймам/матчам/сетам и прочему
-        private void ParseAdditionBet(HtmlNode nodeTable,Bet betMain)
-        {            
 
-            for(int i=1;i<nodeTable.ChildNodes.Count;i++)
+        //Парсит доп росписи по таймам/матчам/сетам и прочему
+        private void ParseAdditionBet(HtmlNode nodeTable, Bet betMain)
+        {
+
+            for (int i = 1; i < nodeTable.ChildNodes.Count; i++)
             {
                 Bet bet = betMain.ShortCopy();
-                var node = nodeTable.ChildNodes[i];   
-                 
-                for(int j=1;j<node.ChildNodes.Count;j++)
+                var node = nodeTable.ChildNodes[i];
+
+                for (int j = 1; j < node.ChildNodes.Count; j++)
                 {
                     //текущая столбец 
                     var currentNode = node.ChildNodes[j];
                     if (nodeTable.ChildNodes[0].ChildNodes[j].InnerText.Contains("П1")) //проверяем заголовок таблицы
-                    {                       
+                    {
                         bet._1 = CheckAndSet(currentNode);
-                        if(bet._1!=0)
-                            bet._1o = currentNode.FirstChild.Attributes["href"].Value;             
+                        if (bet._1 != 0)
+                            bet._1o = currentNode.FirstChild.Attributes["href"].Value;
                     }
 
                     else if (nodeTable.ChildNodes[0].ChildNodes[j].InnerText.Contains("П2"))
@@ -1105,7 +1105,7 @@ namespace ABServer.Parsers
 
                     else if (nodeTable.ChildNodes[0].ChildNodes[j].InnerText.Contains("Ф1"))
                     {
-                        bet._F1_Cof = SetValue(currentNode.InnerText.Trim());   
+                        bet._F1_Cof = SetValue(currentNode.InnerText.Trim());
                     }
 
                     else if (nodeTable.ChildNodes[0].ChildNodes[j].InnerText.Contains("Кф1")
@@ -1148,7 +1148,7 @@ namespace ABServer.Parsers
                             bet._Tmaxo = currentNode.FirstChild.Attributes["href"].Value;
                     }
                 }
-                              
+
                 if (bet._F1 != 0)
                 {
                     Stake st = new Stake();
@@ -1198,10 +1198,10 @@ namespace ABServer.Parsers
                 var part = SportTimePartHelper.Parse(partData);
                 betMain.Parts.Add(part, bet);
             }
-            
+
         }
 
-        
+
 
         private static void ParseAndSetTime(Bet bet, string timeData)
         {
@@ -1291,20 +1291,20 @@ namespace ABServer.Parsers
             List<string> ids = new List<string>();
             lock (_lockLive)
             {
-                ids.AddRange(_livesList.Select(x=>x.Id));
+                ids.AddRange(_livesList.Select(x => x.Id));
             }
 
-            if (ids.Count <= 0) return new ZenitModel() {Code = "Error"};
-            string idsUrl = string.Join("-",ids);
+            if (ids.Count <= 0) return new ZenitModel() { Code = "Error" };
+            string idsUrl = string.Join("-", ids);
 
             string dopTables = _req.Get($"{_url}ajax/live/load_ross/0?gid={idsUrl}&onlyview=0").ToString();
             var zm = JsonConvert.DeserializeObject<ZenitModel>(dopTables);
-                
+
 
             if (zm.Code != "OK")
                 throw new ArgumentException("Не удалось получить всю роспись.");
 
-            if (zm .Result.Html== null)
+            if (zm.Result.Html == null)
                 return new ZenitModel() { Code = "Error" };
 
             return zm;
@@ -1313,15 +1313,15 @@ namespace ABServer.Parsers
         //Получает список Id event`s
         private List<LinkData> GetLives()
         {
-            var req=new HttpRequest();
-            req.CharacterSet= Encoding.UTF8;
-            
+            var req = new HttpRequest();
+            req.CharacterSet = Encoding.UTF8;
+
 
             string respone = req.Get(_url + "live").ToString();
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(respone);
 
-            HtmlNodeCollection nodes=doc.DocumentNode.SelectNodes("//tr[@class=\"live-index-game\"]");
+            HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//tr[@class=\"live-index-game\"]");
             if (nodes == null)
                 throw new ArgumentException("Неудалось получить ID event`ов");
 
@@ -1332,15 +1332,15 @@ namespace ABServer.Parsers
             }
             List<LinkData> rezult = new List<LinkData>();
 
-            foreach(HtmlNode key in nodes)
+            foreach (HtmlNode key in nodes)
             {
                 var node = key;
                 var linkData = new LinkData();
                 linkData.Team1Id = _bd.GetNumber(node.ChildNodes[3].InnerText.Trim());
-                if(linkData.Team1Id==-1)
+                if (linkData.Team1Id == -1)
                     continue;
                 linkData.Team2Id = _bd.GetNumber(node.ChildNodes[7].InnerText.Trim());
-                if(linkData.Team2Id==-1)
+                if (linkData.Team2Id == -1)
                     continue;
 
                 linkData.Id = node.ChildNodes[1].ChildNodes[1].Attributes["data-gid"].Value.Trim();
@@ -1349,7 +1349,7 @@ namespace ABServer.Parsers
                 rezult.Add(linkData);
             }
             var delta = nodes.Count - rezult.Count;
-            Logger.AddLog($"Разница в ставках: {delta} шт. Всего {rezult.Count} шт. А было {nodes.Count}",Logger.LogTarget.Zenit);
+            Logger.AddLog($"Разница в ставках: {delta} шт. Всего {rezult.Count} шт. А было {nodes.Count}", Logger.LogTarget.Zenit);
             return rezult;
         }
 
@@ -1406,8 +1406,8 @@ namespace ABServer.Parsers
                 return 0;
             return SetValue(nod.ChildNodes.First().InnerText);
         }
-        
-        
+
+
     }
 
 

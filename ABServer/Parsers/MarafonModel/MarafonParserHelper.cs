@@ -16,9 +16,9 @@ namespace ABServer.Parsers.MarafonModel
             foreach (IElement element in collection)
             {
                 var stakeValue = element.Attributes["data-selection-key"].Value ?? "";
-                if(stakeValue=="")
+                if (stakeValue == "")
                     continue;
-                if(stakeValue.EndsWith(".yes")
+                if (stakeValue.EndsWith(".yes")
                     || stakeValue.EndsWith(".no")
                     || stakeValue.EndsWith(".odd")
                     || stakeValue.EndsWith(".even")
@@ -33,7 +33,7 @@ namespace ABServer.Parsers.MarafonModel
                 }
                 else if (stakeValue.EndsWith("@Match_Result.draw")
                     || stakeValue.EndsWith("@Match_Result0.draw"))
-                {   
+                {
                     SetCoef(bet, BetNumber._X, element);
 
                 }
@@ -79,7 +79,7 @@ namespace ABServer.Parsers.MarafonModel
                     SetCoef(bet, BetNumber._2, element, SportTimePart.Time1);
                 }
 
-               
+
                 else if (stakeValue.EndsWith("@Result_-_1st_Half0.HD")
                     || stakeValue.EndsWith("@Result_-_1st_Half.HD"))
                 {
@@ -149,7 +149,7 @@ namespace ABServer.Parsers.MarafonModel
                 {
                     Stake st = new Stake();
                     SetForaValues(element, stakeValue, st);
-                    AddStake(bet, st,SportTimePart.Time1);
+                    AddStake(bet, st, SportTimePart.Time1);
                 }
 
                 else if (stakeValue.Contains("@To_Win_2nd_Half_With_Handicap"))
@@ -165,7 +165,7 @@ namespace ABServer.Parsers.MarafonModel
                 {
                     Stake st = new Stake();
                     st.Team = ETeam.Team1;
-                    SetTotalValues(element, stakeValue, st,true);
+                    SetTotalValues(element, stakeValue, st, true);
                     AddStake(bet, st);
                 }
                 else if (stakeValue.Contains("@Total_Goals_(Second_Team)"))
@@ -181,7 +181,7 @@ namespace ABServer.Parsers.MarafonModel
                 {
                     Stake st = new Stake();
                     SetTotalValues(element, stakeValue, st);
-                    AddStake(bet, st,SportTimePart.Time2);
+                    AddStake(bet, st, SportTimePart.Time2);
                 }
 
                 else if (stakeValue.Contains("@Total_Goals_-_1st_Half"))
@@ -757,7 +757,7 @@ namespace ABServer.Parsers.MarafonModel
                     Stake st = new Stake();
                     st.Team = ETeam.Team1;
                     SetTotalValues(element, stakeValue, st, true);
-                    AddStake(bet, st,SportTimePart.Time1);
+                    AddStake(bet, st, SportTimePart.Time1);
                 }
                 else if (stakeValue.Contains("@Total_Points_(Second_Team)_-_1st_Quarter"))
                 {
@@ -782,7 +782,7 @@ namespace ABServer.Parsers.MarafonModel
                     SetTotalValues(element, stakeValue, st, true);
                     AddStake(bet, st, SportTimePart.Time2);
                 }
-                
+
                 else if (stakeValue.Contains("@Total_Points_(First_Team)_-_3rd_Quarter"))
                 {
                     Stake st = new Stake();
@@ -847,7 +847,7 @@ namespace ABServer.Parsers.MarafonModel
                 else if (stakeValue.Contains("@Total_Points_(First_Team)"))
                 {
                     Stake st = new Stake();
-                    st.Team=ETeam.Team1;
+                    st.Team = ETeam.Team1;
                     SetTotalValues(element, stakeValue, st, true);
                     AddStake(bet, st);
                 }
@@ -1059,8 +1059,8 @@ namespace ABServer.Parsers.MarafonModel
                     string data = element.ParentElement.ParentElement.ParentElement.Attributes["data-sel"].Value;
                     var json = JObject.Parse(data);
                     string[] gameData = json["mn"].ToString().Split(',');
-                    var game =(TenisGamePart) Enum.Parse(typeof(TenisGamePart), gameData.Last().Split(' ').Last());
-                    var part =(SportTimePart) Enum.Parse(typeof(SportTimePart), gameData.First().Split(' ').Last());
+                    var game = (TenisGamePart)Enum.Parse(typeof(TenisGamePart), gameData.Last().Split(' ').Last());
+                    var part = (SportTimePart)Enum.Parse(typeof(SportTimePart), gameData.First().Split(' ').Last());
 
                     if (stakeValue.EndsWith(".RG_H"))
                     {
@@ -1221,7 +1221,7 @@ namespace ABServer.Parsers.MarafonModel
                     Stake st = new Stake();
                     st.Team = ETeam.Team1;
                     SetTotalValues(element, stakeValue, st, true);
-                    AddStake(bet, st,SportTimePart.Time1);
+                    AddStake(bet, st, SportTimePart.Time1);
                 }
                 else if (stakeValue.Contains("@Total_Points_(Second_Team)_-_1st_Set"))
                 {
@@ -1367,7 +1367,7 @@ namespace ABServer.Parsers.MarafonModel
                         || stakeValue.EndsWith("@To_Win_Match.1"))
                 {
                     //Победа1
-                    SetCoef(bet,BetNumber._1,element);
+                    SetCoef(bet, BetNumber._1, element);
                 }
                 else if (stakeValue.EndsWith("@Result.draw"))
                 {
@@ -1381,7 +1381,7 @@ namespace ABServer.Parsers.MarafonModel
                     || stakeValue.EndsWith("@To_Win_Match.3"))
                 {
                     //Победа2
-                    SetCoef(bet, BetNumber._2,element);
+                    SetCoef(bet, BetNumber._2, element);
 
                 }
                 else if (stakeValue.EndsWith("@Result0.HD")
@@ -1928,11 +1928,11 @@ namespace ABServer.Parsers.MarafonModel
         /// <param name="stakeValue"></param>
         /// <param name="st"></param>
         /// <param name="iTotal"></param>
-        private static void SetTotalValues(IElement element, string stakeValue, Stake st,bool iTotal=false)
+        private static void SetTotalValues(IElement element, string stakeValue, Stake st, bool iTotal = false)
         {
             if (stakeValue.Contains("Under"))
             {
-                if(iTotal)
+                if (iTotal)
                     st.StakeType = StakeType.ITmin;
                 else
                     st.StakeType = StakeType.Tmin;
@@ -1979,7 +1979,7 @@ namespace ABServer.Parsers.MarafonModel
         /// <param name="betType"></param>
         /// <param name="node"></param>
         /// <param name="time"></param>
-        private static void SetCoef(Bet mainBet, BetNumber betType, IElement node,SportTimePart time= SportTimePart.Match)
+        private static void SetCoef(Bet mainBet, BetNumber betType, IElement node, SportTimePart time = SportTimePart.Match)
         {
             Bet bet = GetOrCreateTimePart(mainBet, time);
 
@@ -1998,15 +1998,15 @@ namespace ABServer.Parsers.MarafonModel
         /// <param name="time"></param>
         public static void AddStake(Bet mainBet, Stake stake, SportTimePart time = SportTimePart.Match)
         {
-            Bet bet = GetOrCreateTimePart(mainBet, time); 
-            if(stake.StakeType==StakeType.Fora1
+            Bet bet = GetOrCreateTimePart(mainBet, time);
+            if (stake.StakeType == StakeType.Fora1
                 || stake.StakeType == StakeType.Fora2)
                 bet.Foras.Add(stake);
-            else if(stake.StakeType==StakeType.Tmax
-                ||stake.StakeType==StakeType.Tmin)
+            else if (stake.StakeType == StakeType.Tmax
+                || stake.StakeType == StakeType.Tmin)
                 bet.Totals.Add(stake);
-            else if(stake.StakeType==StakeType.ITmax
-                || stake.StakeType==StakeType.ITmin)
+            else if (stake.StakeType == StakeType.ITmax
+                || stake.StakeType == StakeType.ITmin)
                 bet.ITotals.Add(stake);
         }
 

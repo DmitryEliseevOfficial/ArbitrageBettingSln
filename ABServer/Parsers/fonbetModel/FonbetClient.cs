@@ -45,10 +45,10 @@ namespace ABServer.Parsers.fonbetModel
         {
             if (_bd == null)
             {
-                _bd=new UnicDataDecorator(UnicData.Load("bd.data"));
+                _bd = new UnicDataDecorator(UnicData.Load("bd.data"));
                 UnicDataDecorator.UpdateBase += UnicDataDecorator_UpdateBase;
             }
-            
+
             lock (_lockObj)
             {
                 if (IsFirstLoad)
@@ -97,7 +97,7 @@ namespace ABServer.Parsers.fonbetModel
                 {
                     if (!_line.Events.ContainsKey(dataEvent.Id))
                     {
-                        dataEvent.Factors=new Dictionary<int, CustomFactor>();
+                        dataEvent.Factors = new Dictionary<int, CustomFactor>();
                         if (dataEvent.Level == 1)
                         {
                             dataEvent.Team1Id = _bd.GetNumber(dataEvent.Team1);
@@ -225,8 +225,8 @@ namespace ABServer.Parsers.fonbetModel
             Stopwatch sw = new Stopwatch();
             sw.Start();
 #endif
-            
-            _line =new CurrentLine();
+
+            _line = new CurrentLine();
 
             foreach (Event dataEvent in data.Events)
             {
@@ -284,7 +284,7 @@ namespace ABServer.Parsers.fonbetModel
                 else if (block.State == "blocked")
                 {
                     _line.Events[block.EventId].IsBlock = true;
-                   
+
                 }
                 else if (block.State == "partial")
                 {
@@ -325,8 +325,8 @@ namespace ABServer.Parsers.fonbetModel
         {
             if (_req == null)
             {
-                _req=new HttpRequest();
-                _req.CharacterSet= Encoding.UTF8;
+                _req = new HttpRequest();
+                _req.CharacterSet = Encoding.UTF8;
                 _req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.59 Safari/537.36 OPR/41.0.2353.46";
             }
             try
@@ -336,7 +336,7 @@ namespace ABServer.Parsers.fonbetModel
             }
             catch (Exception e)
             {
-                Logger.AddLog($"Не удалось получить URL API. {e.Message}",Logger.LogTarget.FonbetClient, Logger.LogLevel.Critical);
+                Logger.AddLog($"Не удалось получить URL API. {e.Message}", Logger.LogTarget.FonbetClient, Logger.LogLevel.Critical);
             }
             if (_thUpdate == null)
             {
@@ -363,8 +363,8 @@ namespace ABServer.Parsers.fonbetModel
                     FonbetResponse fonbetResponse = JsonConvert.DeserializeObject<FonbetResponse>(response);
                     ParseData(fonbetResponse);
                     sw.Stop();
-                    if(sw.ElapsedMilliseconds<1000)
-                        Thread.Sleep(1000-(int) sw.ElapsedMilliseconds);
+                    if (sw.ElapsedMilliseconds < 1000)
+                        Thread.Sleep(1000 - (int)sw.ElapsedMilliseconds);
                     Logger.AddLog($"Линия была загружена за  {sw.ElapsedMilliseconds}", Logger.LogTarget.FonbetClient);
                 }
                 catch (Exception e)
@@ -374,7 +374,7 @@ namespace ABServer.Parsers.fonbetModel
                     Thread.Sleep(1000);
                 }
 
-                
+
             }
         }
 

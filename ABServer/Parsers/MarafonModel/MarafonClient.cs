@@ -22,7 +22,7 @@ namespace ABServer.Parsers.MarafonModel
         private List<int> _currentGames = new List<int>();
 
 
-        private readonly object _updateobj = new object(); 
+        private readonly object _updateobj = new object();
 
 
         private readonly Thread _updateThread;
@@ -47,7 +47,7 @@ namespace ABServer.Parsers.MarafonModel
         }
 
 
- 
+
         private void Update()
         {
             while (true)
@@ -96,13 +96,13 @@ namespace ABServer.Parsers.MarafonModel
         }
 
 
-        
+
 
         internal List<Bet> GetBets()
         {
-            _bets=new ConcurrentStack<Bet>();
+            _bets = new ConcurrentStack<Bet>();
 
-            List<int> ids=new List<int>();
+            List<int> ids = new List<int>();
             lock (_updateobj)
             {
                 ids.AddRange(_currentGames);
@@ -129,7 +129,7 @@ namespace ABServer.Parsers.MarafonModel
                 }
                 catch
                 {
-                    
+
                 }
             }
 
@@ -148,7 +148,7 @@ namespace ABServer.Parsers.MarafonModel
             var parser = new HtmlParser();
             var doc = parser.Parse(respone);
 
-           
+
             var teams = doc.QuerySelectorAll("div.live-today-member-name.nowrap");
             if (teams.Length != 2)
             {

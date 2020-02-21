@@ -21,7 +21,7 @@ namespace ABClient.Controllers
             var rez = ((double)value).ToString("#.#", culture);
             if ((double)value < 1 && (double)value > -1)
                 rez = ((double)value).ToString("0.#", culture);
-            return  rez+ "%";
+            return rez + "%";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -63,7 +63,7 @@ namespace ABClient.Controllers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var rez= ((double)value).ToString("#.##", culture);
+            var rez = ((double)value).ToString("#.##", culture);
             if (((double)value) < 1 && ((double)value) > -1)
                 rez = "0" + rez;
             return rez;
@@ -103,7 +103,7 @@ namespace ABClient.Controllers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string rez = ((int)value).ToString("D8");           
+            string rez = ((int)value).ToString("D8");
             return rez;
         }
 
@@ -122,65 +122,65 @@ namespace ABClient.Controllers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var sport = (SportType)Enum.Parse(typeof(SportType),value.ToString());
+            var sport = (SportType)Enum.Parse(typeof(SportType), value.ToString());
             switch (sport)
             {
                 case SportType.Бадминтон:
-                {
-                    return "";                    
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Бейсбол:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Баскетбол:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Футбол:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Футзал:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Хоккей:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Хоккей_с_мячом:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Настольный_теннис:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Регби:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Снукер:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Теннис:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Волейбол:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Гандбол:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
                 case SportType.Водное_поло:
-                {
-                    return "";
-                }
+                    {
+                        return "";
+                    }
             }
 
             return "";

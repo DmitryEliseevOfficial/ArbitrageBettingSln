@@ -11,7 +11,7 @@ namespace ABServer
 
         public static void SetUpdateBase(List<UnicData> newBaseData)
         {
-                UpdateBase?.Invoke(newBaseData);
+            UpdateBase?.Invoke(newBaseData);
         }
 
         private List<UnicData> _bd;
@@ -73,7 +73,7 @@ namespace ABServer
 
             return false;
         }
-        
+
         public void SetNewBd(List<UnicData> newBd)
         {
             _bd = newBd;

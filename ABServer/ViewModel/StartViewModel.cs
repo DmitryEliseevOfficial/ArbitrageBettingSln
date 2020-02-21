@@ -9,45 +9,45 @@ using ABServer.Views;
 
 namespace ABServer.ViewModel
 {
-    internal class StartViewModel:DependencyObject
+    internal class StartViewModel : DependencyObject
     {
-      
+
         public static readonly DependencyProperty HostAdressProperty =
             DependencyProperty.Register("HostAdress", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
-        
+
         public static readonly DependencyProperty HostPortProperty =
             DependencyProperty.Register("HostPort", typeof(int), typeof(StartViewModel), new PropertyMetadata(9999));
-        
+
         public static readonly DependencyProperty UsingProxyProperty =
             DependencyProperty.Register("UsingProxy", typeof(bool), typeof(StartViewModel), new PropertyMetadata(false));
 
-        
+
         public static readonly DependencyProperty ZenitLoginProperty =
             DependencyProperty.Register("ZenitLogin", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
-        
+
         public static readonly DependencyProperty ZenitPasswordProperty =
             DependencyProperty.Register("ZenitPassword", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
-        
+
         public static readonly DependencyProperty CheckProxyFileCommandProperty =
             DependencyProperty.Register("CheckProxyFileCommand", typeof(ICommand), typeof(StartViewModel), new PropertyMetadata(null));
-        
+
         public static readonly DependencyProperty StartCommandProperty =
             DependencyProperty.Register("StartCommand", typeof(ICommand), typeof(StartViewModel), new PropertyMetadata(null));
 
-        
+
         public static readonly DependencyProperty MarafonUrlProperty =
             DependencyProperty.Register("MarafonUrl", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
 
-        
+
         public static readonly DependencyProperty OlimpUrlProperty =
             DependencyProperty.Register("OlimpUrl", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
-        
+
         public static readonly DependencyProperty FonbetUrlProperty =
             DependencyProperty.Register("FonbetUrl", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
-        
+
         public static readonly DependencyProperty ZenitUrlProperty =
             DependencyProperty.Register("ZenitUrl", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
-        
+
         public static readonly DependencyProperty PariMatchUrlProperty =
             DependencyProperty.Register("PariMatchUrl", typeof(string), typeof(StartViewModel), new PropertyMetadata(""));
 
@@ -56,55 +56,55 @@ namespace ABServer.ViewModel
 
 
         #region DependencyProp
-     
+
         public string HostAdress
         {
             get { return (string)GetValue(HostAdressProperty); }
             set { SetValue(HostAdressProperty, value); }
         }
-        
+
         public int HostPort
         {
             get { return (int)GetValue(HostPortProperty); }
             set { SetValue(HostPortProperty, value); }
         }
-        
+
         public bool UsingProxy
         {
             get { return (bool)GetValue(UsingProxyProperty); }
             set { SetValue(UsingProxyProperty, value); }
         }
-        
+
         public string ZenitLogin
         {
             get { return (string)GetValue(ZenitLoginProperty); }
             set { SetValue(ZenitLoginProperty, value); }
         }
-        
+
         public string ZenitPassword
         {
             get { return (string)GetValue(ZenitPasswordProperty); }
             set { SetValue(ZenitPasswordProperty, value); }
         }
-        
+
         public string OlimpUrl
         {
             get { return (string)GetValue(OlimpUrlProperty); }
             set { SetValue(OlimpUrlProperty, value); }
         }
-        
+
         public string FonbetUrl
         {
             get { return (string)GetValue(FonbetUrlProperty); }
             set { SetValue(FonbetUrlProperty, value); }
         }
-        
+
         public string MarafonUrl
         {
             get { return (string)GetValue(MarafonUrlProperty); }
             set { SetValue(MarafonUrlProperty, value); }
         }
-        
+
         public string ZenitUrl
         {
             get { return (string)GetValue(ZenitUrlProperty); }
@@ -137,7 +137,7 @@ namespace ABServer.ViewModel
         public StartViewModel()
         {
             String host = Dns.GetHostName();
-   
+
             IPAddress[] ips = Dns.GetHostAddresses(host);
             foreach (IPAddress ip in ips)
             {
@@ -162,7 +162,7 @@ namespace ABServer.ViewModel
             ZenitUrl = set.ZenitUrl;
             PariMatchUrl = set.PariMatchUrl;
 
-           
+
         }
 
 
@@ -175,13 +175,13 @@ namespace ABServer.ViewModel
         private bool CheckProxyFile()
         {
             if (!UsingProxy)
-                return true;          
-            if(!File.Exists("proxy.txt"))
+                return true;
+            if (!File.Exists("proxy.txt"))
             {
                 MessageBox.Show("Файл proxy.txt не найден! Положите файл с прокси в корень!");
                 return false;
             }
-            if(!File.Exists("bd.data"))
+            if (!File.Exists("bd.data"))
             {
                 MessageBox.Show("Файл bd.data не найден! Положите файл с прокси в корень!");
                 return false;
@@ -194,7 +194,7 @@ namespace ABServer.ViewModel
             if (!CheckProxyFile())
                 return;
 
-           
+
             //Сохраняем настройки
             Settings set = new Settings
             {
@@ -212,10 +212,10 @@ namespace ABServer.ViewModel
 
             Settings.Save(set);
             Closed?.Invoke();
-            
+
         }
 
-     
+
     }
 
 

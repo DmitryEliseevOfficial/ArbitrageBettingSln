@@ -14,7 +14,8 @@ namespace ABServer.Commands
 
         public RealyCommand(Action command)
         {
-            _command = delegate {
+            _command = delegate
+            {
                 command();
             };
         }
@@ -24,7 +25,7 @@ namespace ABServer.Commands
             _command = command;
         }
 
-        public RealyCommand(Action<object> command,Func<object,bool> compaer)
+        public RealyCommand(Action<object> command, Func<object, bool> compaer)
         {
             _command = command;
             _func = compaer;

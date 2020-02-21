@@ -17,7 +17,7 @@ namespace StaticData.Shared.Model
 
         }
 
-        public UnicData(int Id,string Value,ParserType Site)
+        public UnicData(int Id, string Value, ParserType Site)
         {
             this.Id = Id;
             this.Site = Site;
@@ -34,7 +34,7 @@ namespace StaticData.Shared.Model
         {
             return $"{Id}   -   {Value}";
         }
-        
+
         public UnicData Clone()
         {
             UnicData dt = new UnicData();

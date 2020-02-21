@@ -8,9 +8,9 @@ namespace Updater
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void PropChanged([CallerMemberName] string name="")
+        private void PropChanged([CallerMemberName] string name = "")
         {
-            PropertyChanged?.Invoke(this,new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

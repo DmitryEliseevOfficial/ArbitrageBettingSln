@@ -12,17 +12,17 @@ using Microsoft.Win32;
 
 namespace ABServer.ViewModel
 {
-    internal class MainViewModel:INotifyPropertyChanged
+    internal class MainViewModel : INotifyPropertyChanged
     {
         private readonly ServerManager _server;
         private ForkFinder _forkFinder;
         private ParserManager _manager;
         private readonly Settings _set;
-       
+
         public MainViewModel()
         {
-            _set = Settings.Load();            
-           
+            _set = Settings.Load();
+
             StarListenerCommand = new RealyCommand(StarListener);
             StartParsingCommand = new RealyCommand(StartParsing);
             StopParsingCommand = new RealyCommand(StopParsing);
@@ -39,7 +39,7 @@ namespace ABServer.ViewModel
 
             Bookmakers = new ObservableCollection<Bookmaker>(bookmakers);
 
-            _manager = new ParserManager(_set.OlimpUrl, _set.FonbetUrl, _set.MarafonUrl, _set.ZenitUrl,_set.PariMatchUrl, _set.UsingProxy);
+            _manager = new ParserManager(_set.OlimpUrl, _set.FonbetUrl, _set.MarafonUrl, _set.ZenitUrl, _set.PariMatchUrl, _set.UsingProxy);
             _forkFinder = new ForkFinder(_manager);
             _server = new ServerManager(_forkFinder);
 
@@ -57,7 +57,7 @@ namespace ABServer.ViewModel
                 StarListenerCommand.Execute(null);
 #if !DEBUG
                 StartParsingCommand.Execute(null);
-                
+
 #endif
             }
         }
@@ -75,7 +75,7 @@ namespace ABServer.ViewModel
             get { return _listen; }
             set
             {
-                if(_listen!=value)
+                if (_listen != value)
                 {
                     _listen = value;
                     PropChanged();
@@ -85,7 +85,7 @@ namespace ABServer.ViewModel
 
         private void StarListener()
         {
-            if(!Listen)
+            if (!Listen)
             {
                 try
                 {
@@ -104,7 +104,7 @@ namespace ABServer.ViewModel
                 Logger.Write("Подключение клиентов остановленно!");
                 Listen = false;
             }
-            
+
         }
 
         private bool _start;
@@ -121,19 +121,19 @@ namespace ABServer.ViewModel
 
         private void StartParsing()
         {
-            if(!Start)
+            if (!Start)
             {
-                if(_manager==null)
+                if (_manager == null)
                 {
-                    _manager = new ParserManager(_set.OlimpUrl, _set.FonbetUrl, _set.MarafonUrl,_set.ZenitUrl,_set.PariMatchUrl, _set.UsingProxy);
+                    _manager = new ParserManager(_set.OlimpUrl, _set.FonbetUrl, _set.MarafonUrl, _set.ZenitUrl, _set.PariMatchUrl, _set.UsingProxy);
                 }
                 _manager.Start();
-                if(_forkFinder==null)
+                if (_forkFinder == null)
                 {
                     _forkFinder = new ForkFinder(_manager);
                 }
                 _forkFinder.Start();
-                foreach(var key in Bookmakers)
+                foreach (var key in Bookmakers)
                 {
                     key.Status = WorkStatus.Work;
                 }
@@ -144,12 +144,12 @@ namespace ABServer.ViewModel
             {
                 MessageBox.Show("Парсинг уже запущен!");
             }
-            
+
         }
 
         private void StopParsing()
         {
-            if(Start)
+            if (Start)
             {
                 _manager?.Dispose();
                 _forkFinder?.Dispose();
@@ -181,24 +181,24 @@ namespace ABServer.ViewModel
                 return;
             try
             {
-                var bd=StaticData.Shared.Model.UnicData.Load(dlg.FileName);
-               
+                var bd = StaticData.Shared.Model.UnicData.Load(dlg.FileName);
+
                 StaticData.Shared.Model.UnicData.Save("bd.data", bd);
                 UnicDataDecorator.SetUpdateBase(bd);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("Выбранный файл поврежден или содержит записей"+ex.Message);               
+                MessageBox.Show("Выбранный файл поврежден или содержит записей" + ex.Message);
                 return;
             }
-           
+
 
             MessageBox.Show("Данные успешно обновленны!");
-           
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void PropChanged([CallerMemberName] string name="")
+        private void PropChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

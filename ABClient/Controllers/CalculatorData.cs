@@ -5,7 +5,7 @@ using ABClient.Annotations;
 namespace ABClient.Controllers
 {
 
-    public class CalculatorData:INotifyPropertyChanged
+    public class CalculatorData : INotifyPropertyChanged
     {
         public double coeff1 { get; set; }
         public double coeff2 { get; set; }
@@ -28,7 +28,7 @@ namespace ABClient.Controllers
             get { return _isFork; }
             set
             {
-                if(_isFork==value) return;
+                if (_isFork == value) return;
                 _isFork = value; OnPropertyChanged();
             }
         }

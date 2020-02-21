@@ -12,7 +12,7 @@ namespace EditMaps.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void PropChanged([CallerMemberName] string name="")
+        public void PropChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

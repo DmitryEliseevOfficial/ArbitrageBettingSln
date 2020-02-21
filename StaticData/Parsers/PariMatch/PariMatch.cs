@@ -34,19 +34,19 @@ namespace StaticData.Parsers.PariMatch
             if (table == null)
                 throw new ArgumentException("Нет таблицы с прелайвом");
 
-            foreach(var key in table.Children[1].Children[0].Children)
+            foreach (var key in table.Children[1].Children[0].Children)
             {
-                if(key.ClassName.StartsWith("sport"))
+                if (key.ClassName.StartsWith("sport"))
                 {
                     var sport = key.Children[0].TextContent;
 
-                    foreach(var item in key.Children[1].Children)
+                    foreach (var item in key.Children[1].Children)
                     {
                         if (string.IsNullOrWhiteSpace(item.Id)) continue;
 
                         var liga = item.PreviousSibling.TextContent;
 
-                        foreach(var ev in item.Children)
+                        foreach (var ev in item.Children)
                         {
                             var sr = new SiteRow();
                             sr.Sport = sport;
@@ -57,11 +57,11 @@ namespace StaticData.Parsers.PariMatch
                             var dt = DateTime.Now;
                             if (dt.Day > day)
                             {
-                                dt=dt.AddMonths(1);
+                                dt = dt.AddMonths(1);
                             }
 
-                            sr.TimeStart=DateTime.Parse(day+"/"+ dt.Date.Month +"/"+ dt.Date.Year+" "+ ev.LastElementChild.Children[0].Children[0].TextContent).AddHours(1);
-                            
+                            sr.TimeStart = DateTime.Parse(day + "/" + dt.Date.Month + "/" + dt.Date.Year + " " + ev.LastElementChild.Children[0].Children[0].TextContent).AddHours(1);
+
 
                             sr.Match = ev.LastElementChild.Children[0].Children[1].TextContent;
 

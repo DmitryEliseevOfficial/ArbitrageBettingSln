@@ -14,7 +14,7 @@ namespace StaticData.Parsers.Zenit
     {
         string url;
 
-        public Zenit(string url="https://zenit88.win")
+        public Zenit(string url = "https://zenit88.win")
         {
             this.url = url;
         }
@@ -33,18 +33,18 @@ namespace StaticData.Parsers.Zenit
             if (table == null)
                 throw new ArgumentNullException($"{typeof(Zenit)}: Ошибка получения таблицы с Анонсом.");
 
-            var rows = table.FirstChild.ChildNodes.Where(x=>x.Name=="tr").ToList();
-            for(int i=0;i<rows.Count;i++)
+            var rows = table.FirstChild.ChildNodes.Where(x => x.Name == "tr").ToList();
+            for (int i = 0; i < rows.Count; i++)
             {
                 string ligaName = rows[i].InnerText.Trim();
                 string SportName = ligaName.Split('.').First();
                 ligaName = ligaName.Replace(SportName + ".", "");
-                while(true)
+                while (true)
                 {
                     if (i == rows.Count - 1)
                         break;
                     i++;
-                    if(rows[i].Attributes["class"].Value== "live-index-schedule-row")
+                    if (rows[i].Attributes["class"].Value == "live-index-schedule-row")
                     {
                         i--;
                         break; // вываливаемся из while
@@ -54,7 +54,7 @@ namespace StaticData.Parsers.Zenit
                     sr.Sport = SportName;
                     sr.Groupe = ligaName;
                     sr.Match = rows[i].ChildNodes[3].InnerText;
-                    sr.TimeStart = DateTime.Parse(rows[i].ChildNodes[1].InnerText.Replace(" ","/2017 "));
+                    sr.TimeStart = DateTime.Parse(rows[i].ChildNodes[1].InnerText.Replace(" ", "/2017 "));
                     sr.Site = Shared.Enums.ParserType.Zenit;
 
                     string[] teams = sr.Match.Replace(" - ", "|").Split('|');
@@ -86,7 +86,7 @@ namespace StaticData.Parsers.Zenit
                         json["result"]["sport"].FirstOrDefault(
                             x => x.First["id"].ToString() == liga.First["sid"]?.ToString());
 
-                    sr.Sport = sport.First["name"].ToString().Replace("Он-лайн. ","");
+                    sr.Sport = sport.First["name"].ToString().Replace("Он-лайн. ", "");
                     if (string.IsNullOrWhiteSpace(sr.Sport))
                     {
                         sr.Sport = "Nan";

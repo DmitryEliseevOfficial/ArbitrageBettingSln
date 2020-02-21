@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace EditMaps.ViewModel
 {
-    internal class CreateViewModel:BaseViewModel 
+    internal class CreateViewModel : BaseViewModel
     {
         public event Action UpdateBase;
 
@@ -163,7 +163,7 @@ namespace EditMaps.ViewModel
         public ReallyCommand SortCommand { get; set; }
         public ReallyCommand AddingCommand { get; set; }
 
-        public ReallyCommand FonbetSkipCommand { get; set; }        
+        public ReallyCommand FonbetSkipCommand { get; set; }
         public ReallyCommand OlimpSkipCommand { get; set; }
         public ReallyCommand MarafonSkipCommand { get; set; }
         public ReallyCommand ZenitSkipCommand { get; set; }
@@ -203,7 +203,7 @@ namespace EditMaps.ViewModel
             }
         }
 
-        private int _marafonId ;
+        private int _marafonId;
         public int MarafonId
         {
             get { return _marafonId; }
@@ -251,7 +251,7 @@ namespace EditMaps.ViewModel
                 PropChanged();
             }
         }
-        
+
         public CreateViewModel()
         {
             Task.Factory.StartNew(LoadData);
@@ -269,7 +269,7 @@ namespace EditMaps.ViewModel
             EditCommand = new ReallyCommand(Edit);
             ClearCommand = new ReallyCommand(Clear);
         }
-        
+
         private void LoadData()
         {
             try
@@ -279,7 +279,7 @@ namespace EditMaps.ViewModel
                 MarafonData = SiteRow.Load("Marafon.data");
                 ZenitData = SiteRow.Load("Zenit.data");
                 PariMatchData = SiteRow.Load("PariMatch.data");
-                Base = new ObservableCollection<UnicData>(UnicData.Load("bd.data").OrderBy(x=>x.Id));
+                Base = new ObservableCollection<UnicData>(UnicData.Load("bd.data").OrderBy(x => x.Id));
             }
             catch
             {
@@ -294,7 +294,7 @@ namespace EditMaps.ViewModel
                 {
                     foreach (SiteRow t in FonbetData)
                     {
-                        if(t.TeamName==key.Value)
+                        if (t.TeamName == key.Value)
                         {
                             t.IsUsed = true;
                         }
@@ -353,15 +353,15 @@ namespace EditMaps.ViewModel
         private void Edit()
         {
             UnicData tmp = DataSelected;
-            if(tmp==null)
+            if (tmp == null)
             {
                 MessageBox.Show("Выбирете, что-нибудь");
                 return;
             }
 
-            for (int i =0;i<Base.Count;i++)
+            for (int i = 0; i < Base.Count; i++)
             {
-                if(Base[i].Value== tmp.Value)
+                if (Base[i].Value == tmp.Value)
                 {
                     Base.Remove(DataSelected);
                     tmp.Id = NewId;
@@ -370,11 +370,11 @@ namespace EditMaps.ViewModel
                 }
             }
         }
-        
+
         //Производит сортировку
         private void Sort()
-        {  
-            if(SortText!="")
+        {
+            if (SortText != "")
             {
                 Fonbet = new ObservableCollection<SiteRow>(FonbetData.Where(x => x.Sport.Contains(SortText)).OrderBy(x => x.Sport).ThenBy(x => x.TimeStart));
                 Olimp = new ObservableCollection<SiteRow>(OlimpData.Where(x => x.Sport.Contains(SortText)).OrderBy(x => x.Sport).ThenBy(x => x.TimeStart));
@@ -473,17 +473,17 @@ namespace EditMaps.ViewModel
             ZenitSelected = null;
             PariMacthSelected = null;
         }
-        
+
         //Добавляем данные из нижнего списка
         private void Add(object id)
-        {            
+        {
             string siteName = id.ToString();
 
             UnicData dt = null;
-            if(siteName=="Fonbet")
+            if (siteName == "Fonbet")
             {
 
-                if(FonbetSelected==null)
+                if (FonbetSelected == null)
                 {
                     MessageBox.Show("Выбирете, что-нибудь");
                     return;
@@ -551,21 +551,21 @@ namespace EditMaps.ViewModel
         #region Пропуск выбранного
         private void FonbetSkip()
         {
-           
+
             FonbetData.Remove(FonbetSelected);
-            Fonbet.Remove(FonbetSelected);            
+            Fonbet.Remove(FonbetSelected);
         }
 
         private void OlimpSkip()
         {
             OlimpData.Remove(OlimpSelected);
-            Olimp.Remove(OlimpSelected);            
+            Olimp.Remove(OlimpSelected);
         }
 
         private void MarafonSkip()
         {
             MarafonData.Remove(MarafonSelected);
-            Marafon.Remove(MarafonSelected);            
+            Marafon.Remove(MarafonSelected);
         }
 
         private void ZenitSkip()
@@ -582,10 +582,10 @@ namespace EditMaps.ViewModel
         #endregion
 
 
-        
+
         public bool Save()
         {
-           try
+            try
             {
                 //Отменяем текущие сохранения. Иначе получаеться, что те что отредактирвоали сегодня
                 //Просто исчезают. и Перед импортом нужно заново прогружать
@@ -599,12 +599,12 @@ namespace EditMaps.ViewModel
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
             try
             {
                 UnicData.Save("bd.data", Base.ToList());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return false;
@@ -612,10 +612,10 @@ namespace EditMaps.ViewModel
 
             return true;
         }
-        
+
         private int CheckValue(string value)
         {
-            foreach(UnicData key in Base)
+            foreach (UnicData key in Base)
             {
                 if (key.Value == value)
                     return key.Id;

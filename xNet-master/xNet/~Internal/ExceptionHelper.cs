@@ -19,7 +19,7 @@ namespace xNet
         {
             return new ArgumentOutOfRangeException(paramName, string.Format(
                     Resources.ArgumentOutOfRangeException_CanNotBeGreater, value));
-        } 
+        }
 
         internal static ArgumentException WrongPath(string paramName, Exception innerException = null)
         {

@@ -17,36 +17,36 @@ namespace StaticData.Parsers.Marafon
     {
         string url;
 
-        public Marafon(string url= "https://www.marathonbet.com")
+        public Marafon(string url = "https://www.marathonbet.com")
         {
             this.url = url;
         }
 
         public List<SiteRow> parseCurentLive()
         {
-            List<string> targets = new List<string>();           
+            List<string> targets = new List<string>();
             //targets.Add("/su/betting/Badminton/?menu=382581");
             targets.Add("/su/betting/Basketball/?menu=6");
             targets.Add("/su/betting/Baseball/?menu=5");
             targets.Add("/su/betting/Boxing/?menu=7");
             targets.Add("/su/betting/Volleyball/?menu=22712");
             targets.Add("/su/betting/Handball/?menu=52914");
-            targets.Add("/su/betting/Golf/?menu=10");            
+            targets.Add("/su/betting/Golf/?menu=10");
             targets.Add("/su/betting/e-Sports/?menu=1895085");
             targets.Add("/su/betting/Snooker/?menu=2185");
-            targets.Add("/su/betting/Tennis/?menu=2398");            
-            targets.Add("/su/betting/Football/?menu=11"); 
+            targets.Add("/su/betting/Tennis/?menu=2398");
+            targets.Add("/su/betting/Football/?menu=11");
             targets.Add("/su/betting/Ice+Hockey/?menu=537");
 
 
             var rezult = new List<SiteRow>();
 
 
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
                 rezult.AddRange(parsePage("https://www.marathonbet.com" + target));
             }
-           
+
 
             return rezult;
         }
@@ -64,23 +64,23 @@ namespace StaticData.Parsers.Marafon
             var name_node = doc.DocumentNode.SelectSingleNode("//a[@class=\"sport-category-label\"]");
 
             var blocks = doc.DocumentNode.SelectNodes("//div[@class=\"category-container\"]").ToList();
-            
-            foreach(var block in blocks)
+
+            foreach (var block in blocks)
             {
                 string groupe = block.ChildNodes[1].ChildNodes[1].ChildNodes[1].ChildNodes[3].InnerText.Trim();
 
                 var teams = block.ChildNodes[3].ChildNodes[3].ChildNodes[1].ChildNodes;
 
-                foreach(var row in teams)
+                foreach (var row in teams)
                 {
-                    if(row.Name== "tbody" && row.Attributes["data-event-treeid"]!=null)
+                    if (row.Name == "tbody" && row.Attributes["data-event-treeid"] != null)
                     {
-                        var current=row.ChildNodes[1].ChildNodes[1].ChildNodes[1].ChildNodes;
+                        var current = row.ChildNodes[1].ChildNodes[1].ChildNodes[1].ChildNodes;
                         SiteRow rw = new SiteRow();
                         rw.Sport = name_node.InnerText.Trim();
                         rw.Groupe = groupe;
                         rw.Site = Shared.Enums.ParserType.Marafon;
-                        var dt=current[1].ChildNodes[3].InnerText.Trim();
+                        var dt = current[1].ChildNodes[3].InnerText.Trim();
                         if (dt.Contains("ноя"))
                             dt = dt.Replace(" ноя", ".11.2016");
                         else if (dt.Contains("дек"))
@@ -91,15 +91,15 @@ namespace StaticData.Parsers.Marafon
                             dt = dt.Replace(" фев ", ".01.");
                         else
                         {
-                            
+
                         }
                         rw.TimeStart = DateTime.Parse(dt);
                         rw.TeamName = current[1].ChildNodes[1].ChildNodes[1].ChildNodes[3].InnerText.Trim();
-                        
+
                         rezult.Add(rw);
 
                         var rw1 = rw.Clone();
-                        rw1.TeamName= current[3].ChildNodes[1].ChildNodes[1].ChildNodes[3].InnerText.Trim();
+                        rw1.TeamName = current[3].ChildNodes[1].ChildNodes[1].ChildNodes[3].InnerText.Trim();
                         rezult.Add(rw1);
                     }
                 }
@@ -113,10 +113,10 @@ namespace StaticData.Parsers.Marafon
         {
             _rezult.Clear();
 
-                ParseCurrentLives();
+            ParseCurrentLives();
 
             _rezult.AddRange(ParseAnonsLive(DateTime.Now.ToUniversalTime().AddHours(3)));
-            if((DateTime.Now.ToUniversalTime().AddHours(3)- DateTime.Now.ToUniversalTime().AddDays(1).AddHours(3)).Days!=0)
+            if ((DateTime.Now.ToUniversalTime().AddHours(3) - DateTime.Now.ToUniversalTime().AddDays(1).AddHours(3)).Days != 0)
                 _rezult.AddRange(ParseAnonsLive(DateTime.Now.ToUniversalTime().AddDays(1).AddHours(3)));
 
             return _rezult;
@@ -139,7 +139,7 @@ namespace StaticData.Parsers.Marafon
 
             var nodes = doc.DocumentNode.SelectNodes("//tr[@class=\"announce\"]");
 
-            foreach(var key in nodes)
+            foreach (var key in nodes)
             {
                 var t = key.ChildNodes[1].ChildNodes[1].ChildNodes;
 
@@ -167,16 +167,16 @@ namespace StaticData.Parsers.Marafon
 
                 rw.Site = Shared.Enums.ParserType.Marafon;
                 rw.Sport = t[3].InnerText.Split('.').First().Trim();
-                var teams = t[3].ChildNodes[1].InnerText.Replace("&nbsp;","").Replace(" - ", "|").Split('|');
-               
-                if(teams.Count()!=2)
+                var teams = t[3].ChildNodes[1].InnerText.Replace("&nbsp;", "").Replace(" - ", "|").Split('|');
+
+                if (teams.Count() != 2)
                 {
                     teams = t[3].ChildNodes[1].InnerText.Replace("&nbsp;", "").Replace(" @ ", "|").Split('|');
                 }
                 if (teams.Length != 2)
                     continue;
 
-                rw.Groupe = t[3].ChildNodes[0].InnerText.Replace(rw.Sport + ". ","").Trim();
+                rw.Groupe = t[3].ChildNodes[0].InnerText.Replace(rw.Sport + ". ", "").Trim();
                 rw.TeamName = teams[0];
 
                 rw.Match = $"{rw.TeamName} - {teams[1]}";
@@ -191,7 +191,7 @@ namespace StaticData.Parsers.Marafon
 
             }
 
-            
+
             return rezult;
         }
 
@@ -206,11 +206,11 @@ namespace StaticData.Parsers.Marafon
             var mainContainer = doc.GetElementById("container_AVAILABLE");
             foreach (IElement child in mainContainer.Children)
             {
-                if (child.ChildElementCount <2)
+                if (child.ChildElementCount < 2)
                     continue;
 
                 foreach (IElement liga in child.Children[1].Children)
-                { 
+                {
 
                     if (liga.ChildElementCount == 0)
                         continue;
@@ -243,9 +243,9 @@ namespace StaticData.Parsers.Marafon
                         rw1.TeamName = teams[1];
                         _rezult.Add(rw1);
 
-                    }               
+                    }
 
-                   
+
                 }
             }
         }

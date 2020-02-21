@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ABShared
-{  
+{
     [Serializable]
     public class Bet
     {
@@ -12,7 +12,7 @@ namespace ABShared
         public DateTime Created { get; private set; }
         public Bet()
         {
-            Created=DateTime.Now;
+            Created = DateTime.Now;
         }
 
         public string Site { get; set; }
@@ -57,10 +57,10 @@ namespace ABShared
         public object _F1o { get; set; }
 
         public float _F2 { get; set; }
-        public float _F2_Cof { get; set; } 
+        public float _F2_Cof { get; set; }
         public object _F2o { get; set; }
-         
-        public float _Tmin { get; set; } 
+
+        public float _Tmin { get; set; }
         public object _Tmino { get; set; }
 
         public float _Tmax { get; set; }
@@ -79,7 +79,7 @@ namespace ABShared
 
         public List<Stake> Foras { get; } = new List<Stake>();
 
-        public List<Stake> Totals { get;  } = new List<Stake>();
+        public List<Stake> Totals { get; } = new List<Stake>();
 
         public List<Stake> ITotals { get; } = new List<Stake>();
 
@@ -92,13 +92,13 @@ namespace ABShared
 
             set
             {
-                SetIteration(x,value);
+                SetIteration(x, value);
             }
         }
 
         public override string ToString()
         {
-            return 
+            return
                 $"{Site} {SportType}    | {Team1} - {Team2} | {_1} - {_X} - {_2} | {_1X} - {_12} - {_X2} | Ф1({_F1_Cof}) {_F1} - Ф2({_F2_Cof}) {_F2} | Тотал({_Total_Cof}) {_Tmin} - {_Tmax}";
         }
 
@@ -130,45 +130,45 @@ namespace ABShared
                 default:
                     throw new ArgumentException("index not be <0 and >9. Index=" + x);
             }
-            
+
         }
 
-        private void SetIteration(int x,float value)
+        private void SetIteration(int x, float value)
         {
             switch (x)
             {
                 case 0:
-                    _1=value;
+                    _1 = value;
                     break;
                 case 1:
-                    _X=value;
+                    _X = value;
                     break;
                 case 2:
-                    _2=value;
+                    _2 = value;
                     break;
                 case 3:
-                    _1X=value;
+                    _1X = value;
                     break;
                 case 4:
-                    _12=value;
+                    _12 = value;
                     break;
                 case 5:
-                    _X2=value;
+                    _X2 = value;
                     break;
                 case 6:
-                    _F1=value;
+                    _F1 = value;
                     break;
                 case 7:
-                    _F2=value;
+                    _F2 = value;
                     break;
                 case 8:
-                    _Tmin=value;
+                    _Tmin = value;
                     break;
                 case 9:
-                    _Tmax=value;
+                    _Tmax = value;
                     break;
                 default:
-                throw new ArgumentException("index not be <0 and >9. Index=" + x);
+                    throw new ArgumentException("index not be <0 and >9. Index=" + x);
             }
         }
 
@@ -185,19 +185,19 @@ namespace ABShared
                 case BetNumber._1X:
                     return "1X";
                 case BetNumber._12:
-                     return "12";
+                    return "12";
                 case BetNumber._X2:
                     return "X2";
                 case BetNumber._F1:
-                    return "Ф1("+_F1_Cof+")";
+                    return "Ф1(" + _F1_Cof + ")";
                 case BetNumber._F2:
                     return "Ф2(" + _F2_Cof + ")";
                 case BetNumber._Tmax:
-                    return "Tб("+_Total_Cof+")";
+                    return "Tб(" + _Total_Cof + ")";
                 case BetNumber._Tmin:
                     return "Тм(" + _Total_Cof + ")";
                 default:
-                 return "none";                
+                    return "none";
             }
         }
 
@@ -213,87 +213,87 @@ namespace ABShared
             switch (numb)
             {
                 case BetNumber._1:
-                return _1o;
+                    return _1o;
                 case BetNumber._X:
-                return _Xo;
+                    return _Xo;
                 case BetNumber._2:
-                return _2o;
+                    return _2o;
                 case BetNumber._1X:
-                return _1Xo;
+                    return _1Xo;
                 case BetNumber._12:
-                return _12o;
+                    return _12o;
                 case BetNumber._X2:
-                return _X2o;
+                    return _X2o;
                 case BetNumber._F1:
-                return _F1o;
+                    return _F1o;
                 case BetNumber._F2:
-                return _F2o;
+                    return _F2o;
                 case BetNumber._Tmax:
-                return _Tmaxo;
+                    return _Tmaxo;
                 case BetNumber._Tmin:
-                return _Tmino;
+                    return _Tmino;
                 default:
-                return "none";
+                    return "none";
             }
         }
 
-        public void SetData(BetNumber numb,object value)
+        public void SetData(BetNumber numb, object value)
         {
             switch (numb)
             {
                 case BetNumber._1:
-                {
-                    _1o=value;
-                    break;
-                }
-                
+                    {
+                        _1o = value;
+                        break;
+                    }
+
                 case BetNumber._X:
-                {
-                    _Xo = value;
-                    break;
-                }
+                    {
+                        _Xo = value;
+                        break;
+                    }
                 case BetNumber._2:
-                {
-                    _2o = value;
-                    break;
-                }
+                    {
+                        _2o = value;
+                        break;
+                    }
                 case BetNumber._1X:
-                {
-                    _1Xo = value;
-                    break;
-                }
+                    {
+                        _1Xo = value;
+                        break;
+                    }
                 case BetNumber._12:
-                {
-                    _12o = value;
-                    break;
-                }
+                    {
+                        _12o = value;
+                        break;
+                    }
                 case BetNumber._X2:
-                {
-                    _X2o = value;
-                    break;
-                }
+                    {
+                        _X2o = value;
+                        break;
+                    }
                 case BetNumber._F1:
-                {
-                    _F1o = value;
-                    break;
-                }
+                    {
+                        _F1o = value;
+                        break;
+                    }
                 case BetNumber._F2:
-                {
-                    _F2o = value;
-                    break;
-                }
+                    {
+                        _F2o = value;
+                        break;
+                    }
                 case BetNumber._Tmax:
-                {
-                    _Tmaxo = value;
-                    break;
-                }
+                    {
+                        _Tmaxo = value;
+                        break;
+                    }
                 case BetNumber._Tmin:
-                {
-                    _Tmino = value;
-                    break;
-                }
+                    {
+                        _Tmino = value;
+                        break;
+                    }
                 default:
-                throw new ArgumentException("Bet: Betnumber not found");
+                    throw new ArgumentException("Bet: Betnumber not found");
             }
         }
 
@@ -318,7 +318,7 @@ namespace ABShared
 
         public void Update()
         {
-            Created=DateTime.Now;
+            Created = DateTime.Now;
         }
     }
 }

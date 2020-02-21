@@ -1873,7 +1873,7 @@ namespace xNet
                 int endTypePos = contentType.IndexOf(';');
                 if (endTypePos != -1)
                     contentType = contentType.Substring(0, endTypePos);
-  
+
                 return contentType;
             }
 

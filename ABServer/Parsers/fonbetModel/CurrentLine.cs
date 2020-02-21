@@ -17,9 +17,9 @@ namespace ABServer.Parsers.fonbetModel
 
             foreach (KeyValuePair<int, Event> key in Events)
             {
-                if(key.Value.ParentId==eventId)
-                    if(!key.Value.IsBlock)
-                       rezult.Add(key.Value);
+                if (key.Value.ParentId == eventId)
+                    if (!key.Value.IsBlock)
+                        rezult.Add(key.Value);
 #if DEBUG
                     else
                     {

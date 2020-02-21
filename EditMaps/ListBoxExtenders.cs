@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace EditMaps
 {
-   
+
     public class ListBoxExtenders : DependencyObject
     {
         public static readonly DependencyProperty AutoScrollToEndProperty = DependencyProperty.RegisterAttached("AutoScrollToEnd", typeof(bool), typeof(ListBoxExtenders), new UIPropertyMetadata(default(bool), OnAutoScrollToEndChanged));
@@ -26,7 +26,7 @@ namespace EditMaps
             obj.SetValue(AutoScrollToEndProperty, value);
         }
 
-     
+
         public static void OnAutoScrollToEndChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
             var listBox = s as ListBox;

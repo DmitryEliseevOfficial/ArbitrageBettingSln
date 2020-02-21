@@ -30,23 +30,23 @@ namespace ABServer
         private static void Worker()
         {
             string path = $"{Environment.CurrentDirectory}\\Logs";
-            
+
             while (true)
             {
                 try
                 {
-                    while (_works.Count!=0)
+                    while (_works.Count != 0)
                     {
                         Work currentWork;
                         _works.TryDequeue(out currentWork);
-                        if(currentWork==null)
+                        if (currentWork == null)
                             continue;
 
                         if (!Directory.Exists(path))
                             Directory.CreateDirectory(path);
 
                         string fileName = $"{path}\\{currentWork.Target}.txt";
-                        if(currentWork.Target==LogTarget.Marafon
+                        if (currentWork.Target == LogTarget.Marafon
                             || currentWork.Target == LogTarget.MarafonThread
                             || currentWork.Target == LogTarget.OlimpThread
                             || currentWork.Target == LogTarget.ServerManager)
@@ -66,16 +66,16 @@ namespace ABServer
 
 
         private static void Init()
-        { 
+        {
             if (IsInit) return;
             lock (_locker)
             {
-                _thWorker = new Thread(Worker) {IsBackground = true};
+                _thWorker = new Thread(Worker) { IsBackground = true };
                 _thWorker.Start();
                 IsInit = true;
                 AddLog("Logger запущен!");
             }
-           
+
         }
 
         public static void AddLog(string message)
@@ -84,7 +84,7 @@ namespace ABServer
         }
 
 
-        public static void AddLog(string message,LogLevel level)
+        public static void AddLog(string message, LogLevel level)
         {
             AddLog(message, LogTarget.Common, level);
 
@@ -104,7 +104,7 @@ namespace ABServer
 #endif
             if (!IsInit)
                 Init();
-            _works.Enqueue(new Work(message,target,level));
+            _works.Enqueue(new Work(message, target, level));
         }
 
         private class Work
@@ -122,14 +122,14 @@ namespace ABServer
 
             public Work(string message)
             {
-                LogLevel= LogLevel.Info;
-                Time= DateTime.Now;
+                LogLevel = LogLevel.Info;
+                Time = DateTime.Now;
                 Message = message;
-                Target=LogTarget.Common;
+                Target = LogTarget.Common;
             }
 
 
-            public Work(string message,LogLevel level)
+            public Work(string message, LogLevel level)
             {
                 LogLevel = level;
                 Time = DateTime.Now;

@@ -19,9 +19,9 @@ using ThreadState = System.Threading.ThreadState;
 
 namespace ABServer.Parsers
 {
-    class NewMarafon:IParse
+    class NewMarafon : IParse
     {
-        private string _url= "https://www.mthbet27.com";
+        private string _url = "https://www.mthbet27.com";
         public BookmakerType Bookmaker { get; } = BookmakerType.Marafon;
         public ConcurrentStack<Bet> Bets { get; set; } = new ConcurrentStack<Bet>();
 
@@ -74,7 +74,7 @@ namespace ABServer.Parsers
             return rezult;
         }
 
-        
+
 
 
         internal List<LinkData> GetLives()
@@ -82,8 +82,8 @@ namespace ABServer.Parsers
             var rezult = new List<LinkData>();
             if (_req == null)
             {
-                _req= new HttpRequest();
-                _req.CharacterSet=Encoding.UTF8;
+                _req = new HttpRequest();
+                _req.CharacterSet = Encoding.UTF8;
                 _req.UserAgent =
                         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.59 Safari/537.36 OPR/41.0.2353.46";
                 //if (UsingProxy)
@@ -95,11 +95,11 @@ namespace ABServer.Parsers
             var doc = pr.Parse(respone);
             var lives = doc.QuerySelectorAll("div.event-info");
 
-            
+
             foreach (IElement element in lives)
             {
                 var id = element.Attributes["data-event-treeid"].Value;
-                var linkdata=new LinkData();
+                var linkdata = new LinkData();
                 linkdata.Id = id;
                 try
                 {
@@ -113,9 +113,9 @@ namespace ABServer.Parsers
                 catch (Exception e)
                 {
                     continue;
-                    
+
                 }
-                
+
                 rezult.Add(linkdata);
             }
 
@@ -126,26 +126,26 @@ namespace ABServer.Parsers
                 UnicDataDecorator.UpdateBase += UnicDataDecorator_UpdateBase;
             }
 
-            
 
 
-            var dt= new List<LinkData>();
+
+            var dt = new List<LinkData>();
             foreach (LinkData linkData in rezult)
             {
-                 var teams = linkData.Teams.Replace(" - ", "|").Split('|');
-                if(teams.Length!=2)
+                var teams = linkData.Teams.Replace(" - ", "|").Split('|');
+                if (teams.Length != 2)
                     continue;
-                linkData.Team1Id=_bd.GetNumber(teams[0]);
-                if(linkData.Team1Id==-1)
+                linkData.Team1Id = _bd.GetNumber(teams[0]);
+                if (linkData.Team1Id == -1)
                     continue;
                 linkData.Team2Id = _bd.GetNumber(teams[1]);
-                if(linkData.Team2Id==-1)
+                if (linkData.Team2Id == -1)
 
 
-                dt.Add(linkData);
+                    dt.Add(linkData);
             }
 
-            Logger.AddLog($"Всего lives: {rezult.Count}. Из них отобранно {dt.Count}",Logger.LogTarget.Marafon);
+            Logger.AddLog($"Всего lives: {rezult.Count}. Из них отобранно {dt.Count}", Logger.LogTarget.Marafon);
 
             return dt;
         }
@@ -178,12 +178,12 @@ namespace ABServer.Parsers
                     {
                         if (!_thsLoad.ContainsKey(data.Id))
                         {
-                          
-                                var th = new Thread(UpdateBetNew);
-                                th.IsBackground = true;
-                                th.Start(data);
-                                _thsLoad.Add(data.Id, th);
-                            
+
+                            var th = new Thread(UpdateBetNew);
+                            th.IsBackground = true;
+                            th.Start(data);
+                            _thsLoad.Add(data.Id, th);
+
                         }
                         else
                         {
@@ -218,7 +218,7 @@ namespace ABServer.Parsers
 
                     foreach (string s in removeList)
                     {
-                            _thsLoad.Remove(s);
+                        _thsLoad.Remove(s);
                     }
                 }
 
@@ -281,22 +281,22 @@ namespace ABServer.Parsers
         internal void UpdateBet(object data)
         {
             var link = data as LinkData;
-            if(link==null)
+            if (link == null)
                 return;
 
             Stopwatch sw = new Stopwatch();
 
             HttpRequest req = new HttpRequest();
             req.CharacterSet = Encoding.UTF8;
-            if(UsingProxy)
-                req.Proxy=ProxyClient.Parse(ProxySingleManager.GetProxy());
-           
+            if (UsingProxy)
+                req.Proxy = ProxyClient.Parse(ProxySingleManager.GetProxy());
+
             while (true)
             {
-                
+
                 try
                 {
-                    
+
                     var response = req.Get($"{_url}/su/live/{link.Id}").ToString();
                     sw.Reset();
                     sw.Start();
@@ -331,7 +331,7 @@ namespace ABServer.Parsers
                 }
                 catch (Exception ex)
                 {
-                    
+
                     Logger.AddLog($"{link.Id};URl: {_url}/su/live/{link.Id} Время {sw.ElapsedMilliseconds};Ошибка парсинга: {ex.Message}", Logger.LogTarget.MarafonThread, Logger.LogLevel.Warn);
                 }
 
@@ -359,19 +359,19 @@ namespace ABServer.Parsers
             req.CharacterSet = Encoding.UTF8;
             if (UsingProxy)
                 req.Proxy = ProxyClient.Parse(ProxySingleManager.GetProxy());
-            int offset=0;
+            int offset = 0;
             try
             {
                 offset = GetServerOffset(req);
             }
             catch (Exception ex)
             {
-                Logger.AddLog($"Не смогли получить смещение времи. {ex.Message}",Logger.LogTarget.MarafonThread,Logger.LogLevel.Error);
+                Logger.AddLog($"Не смогли получить смещение времи. {ex.Message}", Logger.LogTarget.MarafonThread, Logger.LogLevel.Error);
             }
-           
+
             string prefix = GeneratorPrefix();
-            string updated=null;
-            IHtmlDocument doc=null;
+            string updated = null;
+            IHtmlDocument doc = null;
             bool reload = true;
             while (true)
             {
@@ -459,7 +459,7 @@ namespace ABServer.Parsers
                                         updated = null;
                                         throw new ArgumentException($"Не удалось сделать частичное обновлеение. и вот почему: {e.Message}");
                                     }
-                       
+
                                 }
                             }
 
@@ -475,7 +475,7 @@ namespace ABServer.Parsers
                 }
                 catch (Exception e)
                 {
-                    Logger.AddLog($"Не удалось спарсить {link.Id}. И вот почему: {e.Message}",Logger.LogTarget.MarafonThread,Logger.LogLevel.Warn);
+                    Logger.AddLog($"Не удалось спарсить {link.Id}. И вот почему: {e.Message}", Logger.LogTarget.MarafonThread, Logger.LogLevel.Warn);
                     Debug.WriteLine($"Не удалось спарсить {link.Id}. И вот почему: {e.Message}");
                     Thread.Sleep(5000);
                     if (UsingProxy)
@@ -491,16 +491,16 @@ namespace ABServer.Parsers
         {
             foreach (var key in updateData)
             {
-                if(key.Key== "shortcuts")
+                if (key.Key == "shortcuts")
                     continue;
                 string query = $"[data-mutable-id='{key.Key}']";
                 var element = doc.QuerySelectorAll(query).FirstOrDefault();
-                if(element==null)
+                if (element == null)
                     throw new ArgumentException("Данные устарели. Нужно перезагружаться");
 
-                var dt=parser.Parse(key.Value.Html);
+                var dt = parser.Parse(key.Value.Html);
 
-                element.Replace(dt.Body.FirstChild); 
+                element.Replace(dt.Body.FirstChild);
                 Debug.WriteLine($"Обновили {key.Key}");
             }
         }
@@ -512,10 +512,10 @@ namespace ABServer.Parsers
             return parser.Parse(htmlSource);
         }
 
-        internal Bet ParseBet(IHtmlDocument doc,Bet bet)
+        internal Bet ParseBet(IHtmlDocument doc, Bet bet)
         {
 
-          
+
 
             var groupe = doc.QuerySelector("a.sport-category-label");
             if (groupe == null)
@@ -527,11 +527,11 @@ namespace ABServer.Parsers
             var stakes = doc.QuerySelectorAll("span.selection-link");
             if (bet.SportType == SportType.Футбол)
             {
-                MarafonParserHelper.Football(stakes,bet);
+                MarafonParserHelper.Football(stakes, bet);
             }
             else if (bet.SportType == SportType.Хоккей)
             {
-                MarafonParserHelper.Hockey(stakes,bet);
+                MarafonParserHelper.Hockey(stakes, bet);
             }
             else if (bet.SportType == SportType.Баскетбол)
             {
@@ -547,7 +547,7 @@ namespace ABServer.Parsers
             }
             else if (bet.SportType == SportType.Гандбол)
             {
-                MarafonParserHelper.Ganball(stakes,bet);
+                MarafonParserHelper.Ganball(stakes, bet);
             }
             else if (bet.SportType == SportType.Водное_поло)
             {
@@ -555,11 +555,11 @@ namespace ABServer.Parsers
             }
             else
             {
-                MarafonParserHelper.CommonTemp(stakes,bet);
+                MarafonParserHelper.CommonTemp(stakes, bet);
             }
             return bet;
         }
-        
+
         internal static void UpdateEvent()
         {
             string id = "5115965";
@@ -584,7 +584,7 @@ namespace ABServer.Parsers
                     Console.WriteLine(response);
                 else
                 {
-                    
+
                     foreach (Modified modified in json.Modified)
                     {
                         Console.WriteLine(modified.Type);
@@ -595,10 +595,10 @@ namespace ABServer.Parsers
         }
 
 
-        private static  string GeneratorPrefix()
+        private static string GeneratorPrefix()
         {
-            var rnd = new Random();          
-            return $"jQuery{rnd.Next(100000000,999999999)}_{ConvertToUnixTimestamp()}";
+            var rnd = new Random();
+            return $"jQuery{rnd.Next(100000000, 999999999)}_{ConvertToUnixTimestamp()}";
         }
 
 

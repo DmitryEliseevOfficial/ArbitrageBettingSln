@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace EditMaps.ViewModel
 {
-    class EditBaseViewModel:BaseViewModel
+    class EditBaseViewModel : BaseViewModel
     {
         public EditBaseViewModel()
         {
@@ -20,7 +20,7 @@ namespace EditMaps.ViewModel
 
         private void Base_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-           
+
         }
 
         public ObservableCollection<UnicData> Base;
@@ -31,7 +31,7 @@ namespace EditMaps.ViewModel
             get { return _CurrentList; }
             set
             {
-                if(_CurrentList!=value)
+                if (_CurrentList != value)
                 {
                     _CurrentList = value;
                     PropChanged();
@@ -45,7 +45,7 @@ namespace EditMaps.ViewModel
             get { return _CurentId; }
             set
             {
-                if(_CurentId!=value)
+                if (_CurentId != value)
                 {
                     _CurentId = value;
                     PropChanged();
@@ -60,7 +60,7 @@ namespace EditMaps.ViewModel
             get { return _Maximum; }
             set
             {
-                if(_Maximum!=value)
+                if (_Maximum != value)
                 {
                     _Maximum = value;
                     PropChanged();

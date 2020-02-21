@@ -1,6 +1,6 @@
 ﻿namespace ABShared.Enum
 {
-    public  enum StakeType
+    public enum StakeType
     {
         Fora1,
         Fora2,

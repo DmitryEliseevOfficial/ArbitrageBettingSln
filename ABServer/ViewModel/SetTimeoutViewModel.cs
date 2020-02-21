@@ -7,7 +7,7 @@ using ABServer.Properties;
 
 namespace ABServer.ViewModel
 {
-    internal class SetTimeoutViewModel:INotifyPropertyChanged
+    internal class SetTimeoutViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -17,24 +17,24 @@ namespace ABServer.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        
+
 
         public MainConfigurate Configurate
         {
             get { return _configurate; }
             set
             {
-                if(_configurate==value) return;
-                _configurate = value;OnPropertyChanged();
+                if (_configurate == value) return;
+                _configurate = value; OnPropertyChanged();
             }
         }
         private MainConfigurate _configurate;
 
         public SetTimeoutViewModel()
         {
-            _configurate=MainConfigurate.Configurate.Clone();
+            _configurate = MainConfigurate.Configurate.Clone();
             SaveCommand = new RealyCommand(Save);
-            ResetCommand= new RealyCommand(Reset);
+            ResetCommand = new RealyCommand(Reset);
         }
 
         public RealyCommand SaveCommand { get; set; }

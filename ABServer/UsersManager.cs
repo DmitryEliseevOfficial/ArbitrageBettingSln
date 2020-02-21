@@ -29,11 +29,11 @@ namespace ABServer
         private static object obj = new object();
 
         public List<User> GetAllUser()
-        {           
+        {
             return _userList;
         }
 
-        public bool CheckAccess(string Login,string Password)
+        public bool CheckAccess(string Login, string Password)
         {
             var rez = _userList.Where(x => x.Login == Login && x.Password == Password).ToList();
             if (rez.Count != 1)
@@ -46,7 +46,7 @@ namespace ABServer
         public User MakeAuth(string Login, string Password)
         {
             var rez = _userList.FirstOrDefault(x => x.Login == Login && x.Password == Password);
-            if (rez== null)
+            if (rez == null)
             {
                 throw new ArgumentException($"Пользователя с логином: {Login} и паролем: {Password} не найденно");
             }
@@ -60,7 +60,7 @@ namespace ABServer
             {
                 if (_userList == null)
                     throw new ArgumentNullException("База не загружена!");
-                lock(obj)
+                lock (obj)
                 {
                     var mr = new MemoryStream();
                     BinaryFormatter fr = new BinaryFormatter();
@@ -72,9 +72,9 @@ namespace ABServer
                 if (BaseUpdate != null)
                     BaseUpdate();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("Неудалось сохранить базу упользователей. и вот почему: "+ex.Message);
+                System.Windows.MessageBox.Show("Неудалось сохранить базу упользователей. и вот почему: " + ex.Message);
 
             }
         }
@@ -83,18 +83,18 @@ namespace ABServer
         {
             try
             {
-                lock(obj)
-                { 
+                lock (obj)
+                {
                     BinaryFormatter fr = new BinaryFormatter();
                     var file = File.OpenRead("users.dat");
-                    _userList = (List<User>) fr.Deserialize(file);
+                    _userList = (List<User>)fr.Deserialize(file);
                     IsLoad = true;
                     file.Close();
                 }
             }
             catch
             {
-               lock(obj)
+                lock (obj)
                 {
                     _userList = new List<User>();
                     IsLoad = true;
@@ -109,7 +109,7 @@ namespace ABServer
 
         }
 
-        public void UpdateUser(User userOld,User userNew)
+        public void UpdateUser(User userOld, User userNew)
         {
             var index = _userList.IndexOf(userOld);
             _userList[index] = userNew;
@@ -118,9 +118,9 @@ namespace ABServer
 
         public void UpdateUser(User userNew)
         {
-            for(int i=0;i<_userList.Count;i++)
+            for (int i = 0; i < _userList.Count; i++)
             {
-                if(_userList[i].Login==userNew.Login)
+                if (_userList[i].Login == userNew.Login)
                 {
                     _userList[i] = userNew;
                     Save();
@@ -131,7 +131,7 @@ namespace ABServer
 
         public User GetUser(string Login)
         {
-           return _userList.Where(x => x.Login == Login).First();
+            return _userList.Where(x => x.Login == Login).First();
         }
 
         public void UserDelete(User user)

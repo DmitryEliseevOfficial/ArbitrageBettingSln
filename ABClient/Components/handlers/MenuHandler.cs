@@ -8,7 +8,7 @@ namespace ABClient.Components.handlers
 {
     public class MenuHandler : IContextMenuHandler
     {
-        
+
         void IContextMenuHandler.OnBeforeContextMenu(IWebBrowser browserControl, IBrowser browser, IFrame frame, IContextMenuParams parameters, IMenuModel model)
         {
 
@@ -41,7 +41,7 @@ namespace ABClient.Components.handlers
                 handler = (s, e) =>
                 {
                     menu.Closed -= handler;
-                    
+
                     if (!callback.IsDisposed)
                     {
                         callback.Cancel();
@@ -56,19 +56,19 @@ namespace ABClient.Components.handlers
 
                 };
 
-                  showDevOp.Click += delegate (object obj, RoutedEventArgs ev)
-                  {
-                      chromiumWebBrowser.ShowDevTools();
-                  };
+                showDevOp.Click += delegate (object obj, RoutedEventArgs ev)
+                {
+                    chromiumWebBrowser.ShowDevTools();
+                };
 
-                    menu.Items.Add(showDevOp);
-                
+                menu.Items.Add(showDevOp);
+
 
                 chromiumWebBrowser.ContextMenu = menu;
             }));
 
             return true;
         }
-       
+
     }
 }

@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 namespace ABShared
 {
     [Serializable]
-    public class Fork:INotifyPropertyChanging
+    public class Fork : INotifyPropertyChanging
     {
         public Fork()
         {
-            Created=DateTime.Now;
+            Created = DateTime.Now;
         }
 
         public ForkType ForkType { get; set; } = ForkType.Main;
@@ -23,7 +23,7 @@ namespace ABShared
 
         public BookmakerType TypeOne { get; set; }
         public BookmakerType TypeTwo { get; set; }
-        
+
 
         public string SiteOne { get; set; }
         public string SiteTwo { get; set; }
@@ -36,7 +36,7 @@ namespace ABShared
 
         public object Data1 { get; set; }
         public object Data2 { get; set; }
-        
+
 
         public string Url1 { get; set; }
         public string Url2 { get; set; }
@@ -64,7 +64,7 @@ namespace ABShared
 
         public override string ToString()
         {
-           // return To1 + " - " + To2 + " | " + Cof1 + "-" + Cof2 + " | " + Teams;
+            // return To1 + " - " + To2 + " | " + Cof1 + "-" + Cof2 + " | " + Teams;
             return $"{Profit:F}% | {To1}  - {To2} | {Cof1:##.##} - {Cof2:##.##} \n {Teams}";
         }
 
@@ -87,7 +87,7 @@ namespace ABShared
 
         public override int GetHashCode()
         {
-            int rezult=0;
+            int rezult = 0;
 
             rezult += TypeOne.GetHashCode();
             rezult += TypeTwo.GetHashCode();
@@ -100,12 +100,12 @@ namespace ABShared
             return rezult;
         }
 
-        [field:NonSerialized]
+        [field: NonSerialized]
         public event PropertyChangingEventHandler PropertyChanging;
 
-        private void OnPropertyChanged([CallerMemberName] string name="")
+        private void OnPropertyChanged([CallerMemberName] string name = "")
         {
-            PropertyChanging?.Invoke(this,new PropertyChangingEventArgs(name));
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(name));
         }
     }
 }

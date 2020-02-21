@@ -50,7 +50,7 @@ namespace ABServer.Parsers.fonbetModel
         public bool? WebOnly { get; set; }
     }
 
-   
+
     [Obfuscation(Feature = "trigger", Exclude = false)]
     internal class Event
     {
@@ -109,7 +109,7 @@ namespace ABServer.Parsers.fonbetModel
 
 
         internal EventMisc EventMisc { get; set; }
-       
+
         internal Dictionary<int, CustomFactor> Factors { get; set; }
         internal bool IsBlock { get; set; }
     }
@@ -161,7 +161,7 @@ namespace ABServer.Parsers.fonbetModel
 
         [JsonProperty("timerUpdateTimestamp")]
         public int? TimerUpdateTimestamp { get; set; }
-        
+
     }
 
     [DebuggerDisplay("EvId:{E} Factor:{F} Value:{V} IsLIve:{IsLive}")]
@@ -247,7 +247,7 @@ namespace ABServer.Parsers.fonbetModel
     }
 
 
-   
+
     [Obfuscation(Feature = "trigger", Exclude = false)]
     internal class FonbetResponse
     {
@@ -266,7 +266,7 @@ namespace ABServer.Parsers.fonbetModel
         [JsonProperty("sports")]
         public List<Sport> Sports { get; set; }
 
-        
+
         [JsonProperty("events")]
         public List<Event> Events { get; set; }
 

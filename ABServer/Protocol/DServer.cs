@@ -9,49 +9,49 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ABServer.Protocol
 {
-    class DServer: IDisposable
+    class DServer : IDisposable
     {
         TcpClient _client;
         NetworkStream _stream;
         double _version = 1.0;
-        User _curenuser;        
+        User _curenuser;
 
         public DServer(TcpClient client)
         {
-            _client = client;                      
+            _client = client;
         }
 
 
         public void Listening()
         {
-           _stream = _client.GetStream();
+            _stream = _client.GetStream();
 
-            if(_client.Available!=0)
+            if (_client.Available != 0)
             {
                 var packet = ReadData();
-              
-                switch(packet.Comand)
+
+                switch (packet.Comand)
                 {
                     case CommandCode.CheckVersion:
-                    {
-                        WriteVersion(packet);
-                        break;
-                    }                  
+                        {
+                            WriteVersion(packet);
+                            break;
+                        }
                     case CommandCode.GetLeftDay:
-                    {
-                        GetLeftDay();
-                        break;
-                    }
+                        {
+                            GetLeftDay();
+                            break;
+                        }
                     case CommandCode.GetSites:
-                    {
-                        GetSiteData(packet);
-                        break;
-                    }
+                        {
+                            GetSiteData(packet);
+                            break;
+                        }
                     case CommandCode.AddSiteData:
-                    {
-                        AddSiteData(packet);
-                        break;
-                    }
+                        {
+                            AddSiteData(packet);
+                            break;
+                        }
                     default:
                         break;
                 }
@@ -69,8 +69,8 @@ namespace ABServer.Protocol
 
         private void GetSiteData(Packet packet)
         {
-            var bookamker =(BookmakerType) packet.Data;
-            var sitemanager = new SiteManager();          
+            var bookamker = (BookmakerType)packet.Data;
+            var sitemanager = new SiteManager();
             packet = new Packet();
             packet.Code = StatusCode.SitesData;
             packet.Data = sitemanager.GetData(bookamker);
@@ -89,15 +89,15 @@ namespace ABServer.Protocol
 
         internal User MakeAuth()
         {
-            _stream = _client.GetStream();           
-          
-    
+            _stream = _client.GetStream();
+
+
 
             var packet = ReadData();
-            var check=WriteVersion(packet);
+            var check = WriteVersion(packet);
             if (!check)
             {
-                SendCloseConnection();      
+                SendCloseConnection();
 
                 throw new ArgumentException($"{packet.Data} !={_version} Клиенту необходимо обновиться");
             }
@@ -112,13 +112,13 @@ namespace ABServer.Protocol
             string password = lgData[1];
 
             var manager = new UsersManager();
-                        
-            User user=null;
+
+            User user = null;
             try
             {
                 user = manager.MakeAuth(login, password);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 packet = new Packet();
                 packet.Code = StatusCode.SingInFail;
@@ -130,11 +130,11 @@ namespace ABServer.Protocol
 
             //проверяем не кончилась ли подписка
             var time = user.Left - DateTime.Now;
-            if (time.TotalMilliseconds<0)
+            if (time.TotalMilliseconds < 0)
             {
                 packet = new Packet();
                 packet.Code = StatusCode.HasEnd;
-                SendData(packet);              
+                SendData(packet);
                 _client.Close();
                 throw new ArgumentException($"{user.Login} закончилась подписка");
             }
@@ -143,7 +143,7 @@ namespace ABServer.Protocol
             packet.Code = StatusCode.SingInOK;
 
             _curenuser = user;
-        
+
 
             return user;
         }
@@ -151,16 +151,16 @@ namespace ABServer.Protocol
         private bool WriteVersion(Packet packet)
         {
             Version ver = Version.Parse(packet.Data.ToString());
-            bool rezult=true;
+            bool rezult = true;
             packet = new Packet();
-            if (ver!=ProjectVersion.Version)
-            {                
-                packet.Code=StatusCode.NeedUpdate;
-                rezult = false;                     
+            if (ver != ProjectVersion.Version)
+            {
+                packet.Code = StatusCode.NeedUpdate;
+                rezult = false;
             }
             else
-            {               
-                packet.Code= StatusCode.VersionOK;               
+            {
+                packet.Code = StatusCode.VersionOK;
             }
             SendData(packet);
 
@@ -169,10 +169,10 @@ namespace ABServer.Protocol
 
         public void SendFork(List<Fork> data)
         {
-            if((_curenuser.Left-DateTime.Now).TotalMilliseconds<0)
+            if ((_curenuser.Left - DateTime.Now).TotalMilliseconds < 0)
             {
                 Packet packet = new Packet();
-                packet.Code = StatusCode.HasEnd;                
+                packet.Code = StatusCode.HasEnd;
                 SendData(packet);
             }
             else
@@ -181,13 +181,13 @@ namespace ABServer.Protocol
                 packet.Code = StatusCode.DataOK;
                 packet.Data = data;
                 SendData(packet);
-            }            
+            }
         }
-        
+
         //Делает сброс авторизации
         public void SendResetAuth()
         {
-           try
+            try
             {
                 Packet packet = new Packet();
                 packet.Code = StatusCode.NeedSignIn;
@@ -206,7 +206,7 @@ namespace ABServer.Protocol
         }
 
         private Packet ReadData()
-        {     
+        {
             BinaryFormatter fr = new BinaryFormatter();
             return fr.Deserialize(_stream) as Packet;
         }

@@ -23,13 +23,13 @@ namespace ABShared
             switch (numb)
             {
                 case BetNumber._Tmin:
-                {
-                    return Tmin;
-                }
+                    {
+                        return Tmin;
+                    }
                 case BetNumber._Tmax:
-                {
-                    return Tmax;
-                }
+                    {
+                        return Tmax;
+                    }
                 default:
                     return -1;
             }
@@ -40,17 +40,17 @@ namespace ABShared
             switch (numb)
             {
                 case BetNumber._Tmin:
-                {
-                    Tmin = value;
-                    break;
-                }
+                    {
+                        Tmin = value;
+                        break;
+                    }
                 case BetNumber._Tmax:
-                {
-                    Tmax = value;
-                    break;
-                }
+                    {
+                        Tmax = value;
+                        break;
+                    }
                 default:
-                    return ;
+                    return;
             }
         }
 
@@ -59,15 +59,15 @@ namespace ABShared
             switch (numb)
             {
                 case BetNumber._Tmin:
-                {
-                    return Tmino;
-                }
+                    {
+                        return Tmino;
+                    }
                 case BetNumber._Tmax:
-                {
-                    return Tmaxo;
-                }
+                    {
+                        return Tmaxo;
+                    }
                 default:
-                return "error GetData";
+                    return "error GetData";
             }
         }
 
@@ -80,7 +80,7 @@ namespace ABShared
                 case BetNumber._Tmin:
                     return "ИТМ(" + Coeff + ")";
                 default:
-                return "none";
+                    return "none";
             }
         }
 
@@ -90,7 +90,7 @@ namespace ABShared
             if (TeamName == null)
                 return false;
 
-            if (Tmin==0 && Tmax==0)
+            if (Tmin == 0 && Tmax == 0)
                 return false;
 
             return true;

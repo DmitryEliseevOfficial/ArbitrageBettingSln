@@ -14,7 +14,7 @@ namespace StaticData.Parsers.Olimp
     {
         string url;
 
-        public Olimp(string url="https://olimp.com")
+        public Olimp(string url = "https://olimp.com")
         {
             this.url = url;
         }
@@ -24,17 +24,17 @@ namespace StaticData.Parsers.Olimp
             var rezult = new List<SiteRow>();
 
             WebClient wb = new WebClient();
-            
+
             wb.Encoding = Encoding.UTF8;
             var respone = wb.DownloadString($"{url}/index.php?page=line&action=1");
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(respone);
-            var links = doc.DocumentNode.SelectNodes("//a").Where(x => x.Attributes["href"] !=null && x.Attributes["href"].Value.ToString().Contains("page=line&action=2&sel")).ToList();
+            var links = doc.DocumentNode.SelectNodes("//a").Where(x => x.Attributes["href"] != null && x.Attributes["href"].Value.ToString().Contains("page=line&action=2&sel")).ToList();
 
-            foreach(var link in links)
+            foreach (var link in links)
             {
                 Console.WriteLine(link.Attributes["href"].Value);
-                rezult.AddRange(ParsePage(link.Attributes["href"].Value,link.InnerText.Trim()));
+                rezult.AddRange(ParsePage(link.Attributes["href"].Value, link.InnerText.Trim()));
             }
 
             return rezult;
@@ -46,17 +46,17 @@ namespace StaticData.Parsers.Olimp
 
             WebClient wb = new WebClient();
             wb.Encoding = Encoding.UTF8;
-            var respone = wb.DownloadString("https://olimp.com/"+ link);
+            var respone = wb.DownloadString("https://olimp.com/" + link);
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(respone);
 
             var trs = doc.DocumentNode.SelectNodes("//tr[@class=\"hi\"]");
-            if(trs==null)
+            if (trs == null)
             {
                 //если нету в этой части ставок
                 return new List<SiteRow>();
             }
-            foreach(var tr in trs)
+            foreach (var tr in trs)
             {
                 if (tr.ChildNodes[3].Attributes["width"] == null)
                     continue;
@@ -65,10 +65,10 @@ namespace StaticData.Parsers.Olimp
                 sr.TimeStart = DateTime.Parse(tr.ChildNodes[1].InnerText);
                 sr.Groupe = Groupe;
                 sr.Site = Shared.Enums.ParserType.Olimp;
-                
 
-                string[] teams = tr.ChildNodes[3].InnerText.Trim().Replace(" - ","|").Split('|');
-                if(teams.Length!=2)
+
+                string[] teams = tr.ChildNodes[3].InnerText.Trim().Replace(" - ", "|").Split('|');
+                if (teams.Length != 2)
                 {
                     continue;
                 }
@@ -81,7 +81,7 @@ namespace StaticData.Parsers.Olimp
 
                 rezult.Add(sr1);
 
-          }
+            }
 
 
             return rezult;
@@ -98,22 +98,22 @@ namespace StaticData.Parsers.Olimp
             var respone = wb.DownloadString($"{url}/betting");
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(respone);
-            var rows = doc.DocumentNode.SelectNodes("//tr").Where(x => x.Id != null && x.Id.Contains("t") && x.Id.ToString().Count()<=4).ToList();
+            var rows = doc.DocumentNode.SelectNodes("//tr").Where(x => x.Id != null && x.Id.Contains("t") && x.Id.ToString().Count() <= 4).ToList();
 
             foreach (var row in rows)
             {
                 int i = 3;
                 var x = row.ChildNodes[1].ChildNodes.Count;
-                if(x!=5)
+                if (x != 5)
                 {
                     i = 5;
-                }                
+                }
 
 
                 var rw = new SiteRow();
                 rw.Site = Shared.Enums.ParserType.Olimp;
                 rw.Sport = row.ChildNodes[1].ChildNodes[3].InnerText.Split('.').First().Trim();
-                var teams = row.ChildNodes[1].ChildNodes[3].InnerText.Replace(rw.Sport+". ", "").Replace(" - ", "|").Split('|');
+                var teams = row.ChildNodes[1].ChildNodes[3].InnerText.Replace(rw.Sport + ". ", "").Replace(" - ", "|").Split('|');
                 rw.TimeStart = DateTime.Parse(row.ChildNodes[1].ChildNodes[8].ChildNodes[0].InnerText.Replace("Начало ", "").Trim());
                 rw.TeamName = teams[0];
                 rw.Groupe = "";
@@ -137,7 +137,7 @@ namespace StaticData.Parsers.Olimp
             {
                 foreach (JToken token in json["data"])
                 {
-                    if(token["cn"].ToString().Contains("Статистика"))
+                    if (token["cn"].ToString().Contains("Статистика"))
                         continue;
 
                     foreach (JToken ev in token["it"])

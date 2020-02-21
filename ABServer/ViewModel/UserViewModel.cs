@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace ABServer.ViewModel
 {
-    class UserViewModel: DependencyObject
+    class UserViewModel : DependencyObject
     {
         UsersManager manager;
         User _oldUser;
@@ -47,7 +47,7 @@ namespace ABServer.ViewModel
         {
             if (user != null)
             {
-                _oldUser=this.User = user;
+                _oldUser = this.User = user;
                 IsNewUser = false;
             }
             else
@@ -68,7 +68,7 @@ namespace ABServer.ViewModel
             get { return (User)GetValue(UserProperty); }
             set { SetValue(UserProperty, value); }
         }
-        
+
 
         public bool IsNewUser
         {
@@ -81,7 +81,7 @@ namespace ABServer.ViewModel
             get { return (ICommand)GetValue(MyPropertyProperty); }
             set { SetValue(MyPropertyProperty, value); }
         }
-        
+
 
         public ICommand AddNewUserCommand
         {
@@ -94,7 +94,7 @@ namespace ABServer.ViewModel
             get { return (ICommand)GetValue(NewLoginCommandProperty); }
             set { SetValue(NewLoginCommandProperty, value); }
         }
-        
+
 
         private void NewLogin()
         {
@@ -105,13 +105,13 @@ namespace ABServer.ViewModel
 
         private void NewPassword()
         {
-            User.Password = RandomPassword.Generate(8, 10);          
+            User.Password = RandomPassword.Generate(8, 10);
         }
 
         private void AddNewUser()
         {
             if (IsNewUser)
-            {               
+            {
                 manager.AddUser(User);
             }
             else
@@ -129,7 +129,7 @@ namespace ABServer.ViewModel
             set { SetValue(IsWriteDataErrorProperty, value); }
         }
 
-       
+
 
     }
 }

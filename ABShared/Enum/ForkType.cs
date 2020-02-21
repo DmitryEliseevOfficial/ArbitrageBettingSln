@@ -3,8 +3,8 @@
     //Тип вилки
     public enum ForkType
     {
-        
-        Main,           
-        IT              
+
+        Main,
+        IT
     }
 }

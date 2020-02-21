@@ -15,7 +15,7 @@ namespace StaticData.Parsers.Fonbet
 
 
 
-        public Fonbet(string url="Https://fonbet5.com")
+        public Fonbet(string url = "Https://fonbet5.com")
         {
             _url = url;
         }
@@ -34,18 +34,18 @@ namespace StaticData.Parsers.Fonbet
         {
             string adress = GetApiAdress();
 
-            WebClient wb = new GZipWebClient();            
+            WebClient wb = new GZipWebClient();
             wb.Encoding = Encoding.UTF8;
-            var respone=wb.DownloadString($"https:{adress}/line/currentLine/ru/");
-           
+            var respone = wb.DownloadString($"https:{adress}/line/currentLine/ru/");
+
             var json = JObject.Parse(respone);
 
             var rezult = new List<SiteRow>();
-            var events = json["events"].Where(x=>x["level"].ToString()=="1").ToList();
+            var events = json["events"].Where(x => x["level"].ToString() == "1").ToList();
 
-            foreach(var ev in events)
+            foreach (var ev in events)
             {
-                if(ev["state"]?["willBeLive"]?.ToString()== "True")
+                if (ev["state"]?["willBeLive"]?.ToString() == "True")
                 {
 
                 }
@@ -66,13 +66,13 @@ namespace StaticData.Parsers.Fonbet
                 rezult.Add(rw);
 
                 var rw2 = rw.Clone();
-                rw2.TeamName= ev["team2"].ToString();
+                rw2.TeamName = ev["team2"].ToString();
 
 
                 rezult.Add(rw2);
             }
 
-            wb= new GZipWebClient();
+            wb = new GZipWebClient();
             respone = wb.DownloadString($"https:{adress}/live/currentLine/ru/");
             json = JObject.Parse(respone);
             events = json["events"].Where(x => x["level"].ToString() == "1").ToList();

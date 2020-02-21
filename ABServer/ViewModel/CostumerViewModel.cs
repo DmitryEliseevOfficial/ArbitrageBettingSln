@@ -45,7 +45,7 @@ namespace ABServer.ViewModel
         #endregion
 
         UsersManager manager;
-        
+
 
         public CostumerViewModel()
         {
@@ -68,7 +68,7 @@ namespace ABServer.ViewModel
         {
             get { return (string)GetValue(FindValueProperty); }
             set { SetValue(FindValueProperty, value); }
-        }        
+        }
 
         public List<User> CurrentItems
         {
@@ -84,7 +84,7 @@ namespace ABServer.ViewModel
             set { SetValue(SelectedUserProperty, value); }
         }
 
-        
+
         public ICommand FilterCommand
         {
             get { return (ICommand)GetValue(FilterCommandProperty); }
@@ -96,13 +96,13 @@ namespace ABServer.ViewModel
             get { return (ICommand)GetValue(RemoveCommandProperty); }
             set { SetValue(RemoveCommandProperty, value); }
         }
-        
+
         public ICommand SetTarifCommand
         {
             get { return (ICommand)GetValue(SetTarifCommandProperty); }
             set { SetValue(SetTarifCommandProperty, value); }
         }
-        
+
         public ICommand EditUserCommand
         {
             get { return (ICommand)GetValue(EditUserCommandProperty); }
@@ -114,7 +114,7 @@ namespace ABServer.ViewModel
             get { return (ICommand)GetValue(InfoCopyCommandProperty); }
             set { SetValue(InfoCopyCommandProperty, value); }
         }
-        
+
 
         private void Filter()
         {
@@ -131,30 +131,30 @@ namespace ABServer.ViewModel
             var user = SelectedUser;
             if (user == null)
                 return;
-            var rez=MessageBox.Show("Вы уверены, что хотите удалить "+user.Login,"Запрос",MessageBoxButton.OKCancel);
-            if(rez== MessageBoxResult.OK)
+            var rez = MessageBox.Show("Вы уверены, что хотите удалить " + user.Login, "Запрос", MessageBoxButton.OKCancel);
+            if (rez == MessageBoxResult.OK)
                 manager.UserDelete(user);
         }
 
         private void SetTarif(object obj)
         {
-            if(SelectedUser==null)
+            if (SelectedUser == null)
             {
                 MessageBox.Show("Никто не выбран.");
                 return;
             }
             int day;
-            Int32.TryParse(obj.ToString(),out day);
+            Int32.TryParse(obj.ToString(), out day);
 
-            if(day==0)
+            if (day == 0)
             {
-                if(SelectedUser.IsFreeUSed)
+                if (SelectedUser.IsFreeUSed)
                 {
                     MessageBox.Show($"{SelectedUser.Login} Уже использовал FREE тариф.");
                     return;
                 }
-                var rez=MessageBox.Show($"Вы уверены,что хотите дать {SelectedUser.Login} Тариф FREE?","Запрос",MessageBoxButton.YesNo);
-                if(rez == MessageBoxResult.Yes)
+                var rez = MessageBox.Show($"Вы уверены,что хотите дать {SelectedUser.Login} Тариф FREE?", "Запрос", MessageBoxButton.YesNo);
+                if (rez == MessageBoxResult.Yes)
                 {
                     SelectedUser.IsFreeUSed = true;
                     SelectedUser.Left = DateTime.Now.AddDays(5);
@@ -179,13 +179,13 @@ namespace ABServer.ViewModel
                     manager.UpdateUser(SelectedUser);
                 }
             }
-            
+
 
         }
-        
+
         private void EditUser()
         {
-            if(SelectedUser==null)
+            if (SelectedUser == null)
             {
                 MessageBox.Show("Никто не выбран.");
                 return;
@@ -203,7 +203,7 @@ namespace ABServer.ViewModel
                 return;
             }
 
-            var Info = String.Format("Имя пользователя: {0}{3}Пароль:{1}{3}Время окончания: {2}",SelectedUser.Login,SelectedUser.Password,SelectedUser.Left,Environment.NewLine);
+            var Info = String.Format("Имя пользователя: {0}{3}Пароль:{1}{3}Время окончания: {2}", SelectedUser.Login, SelectedUser.Password, SelectedUser.Left, Environment.NewLine);
             Clipboard.SetText(Info);
             MessageBox.Show("Информация успешно скопированна в буфер обмена");
         }

@@ -25,7 +25,7 @@ namespace ABServer.Protocol
         public ServerManager(ForkFinder finder)
         {
             _finder = finder;
-        }        
+        }
 
         /// <summary>
         /// Запускает фоновые процессы, для рассылки вилок и принятия новых подключений
@@ -46,7 +46,7 @@ namespace ABServer.Protocol
             _thSending.IsBackground = true;
             _thSending.Start();
 
-            Logger.AddLog($"ServerManager успешно запущенпараметры запуска: {ip}:{port}",Logger.LogTarget.ServerManager,Logger.LogLevel.Info);
+            Logger.AddLog($"ServerManager успешно запущенпараметры запуска: {ip}:{port}", Logger.LogTarget.ServerManager, Logger.LogLevel.Info);
         }
 
         /// <summary>
@@ -73,14 +73,14 @@ namespace ABServer.Protocol
                             Logger.AddLog($"Пользователь {authUser.Login},{authUser.Email} Уже был подключен. Но подключился снова",
                                 Logger.LogTarget.ServerManager, Logger.LogLevel.Warn);
                             _clients[authUser].SendResetAuth();
-                           // _clients[AuthUser].Dispose();
+                            // _clients[AuthUser].Dispose();
                         }
-                           
+
                         _clients[authUser] = serv;
                         Logger.AddLog($"Пользователь {authUser.Login},{authUser.Email} успешно присоединился",
                                 Logger.LogTarget.ServerManager, Logger.LogLevel.Info);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Logger.AddLog($"не удалось подключить пользователя. {cl.Client.RemoteEndPoint}. {ex.Message}",
                             Logger.LogTarget.ServerManager, Logger.LogLevel.Warn);
@@ -95,23 +95,23 @@ namespace ABServer.Protocol
         /// </summary>
         private void SendingData()
         {
-            while(true)
+            while (true)
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 var data = _finder.GetAllFork();
-                List<DServer> clients ;
+                List<DServer> clients;
                 try
                 {
-                    clients= _clients.Select(x => x.Value).ToList();
+                    clients = _clients.Select(x => x.Value).ToList();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     clients = new List<DServer>();
                     Logger.Write(ex.Message);
                 }
 
-                foreach(var key in clients)
+                foreach (var key in clients)
                 {
                     try
                     {
@@ -125,10 +125,10 @@ namespace ABServer.Protocol
                 }
                 sw.Stop();
 
-                if(data.Count!=0)
-                    Logger.AddLog($"Вилки были успешно отправленны клиентам за {sw.ElapsedMilliseconds} мс в количестве {data.Count}",Logger.LogTarget.ServerManager);
-                if(sw.ElapsedMilliseconds > 2000)
-                    Logger.AddLog($"Долго отправляли вилки за {sw.ElapsedMilliseconds} мс в количестве {data.Count}", Logger.LogTarget.ServerManager,Logger.LogLevel.Critical);
+                if (data.Count != 0)
+                    Logger.AddLog($"Вилки были успешно отправленны клиентам за {sw.ElapsedMilliseconds} мс в количестве {data.Count}", Logger.LogTarget.ServerManager);
+                if (sw.ElapsedMilliseconds > 2000)
+                    Logger.AddLog($"Долго отправляли вилки за {sw.ElapsedMilliseconds} мс в количестве {data.Count}", Logger.LogTarget.ServerManager, Logger.LogLevel.Critical);
 
                 Thread.Sleep(MainConfigurate.Configurate.ServerManagerSendTime);
             }
@@ -139,7 +139,7 @@ namespace ABServer.Protocol
         /// </summary>
         public void StopListen()
         {
-            foreach(var key in _clients)
+            foreach (var key in _clients)
             {
                 try
                 {
@@ -157,10 +157,10 @@ namespace ABServer.Protocol
                 _thListen?.Abort();
                 _thSending?.Abort();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Logger.AddLog($"Не удалось коректно остановить. И вот почему {ex.Message}", Logger.LogTarget.ParserManager,Logger.LogLevel.Critical);
-            }      
+                Logger.AddLog($"Не удалось коректно остановить. И вот почему {ex.Message}", Logger.LogTarget.ParserManager, Logger.LogLevel.Critical);
+            }
 
         }
     }

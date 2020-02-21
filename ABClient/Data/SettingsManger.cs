@@ -14,8 +14,8 @@ namespace ABClient.Data
         {
             try
             {
-                 return Load();
-                
+                return Load();
+
             }
             catch
             {
@@ -74,15 +74,15 @@ namespace ABClient.Data
                 return sett;
             }
 
-           
+
         }
 
         private static Settings Load()
-        {       
+        {
             var mr = new MemoryStream(File.ReadAllBytes("Settings.dat"));
             BinaryFormatter fr = new BinaryFormatter();
             return (Settings)fr.Deserialize(mr);
-                  
+
         }
 
 

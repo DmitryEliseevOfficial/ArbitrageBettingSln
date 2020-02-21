@@ -63,7 +63,7 @@ namespace ABShared
             {
                 return SportType.Хоккей;
             }
-            if(val.Contains("водное поло"))
+            if (val.Contains("водное поло"))
             {
                 return SportType.Водное_поло;
             }

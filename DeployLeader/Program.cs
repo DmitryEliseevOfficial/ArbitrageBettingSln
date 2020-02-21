@@ -15,7 +15,7 @@ namespace DeployLeader
 
         private static void Main()
         {
-            
+
             Deploy();
             Console.ReadKey();
         }
@@ -23,13 +23,13 @@ namespace DeployLeader
         private static void Deploy()
         {
 
-            _clientPatch = new DirectoryInfo(Environment.CurrentDirectory).Parent?.FullName+ @"\ABClient\bin\Release";
+            _clientPatch = new DirectoryInfo(Environment.CurrentDirectory).Parent?.FullName + @"\ABClient\bin\Release";
 
 
             if (!CheckLastVersion()) return;
 
             if (!DeleteAndRename()) return;
-            if(!CompressFiles()) return;
+            if (!CompressFiles()) return;
             if (!UploadFile("Release")) return;
             if (!UploadFile("Update")) return;
             SaveVersion();
@@ -38,49 +38,49 @@ namespace DeployLeader
 
         private static bool CheckLastVersion()
         {
-          
-                string asseblyPath = _clientPatch + @"\ABShared.dll";
-                if (!File.Exists(asseblyPath))
+
+            string asseblyPath = _clientPatch + @"\ABShared.dll";
+            if (!File.Exists(asseblyPath))
+            {
+                WriteLine("Не удалось найти ABShared", ConsoleColor.Red);
+                return false;
+            }
+
+            try
+            {
+                Assembly abShared = Assembly.LoadFrom(asseblyPath);
+                Type projectVersionType = abShared.GetType("ABShared.ProjectVersion");
+
+
+                object pVObj = Activator.CreateInstance(projectVersionType);
+                PropertyInfo filds = projectVersionType.GetProperty("Version");
+                Version currentVersion = Version.Parse(filds.GetValue(pVObj).ToString());
+
+                if (!File.Exists("lastVersion.txt"))
                 {
-                    WriteLine("Не удалось найти ABShared", ConsoleColor.Red);
-                    return false;
+                    _lastVersion = currentVersion;
                 }
-
-                try
+                else
                 {
-                    Assembly abShared = Assembly.LoadFrom(asseblyPath);
-                    Type projectVersionType = abShared.GetType("ABShared.ProjectVersion");
-
-
-                    object pVObj = Activator.CreateInstance(projectVersionType);
-                    PropertyInfo filds = projectVersionType.GetProperty("Version");
-                    Version currentVersion = Version.Parse(filds.GetValue(pVObj).ToString());
-
-                    if (!File.Exists("lastVersion.txt"))
+                    _lastVersion = Version.Parse(File.ReadAllText("lastVersion.txt"));
+                    if (currentVersion <= _lastVersion)
                     {
-                        _lastVersion = currentVersion;
+                        WriteLine($"Последняя загруженная версия: {_lastVersion} \nТекущая версия: {currentVersion} \nНеобходимо обновить версию билда!", ConsoleColor.Red);
+                        return false;
                     }
-                    else
-                    {
-                        _lastVersion = Version.Parse(File.ReadAllText("lastVersion.txt"));
-                        if (currentVersion <= _lastVersion)
-                        {
-                            WriteLine($"Последняя загруженная версия: {_lastVersion} \nТекущая версия: {currentVersion} \nНеобходимо обновить версию билда!", ConsoleColor.Red);
-                            return false;
-                        }
-                    }
-
-                    WriteLine($"Последняя загруженная версия: {_lastVersion} \nТекущая версия: {currentVersion} \nВерсия успешно проверенна", ConsoleColor.DarkGreen);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    WriteLine("Не удалось загузить ABShared", ConsoleColor.Red);
-                    WriteLine(ex.Message, ConsoleColor.DarkRed);
-                    return false;
                 }
 
-           
+                WriteLine($"Последняя загруженная версия: {_lastVersion} \nТекущая версия: {currentVersion} \nВерсия успешно проверенна", ConsoleColor.DarkGreen);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                WriteLine("Не удалось загузить ABShared", ConsoleColor.Red);
+                WriteLine(ex.Message, ConsoleColor.DarkRed);
+                return false;
+            }
+
+
         }
 
         private static void SaveVersion()
@@ -92,7 +92,7 @@ namespace DeployLeader
 
         private static bool DeleteAndRename()
         {
-           
+
             if (!Directory.Exists(_clientPatch))
             {
                 WriteLine("Ошибка. Папки с релизом не существует", ConsoleColor.Red);
@@ -226,7 +226,7 @@ namespace DeployLeader
                 Console.WriteLine(e.Message);
                 return false;
             }
-            
+
         }
 
         private static bool UploadFile(string name)
@@ -255,7 +255,7 @@ namespace DeployLeader
                 Console.WriteLine(e.Message);
                 return false;
             }
-          
+
         }
 
         private static void WriteLine(string message, ConsoleColor color)

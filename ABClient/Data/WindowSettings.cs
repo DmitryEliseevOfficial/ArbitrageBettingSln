@@ -8,7 +8,7 @@ namespace ABClient.Data
     /// </summary>
     [Serializable]
     public class WindowsSettings
-    { 
+    {
         public int MinPercent { get; set; }
 
         public int MaxPercent { get; set; } = 100;

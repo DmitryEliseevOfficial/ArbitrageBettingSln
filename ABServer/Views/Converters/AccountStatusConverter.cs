@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace ABServer.Views.Converters
 {
-    [ValueConversion(typeof(DateTime),typeof(String))]
+    [ValueConversion(typeof(DateTime), typeof(String))]
     class AccountStatusConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

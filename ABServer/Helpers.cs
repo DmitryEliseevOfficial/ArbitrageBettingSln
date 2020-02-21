@@ -14,7 +14,7 @@ namespace ABServer
             var i = new Random().Next(0, max);
 
             return source[i];
-           
+
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace ABServer.Model.Users
 {
 
-   [Serializable]
+    [Serializable]
     public class User : INotifyPropertyChanged
     {
 
@@ -19,7 +19,7 @@ namespace ABServer.Model.Users
                 PropChanged();
             }
         }
-        private string _login="";
+        private string _login = "";
 
         public string Password
         {
@@ -32,11 +32,11 @@ namespace ABServer.Model.Users
             }
         }
         private string _password = "";
-        
+
 
         public DateTime Left { get; set; } = DateTime.Now;
 
-        public int Expected { get; set; }        
+        public int Expected { get; set; }
 
         public bool IsBlocked { get; set; } = false;
 
@@ -60,5 +60,5 @@ namespace ABServer.Model.Users
         }
 
     }
-    
+
 }

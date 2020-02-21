@@ -7,6 +7,6 @@ namespace ABShared.Protocol
     {
         public StatusCode Code { get; set; }
         public CommandCode Comand { get; set; }
-        public object Data { get; set; }     
+        public object Data { get; set; }
     }
 }

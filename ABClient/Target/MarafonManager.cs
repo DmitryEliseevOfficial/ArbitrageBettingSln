@@ -12,15 +12,15 @@ namespace ABClient.Target
     class MarafonManager : ITargerSite
     {
         string url;
-        
+
         ChromiumWebBrowser wbControl;
-       
+
         Dictionary<string, string> TaskList = new Dictionary<string, string>();
         public bool Logined { get; set; }
 
         public MarafonManager(ChromiumWebBrowser wbControl)
         {
-            this.wbControl = wbControl;            
+            this.wbControl = wbControl;
         }
 
         private void Wb_FrameLoadStart(object sender, FrameLoadStartEventArgs e)
@@ -59,7 +59,7 @@ namespace ABClient.Target
                 {
                     int ret = 0;
                     Int32.TryParse(response.Result.ToString(), out ret);
-                    
+
                     return ret;
                 }
 
@@ -73,13 +73,13 @@ namespace ABClient.Target
         public bool SignIn(string Login, string Password)
         {
             string query = " function enterdata(){ $('#auth_login').val(" + Login + "); $('#auth_login_password').val(\"" + Password + "\"); } document.addEventListener(\"DOMContentLoaded\", enterdata);    function logined(){ $('button.btn-login').click(); } window.onload=logined;";
-            TaskList["/su"] =query;
+            TaskList["/su"] = query;
 
             wbControl.FrameLoadEnd += WbControl_FrameLoadEnd;
             this.wbControl.FrameLoadStart += Wb_FrameLoadStart;
             if (wbControl.Address == url)
                 wbControl.Address = "about:blank";
-            wbControl.Address = new Uri(url).ToString()+"su";
+            wbControl.Address = new Uri(url).ToString() + "su";
             return false;
         }
 
@@ -89,12 +89,12 @@ namespace ABClient.Target
                 return;
             if (url.Last() != '/')
                 url += "/";
-            if(url.Length>3)
+            if (url.Length > 3)
             {
                 var str = url.Substring(url.Length - 3);
-                if(str=="su/")
-                    url= url.Substring(0,url.Length - 3);
-                else if(str=="/su")
+                if (str == "su/")
+                    url = url.Substring(0, url.Length - 3);
+                else if (str == "/su")
                     url = url.Substring(0, url.Length - 2);
             }
             try
@@ -105,9 +105,9 @@ namespace ABClient.Target
             {
                 try
                 {
-                    url = new Uri("http://"+url).ToString();
+                    url = new Uri("http://" + url).ToString();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("Ваш Url от Марафона, не соответствует правилам. Укажите в настройках верный Url");
                     url = "https://www.marathonbet.com/";
@@ -116,7 +116,7 @@ namespace ABClient.Target
 
             this.url = url;
         }
-        
+
         public void ShowBet(ChromiumWebBrowser wb, string url, object data, int betSize)
         {
             wbControl = wb;
@@ -173,7 +173,7 @@ function SetMyBet(){
                   try {
                         console.log('dt= '+'" + data + @"');   
                         var dt='" + data + @"'.replace('@',',');
-                        var dt='stake.'+'" + data+ @"'.replace('@',',');
+                        var dt='stake.'+'" + data + @"'.replace('@',',');
 
                         console.log('dt= '+dt);    
                         //document.getElementById(dt).focus();
@@ -187,7 +187,7 @@ function SetMyBet(){
                         getBetslip().checkBet(dt);*/
 
                        stakeEl.onkeyup(document.createEvent('KeyboardEvent'));
-                        stakeEl.value='" + betSize+ @"';
+                        stakeEl.value='" + betSize + @"';
                         stakeEl.onkeyup(document.createEvent('KeyboardEvent'));
 
                         jsobject.stoped(); 
@@ -250,14 +250,14 @@ function checkBalance() {
             wbControl.FrameLoadStart += Wb_FrameLoadStart;
 
             var u = new Uri(this.url + url);
-            TaskList[u.AbsolutePath] =query;
+            TaskList[u.AbsolutePath] = query;
 
-            wbControl.Address = this.url+url;
+            wbControl.Address = this.url + url;
         }
 
         public void Clear()
         {
-           if(wbControl!=null)
+            if (wbControl != null)
             {
                 wbControl.FrameLoadStart -= Wb_FrameLoadStart;
                 wbControl.FrameLoadEnd -= WbControl_FrameLoadEnd;
@@ -281,12 +281,12 @@ function checkBalance() {
         }";
             wbControl?.ExecuteScriptAsync(query);
         }
-        
+
         private void CheckLogin()
         {
             if (wbControl != null)
             {
-               
+
                 try
                 {
                     string query = "";
@@ -314,7 +314,7 @@ setTimeout(myLogin, 1000);";
                 {
 
                 }
-               
+
             }
         }
 
